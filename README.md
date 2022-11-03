@@ -12,7 +12,7 @@ El proyecto consistirá en una simulación de organismos simples que pueden inte
 
 ### Objetivo
 
-El objetivo del proyecto consiste en observar cuales cadenas genéticas especificas (lo que se traduce en un grupo de características y comportamientos) garantizan una mejor adaptación a un medio con unas reglas definidas mediante un proceso de optimización.
+El objetivo del proyecto consiste en observar cuales cadenas genéticas específicas (lo que se traduce en un grupo de características y comportamientos) garantizan una mejor adaptación a un medio con unas reglas definidas mediante un proceso de optimización.
 
 ## Inteligencia Artificial
 
