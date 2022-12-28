@@ -8,5 +8,5 @@ class Logger:
     def log_episode(self, episode: int, reward: float) -> None:
         pass
 
-    def log_results(self, results: List[float]) -> None:
+    def log_results(self, results: list[float]) -> None:
         pass

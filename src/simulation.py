@@ -1,13 +1,13 @@
-from logger import *
-from entity import *
-from world import *
+from src.logger import *
+from src.entity import *
+from src.world import *
 
 class Simulation:
     '''
     This class is responsible for controlling the flow of the simulation, determining when entities and world states should be updated, when events must be triggered, logging, defining and checking simulation goals, etc
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, logger: Logger) -> None:
         '''
         This method initializes the simulation.
         '''

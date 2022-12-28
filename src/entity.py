@@ -1,18 +1,23 @@
+from src.utils import *
 
 class Entity:
     '''
     Basic class of world inhabitants, it encompasses everything that exists in the world excluding the terrain. Entities that don't interact with the world should inherit from this class.
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, initial_state: dict[str, any], id:str) -> None:
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
+        self.state = initial_state
+        self.id = id
+
+    def get_property_value(self, property) -> str:
         pass
 
     ##Think later implementing communications between entities
 
-class Intelligent_entity(Entity):
+class IntelligentEntity(Entity):
     '''
     This class is for Entities that can actively interact with the world
     '''
