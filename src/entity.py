@@ -1,3 +1,4 @@
+from uuid import uuid4
 from src.utils import *
 
 class Entity:
@@ -5,15 +6,15 @@ class Entity:
     Basic class of world inhabitants, it encompasses everything that exists in the world excluding the terrain. Entities that don't interact with the world should inherit from this class.
     '''
 
-    def __init__(self, initial_state: dict[str, any], id:str) -> None:
+    def __init__(self, initial_state: dict[str, any]) -> None:
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
         self.state = initial_state
-        self.id = id
+        self._id = str(uuid4())
 
-    def get_property_value(self, property) -> str:
-        pass
+    def get_property_value(self, property: str) -> any:
+        return self.state[property]
 
     ##Think later implementing communications between entities
 
@@ -21,8 +22,9 @@ class IntelligentEntity(Entity):
     '''
     This class is for Entities that can actively interact with the world
     '''
-    def __init__(self) -> None:
-        pass
+    def __init__(self, initial_state: dict[str, any]) -> None:
+        super().__init__(initial_state)
+        
 
     #region World-Entity interaction
 

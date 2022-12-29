@@ -2,20 +2,23 @@ from src.entity import *
 from src.utils import *
 
 class Organism(IntelligentEntity):
-    def __init__(self, gene_pool:DirectedGraph, initial_state:dict[str, any], id:str, genetic_potential:int) -> None:
+    def __init__(self, gene_pool:DirectedGraph, dna_chain:list[tuple[str, int]], id:str, genetic_potential:int) -> None:
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
         genetic potential is an integer that represents the maximum length of the dna chain.
         '''
-        super().__init__(initial_state["entity_state"], id)
         self.gene_pool = gene_pool
+        initial_state = self.gen_state_dna(dna_chain)
+        super().__init__(initial_state["entity_state"], id)
         self.dna_chain = initial_state["dna_chain"]
         self.perception_filter:list[str] #TODO: How should this be implemented
         
     #TODO: what does this method returns? should reproduction be left for the simulation module ?
-    def reproduce(self, other_dna):
-        '''Generates an initial state for creating another instance of the Organism'''
+    def reproduce(self, other_dna, recombination_function) -> list[tuple[str, int]]:
+        '''
+        Generates an initial state for creating another instance of the Organism
+        '''
         pass
     
     def percept(self, world_sate: list[str]) -> list[str]:

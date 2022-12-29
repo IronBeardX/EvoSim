@@ -1,3 +1,4 @@
+from typing import Callable
 from curses.ascii import isdigit
 from src.world import *
 import numpy as np
@@ -99,3 +100,6 @@ class EvoWorld(World):
 
         # update the entity orientation
         self.update_entity_orientation(entity_id, new_orientation)
+
+    def add_action(self, action_descriptor: str, action_execution: Callable[..., any]) -> None:
+        self.world_actions[action_descriptor] = action_execution
