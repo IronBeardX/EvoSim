@@ -211,13 +211,18 @@ def main():
 
     edges_list = [
         (legs_gene.id, walk_gene.id),
-        (legs_gene.id, walk_gene.id),
+        (legs_gene.id, turn_gene.id),
         (eyes_gene.id, vision_color_gene.id),
         (eyes_gene.id, vision_shape_gene.id)
     ]
 
     for edge in edges_list:
         gene_pool.add_edge(edge[0], edge[1])
+
+
+    list1 = gene_pool.get_available_nodes([])
+    list2 = gene_pool.get_available_nodes([legs_gene.id])
+    list3 = gene_pool.get_available_nodes([legs_gene.id, eyes_gene.id])
     pass
 
 

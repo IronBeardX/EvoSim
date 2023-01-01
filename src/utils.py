@@ -122,16 +122,31 @@ class DirectedGraph:
 
         self._nodes[node_id].data = data
 
-    def get_avaidable_nodes(self, already_selected: list[str]) -> list[str]:
+    # FIXME
+    def get_available_nodes(self, already_selected: list) -> list:
         '''
         Returns nodes that are targeted by the nodes in the given list or aren't
         targeted by any node 
         '''
-        valid_ids = [id for id in self._nodes if id not in already_selected]
-        if len(already_selected) == 0:
+        available_nodes = list(self._nodes.keys())
+        for node_id in self._nodes:
+            for neighbor_id in self._edges[node_id]:
+                if neighbor_id in available_nodes:
+                    available_nodes.remove(neighbor_id)
+
+        for node_id in already_selected:
+            if node_id in available_nodes:
+                available_nodes.remove(node_id)
+
+        for node_id in already_selected:
+            available_nodes.extend(
+                [node for node in self._edges[node_id] if node not in already_selected])
+
+        return available_nodes
 
 
 class ArtificialIntelligence():
-    pass
+    def __init__(self) -> None:
+        pass
 
 # TODO: More functions will probably be added to this class as the project progresses.
