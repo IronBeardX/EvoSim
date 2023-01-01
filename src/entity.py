@@ -6,24 +6,28 @@ class Entity:
     Basic class of world inhabitants, it encompasses everything that exists in the world excluding the terrain. Entities that don't interact with the world should inherit from this class.
     '''
 
-    def __init__(self, initial_state: dict[str, any]) -> None:
+    def __init__(self, physical: dict) -> None:
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
-        self.state = initial_state
-        self._id = str(uuid4())
+        self.physical_properties = physical
+        self._id = uuid4()
 
     def get_property_value(self, property: str) -> any:
-        return self.state[property]
+        return self.physical_properties[property] if property in self.physical_properties else None
 
-    ##Think later implementing communications between entities
+    def get_entity_id(self) -> str:
+        return str(self._id)
 
 class IntelligentEntity(Entity):
     '''
     This class is for Entities that can actively interact with the world
     '''
-    def __init__(self, initial_state: dict[str, any]) -> None:
-        super().__init__(initial_state)
+    def __init__(self, physical: dict, actions: dict, perceptions: dict) -> None:
+        super().__init__(physical)
+        self.actions = actions
+        self.perceptions = perceptions
+        self.knowledge = {}
         
 
     #region World-Entity interaction

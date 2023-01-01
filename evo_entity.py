@@ -1,26 +1,35 @@
 from src.entity import *
 from src.utils import *
 
+
 class Organism(IntelligentEntity):
-    def __init__(self, gene_pool:DirectedGraph, dna_chain:list[tuple[str, int]], id:str, genetic_potential:int) -> None:
+    def __init__(self, gene_pool: DirectedGraph, dna_chain: list[tuple[str, int]], id: str, genetic_potential: int) -> None:
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
         genetic potential is an integer that represents the maximum length of the dna chain.
         '''
         self.gene_pool = gene_pool
-        initial_state = self.gen_state_dna(dna_chain)
+        initial_state = self.gen_state_from_dna(dna_chain)
         super().__init__(initial_state["entity_state"], id)
         self.dna_chain = initial_state["dna_chain"]
-        self.perception_filter:list[str] #TODO: How should this be implemented
-        
-    #TODO: what does this method returns? should reproduction be left for the simulation module ?
+        # TODO: How should this be implemented
+        self.perception_filter: list[str]
+
+    def gen_state_from_dna(self, dna_chain: list[tuple[str, int]]) -> '''[ ]''':
+        '''
+        This method generates the initial state of the organism based on the given dna chain. The dna chain is a list of
+        tuples that contains the id and the strength of the gene. The initial state is a dictionary that contains the initial
+        values of the properties of the organism.
+        '''
+
+    # TODO: what does this method returns? should reproduction be left for the simulation module ?
     def reproduce(self, other_dna, recombination_function) -> list[tuple[str, int]]:
         '''
         Generates an initial state for creating another instance of the Organism
         '''
         pass
-    
+
     def percept(self, world_sate: list[str]) -> list[str]:
         '''
         This method filters the world state to only include the information that is relevant to the entity. The world 
@@ -55,8 +64,35 @@ class Organism(IntelligentEntity):
         '''
         pass
 
-    def get_property_by_key(self, key:str) -> any:
+    def get_property_by_key(self, key: str) -> any:
         '''
         This method returns the value of the property with the given key
         '''
-        pass        
+        pass
+
+
+class TestOrganism(Organism):
+    '''
+    The difference between this class and the Organism class is that this one will receive a predefined list
+    of actions it will execute in sequence rather that deciding which it will execute
+    '''
+
+    def __init__(self, gene_pool: DirectedGraph, dna_chain: list[tuple[str, int]], id: str, genetic_potential: int, actions: list[str]) -> None:
+        '''
+        This method initializes the organism with the given initial state. The initial state is a dictionary that contains
+        the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
+        genetic potential is an integer that represents the maximum length of the dna chain.
+        '''
+        self.actions = actions
+        self.action_pointer = 0
+        super().__init__(gene_pool, dna_chain, id, genetic_potential)
+
+    def decide_action(self, world_state: list[str]) -> str:
+        '''
+        This method determines the action that the entity will take based on the world state. The world state is a list
+        of logical propositions which defines it's current state. The action is a string that represents the action that the 
+        entity will take. The world then is responsible for executing the action.
+        '''
+        action = self.actions[self.action_pointer]
+        self.action_pointer += 1
+        return action    
