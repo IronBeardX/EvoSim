@@ -3,7 +3,9 @@ from ctypes.wintypes import BOOL
 from evo_entity import *
 from evo_sim import *
 from evo_world import *
+from genetics import *
 from src.utils import *
+
 
 # WORLD TESTING
 
@@ -103,63 +105,99 @@ def main():
     # the dict keys should be the gene ids
 
     # creating physical genes
-    physical_genes_defs["0"] = {
-        "gen_type": "physical",
-        "gen_name": "color",
-        "gen_posible_values": ("red", "blue", "green", "yellow", "black", "white")
-    }
+    # physical_genes_defs["0"] = {
+    #     "gen_type": "physical",
+    #     "gen_name": "color",
+    #     "gen_posible_values": ("red", "blue", "green", "yellow", "black", "white")
+    # }
 
-    physical_genes_defs["1"] = {
-        "gen_type": "physical",
-        "gen_name": "size",
-        "gen_posible_values": (1, 2, 3, 4, 5)
-    }
+    color_gene = PhysicalGene("color", ("red", "blue", "green", "yellow", "black", "white"))
 
-    physical_genes_defs["2"] = {
-        "gen_type": "physical",
-        "gen_name": "shape",
-        "gen_posible_values": ("circle", "square", "triangle")
-    }
+    physical_genes_defs[color_gene.id] = color_gene
 
-    physical_genes_defs["3"] = {
-        "gen_type": "physical",
-        "gen_name": "legs"
-    }
+    # physical_genes_defs["1"] = {
+    #     "gen_type": "physical",
+    #     "gen_name": "size",
+    #     "gen_posible_values": (1, 2, 3, 4, 5)
+    # }
 
-    physical_genes_defs["4"] = {
-        "gen_type": "physical",
-        "gen_name": "eyes"
-    }
+    size_gene = PhysicalGene("size", (1, 2, 3, 4, 5))
+
+    physical_genes_defs[size_gene.id] = size_gene
+
+    # physical_genes_defs["2"] = {
+    #     "gen_type": "physical",
+    #     "gen_name": "shape",
+    #     "gen_posible_values": ("circle", "square", "triangle")
+    # }
+
+    shape_gene = PhysicalGene("shape", ("circle", "square", "triangle"))
+
+    physical_genes_defs[shape_gene.id] = shape_gene
+
+    # physical_genes_defs["3"] = {
+    #     "gen_type": "physical",
+    #     "gen_name": "legs"
+    # }
+
+    legs_gene = PhysicalGene("legs", None)
+
+    physical_genes_defs[legs_gene.id] = legs_gene
+
+    # physical_genes_defs["4"] = {
+    #     "gen_type": "physical",
+    #     "gen_name": "eyes"
+    # }
+
+    eyes_gene = PhysicalGene("eyes", None)
+
+    physical_genes_defs[eyes_gene.id] = eyes_gene
 
     # creating perception genes
-    perception_genes_defs["5"] = {
-        "gen_type": "perception",
-        "gen_name": "vision_color",
-        "perception_action": "see color ",
-        "mod_1": (1, 2, 3, 4)
-    }
+    # perception_genes_defs["5"] = {
+    #     "gen_type": "perception",
+    #     "gen_name": "vision_color",
+    #     "perception_action": "see color ",
+    #     "mod_1": (1, 2, 3, 4)
+    # }
 
-    perception_genes_defs["6"] = {
-        "gen_type": "perception",
-        "gen_name": "vision_shape",
-        "perception_action": "see shape ",
-        "mod_1": (1, 2, 3, 4)
-    }
+    vision_color_gene = PerceptionGene("vision_color", "see color ", (1, 2, 3, 4))
+
+    perception_genes_defs[vision_color_gene.id] = vision_color_gene
+
+    # perception_genes_defs["6"] = {
+    #     "gen_type": "perception",
+    #     "gen_name": "vision_shape",
+    #     "perception_action": "see shape ",
+    #     "mod_1": (1, 2, 3, 4)
+    # }
+
+    vision_shape_gene = PerceptionGene("vision_shape", "see shape ", (1, 2, 3, 4))
+
+    perception_genes_defs[vision_shape_gene.id] = vision_shape_gene
 
     # creating action genes
-    action_genes_defs["7"] = {
-        "gen_type": "action",
-        "gen_name": "walk",
-        "action": " walk ",
-        "pre_mod_1": (1, 2, 3, 4)
-    }
+    # action_genes_defs["7"] = {
+    #     "gen_type": "action",
+    #     "gen_name": "walk",
+    #     "action": " walk ",
+    #     "pre_mod_1": (1, 2, 3, 4)
+    # }
 
-    action_genes_defs["8"] = {
-        "gen_type": "action",
-        "gen_name": "turn",
-        "action": "turn ",
-        "mod_1": ("N ", "S ", "E ", "W ")
-    }
+    walk_gene = ActionGene("walk", " walk ", (1, 2, 3, 4))
+
+    action_genes_defs[walk_gene.id] = walk_gene
+
+    # action_genes_defs["8"] = {
+    #     "gen_type": "action",
+    #     "gen_name": "turn",
+    #     "action": "turn ",
+    #     "mod_1": ("N ", "S ", "E ", "W ")
+    # }
+
+    turn_gene = ActionGene("turn", "turn ", ("N ", "S ", "E ", "W "))
+
+    action_genes_defs[turn_gene.id] = turn_gene
 
     # generating pool
     for gene_id in physical_genes_defs:
@@ -172,15 +210,16 @@ def main():
         gene_pool.add_node(gene_id, action_genes_defs[gene_id])
 
     edges_list = [
-        ("3", "7"),
-        ("3", "8"),
-        ("4", "5"),
-        ("4", "6")
+        (legs_gene.id, walk_gene.id),
+        (legs_gene.id, walk_gene.id),
+        (eyes_gene.id, vision_color_gene.id),
+        (eyes_gene.id, vision_shape_gene.id)
     ]
 
     for edge in edges_list:
         gene_pool.add_edge(edge[0], edge[1])
     pass
+
 
 # TODO: Think about defining an action class, could be useful
 # TODO: Think about defining a gene class, could be useful

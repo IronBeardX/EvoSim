@@ -122,7 +122,14 @@ class DirectedGraph:
 
         self._nodes[node_id].data = data
 
-    def get_aveidible_nodes(self, )
+    def get_avaidable_nodes(self, already_selected: list[str]) -> list[str]:
+        '''
+        Returns nodes that are targeted by the nodes in the given list or aren't
+        targeted by any node 
+        '''
+        valid_ids = [id for id in self._nodes if id not in already_selected]
+        if len(already_selected) == 0:
+
 
 class ArtificialIntelligence():
     pass
