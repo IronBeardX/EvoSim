@@ -1,27 +1,58 @@
-from src.entity import *
 from src.utils import *
+from genetics import *
 
 
-class Organism(IntelligentEntity):
-    def __init__(self, gene_pool: DirectedGraph, dna_chain: list[tuple[str, int]], id: str, genetic_potential: int) -> None:
+class Entity:
+    '''
+    Basic class of world inhabitants, it encompasses everything that exists in the world excluding the terrain. Entities that don't interact with the world should inherit from this class.
+    '''
+
+    def __init__(self, physical: list = []) -> None:
+        '''
+        Here basic information about the entity is stored, such as its id, type, color, etc.
+        '''
+        self.physical_properties = physical
+        self._id = uuid4()
+
+    def get_property_value(self, property: str) -> any:
+        return self.physical_properties[property] if property in self.physical_properties else None
+
+    def get_entity_id(self) -> str:
+        return str(self._id)
+
+class Organism(Entity):
+    def __init__(self, gene_pool: DirectedGraph, dna_chain, genetic_potential: int) -> None:
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
         genetic potential is an integer that represents the maximum length of the dna chain.
         '''
+        super().__init__()
+        self.genetic_potential = genetic_potential
         self.gene_pool = gene_pool
-        initial_state = self.gen_state_from_dna(dna_chain)
-        super().__init__(initial_state["entity_state"], id)
-        self.dna_chain = initial_state["dna_chain"]
-        # TODO: How should this be implemented
-        self.perception_filter: list[str]
+        self.actions = []
+        self.perceptions = []
+        self.knowledge = {}
+        self.dna_chain = dna_chain
+        self.gen_state_from_dna(dna_chain)
 
-    def gen_state_from_dna(self, dna_chain: list[tuple[str, int]]) -> '''[ ]''':
+    def gen_state_from_dna(self, dna_chain):
         '''
         This method generates the initial state of the organism based on the given dna chain. The dna chain is a list of
         tuples that contains the id and the strength of the gene. The initial state is a dictionary that contains the initial
         values of the properties of the organism.
         '''
+        initial_state = []
+        for gene_id in dna_chain.keys():
+            gene = self.gene_pool.get_node_data(gene_id)
+            instantiated_gene = gene.instantiate_gene(dna_chain[gene_id])
+            if gene.type == "action":
+                self.actions.append(instantiated_gene)
+            elif gene.type == "perception":
+                self.perceptions.append(instantiated_gene)
+            elif gene.type == "physical":
+                self.physical_properties.append(instantiated_gene)
+        pass
 
     # TODO: what does this method returns? should reproduction be left for the simulation module ?
     def reproduce(self, other_dna, recombination_function) -> list[tuple[str, int]]:

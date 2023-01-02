@@ -92,6 +92,8 @@ def main():
     '''
 
     # [ ] Playing with genetics and entities execution flow
+
+    '''
     # Creating a genetic pool
     # init gene pool
     gene_pool = DirectedGraph()
@@ -224,6 +226,153 @@ def main():
     list2 = gene_pool.get_available_nodes([legs_gene.id])
     list3 = gene_pool.get_available_nodes([legs_gene.id, eyes_gene.id])
     pass
+
+    '''
+
+    gene_pool = DirectedGraph()
+
+    physical_genes_defs = {}
+    perception_genes_defs = {}
+    action_genes_defs = {}
+
+    # physical_genes
+    color_gene = PhysicalGene(
+        "color",
+        [select_from_options(
+            ("red", "blue", "green", "yellow", "black", "white"))],
+        lambda x: 1
+    )
+    physical_genes_defs[color_gene.id] = color_gene
+
+    size_gene = PhysicalGene(
+        "size",
+        [select_from_options((1, 2, 3, 4, 5))],
+        lambda x: 1
+    )
+    physical_genes_defs[size_gene.id] = size_gene
+
+    shape_gene = PhysicalGene(
+        "shape",
+        [select_from_options(("circle", "square", "triangle"))],
+        lambda x: 1
+    )
+    physical_genes_defs[shape_gene.id] = shape_gene
+
+    legs_gene = PhysicalGene(
+        "legs",
+        [],
+        lambda x: 1
+    )
+    physical_genes_defs[legs_gene.id] = legs_gene
+
+    eyes_gene = PhysicalGene(
+        "eyes",
+        [],
+        lambda x: 1
+    )
+    physical_genes_defs[eyes_gene.id] = eyes_gene
+
+    # perception_genes
+    vision_color_gene = PerceptionGene(
+        "vision_color",
+        "see color ",
+        [select_from_options((1, 2, 3, 4))],
+        lambda x: 1
+    )
+    perception_genes_defs[vision_color_gene.id] = vision_color_gene
+
+    vision_shape_gene = PerceptionGene(
+        "vision_shape",
+        "see shape ",
+        [select_from_options((1, 2, 3, 4))],
+        lambda x: 1
+    )
+    perception_genes_defs[vision_shape_gene.id] = vision_shape_gene
+
+    # action_genes
+    walk_gene = ActionGene(
+        "walk",
+        " walk ",
+        [select_from_options((1, 2, 3, 4))],
+        [],
+        lambda x: 1
+    )
+    action_genes_defs[walk_gene.id] = walk_gene
+
+    turn_gene = ActionGene(
+        "turn",
+        "turn ",
+        [],
+        [select_from_options(("N ", "S ", "E ", "W "))],
+        lambda x: 1
+    )
+    action_genes_defs[turn_gene.id] = turn_gene
+
+    # adding nodes to the pool
+    for gene_id in physical_genes_defs:
+        gene_pool.add_node(gene_id, physical_genes_defs[gene_id])
+
+    for gene_id in perception_genes_defs:
+        gene_pool.add_node(gene_id, perception_genes_defs[gene_id])
+
+    for gene_id in action_genes_defs:
+        gene_pool.add_node(gene_id, action_genes_defs[gene_id])
+
+    # adding edges to the pool
+    edges_list = [
+        (legs_gene.id, walk_gene.id),
+        (legs_gene.id, turn_gene.id),
+        (eyes_gene.id, vision_color_gene.id),
+        (eyes_gene.id, vision_shape_gene.id)
+    ]
+
+    for edge in edges_list:
+        gene_pool.add_edge(edge[0], edge[1])
+
+    # Creating organism genome
+    # Genomes are a dict with the gene id as key and the value a list
+    # with every parameter that a gene uses for instantiation
+    genome_green_not_shape = {
+        #physical
+        color_gene.id:[[2]],
+        size_gene.id:[[0]],
+        shape_gene.id:[[]],
+        legs_gene.id:[[]],
+        eyes_gene.id:[[]],
+        #perception
+        vision_color_gene.id:[[]],
+        #action
+        walk_gene.id:[[]],
+        turn_gene.id:[[]]
+    }
+    organism1 = Organism(gene_pool, genome_green_not_shape, 10)
+    
+    genome_not_color = {
+        #physical
+        color_gene.id:[[]],
+        size_gene.id:[[]],
+        shape_gene.id:[[]],
+        legs_gene.id:[[]],
+        eyes_gene.id:[[]],
+        #perception
+        vision_shape_gene.id:[[]],
+        #action
+        walk_gene.id:[[]],
+        turn_gene.id:[[]]
+    }
+    organism2 = Organism(gene_pool, genome_not_color, 10)
+    
+    genome_sea_cucumber = {
+        #physical
+        color_gene.id:[[]],
+        size_gene.id:[[]],
+        shape_gene.id:[[]],
+        eyes_gene.id:[[]],
+        #perception
+        vision_color_gene.id:[[]],
+        vision_shape_gene.id:[[]]
+    }
+    sea_cucumber = Organism(gene_pool, genome_sea_cucumber, 10)
 
 
 # TODO: Think about defining an action class, could be useful
