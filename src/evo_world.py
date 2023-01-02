@@ -1,9 +1,57 @@
 from typing import Callable
 from curses.ascii import isdigit
-from src.world import *
 import numpy as np
 
 DIRECTIONS = {"N": (-1, 0), "S": (1, 0), "E": (0, 1), "W": (0, -1)}
+
+
+class World:
+    '''
+    Basic class of the world, it contains information about the terrain and the entities that inhabit it. It's responsible
+    for updating its state according to the actions of entities and events  that occur in the world. 
+    '''
+    # What type should this be ?
+
+    def __init__(self, world_map: any, terrain_types: list[tuple[any, str]], map_type: str, finite: bool = True) -> None:
+        '''
+        Here basic information about the world is settled, such as the available terrain types, and the world map itself.
+        Information about basic laws of the world should also be settled with this method, such as if the world map is an 
+        array, a Cartesian plane, or if it is finite or infinite. Updating entities should be relegated to the simulation 
+        class.
+        '''
+        self.world_map = world_map
+        self.finite = finite
+        self.terrain_types = terrain_types
+        self.map_type = map_type
+        self.event_list = []
+        self.entities: dict[str, MapEntityInfo] = {}
+        '''
+        The entities dictionary contains information about the entities relevant to the world. The key is the entity id and
+        the value is a MapEntityInfo object that contains information about the entity.
+        '''
+
+
+class MapEntityInfo:
+    '''
+    This is an utility class for containerizing entities properties needed for world functions 
+    '''
+
+    def __init__(self, position: tuple, orientation: tuple, representation_priority: int, can_coexist: bool, positioning_rules, string_rep: str) -> None:
+        '''
+        This method initializes the entity properties.
+
+        @param position: The position of the entity in the world
+        @param orientation: The orientation of the entity in the world
+        @param representation_priority: The priority of the entity representation in the world
+        @param can_coexist: If the entity can coexist with other entities
+        @param positioning_rules: The positioning rules of the entity in the world. Describes, for example, in which terrains the entity
+        can be positioned.
+        '''
+        self.position = position
+        self.orientation = orientation
+        self.representation_priority = representation_priority
+        self.can_coexist = can_coexist
+        self.representation = string_rep
 
 
 class EvoWorld(World):

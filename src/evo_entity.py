@@ -1,5 +1,5 @@
-from src.utils import *
-from genetics import *
+from .utils import *
+from .genetics import *
 
 
 class Entity:
@@ -19,6 +19,7 @@ class Entity:
 
     def get_entity_id(self) -> str:
         return str(self._id)
+
 
 class Organism(Entity):
     def __init__(self, gene_pool: DirectedGraph, dna_chain, genetic_potential: int) -> None:
@@ -126,4 +127,4 @@ class TestOrganism(Organism):
         '''
         action = self.actions[self.action_pointer]
         self.action_pointer += 1
-        return action    
+        return action
