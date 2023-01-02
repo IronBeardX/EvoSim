@@ -3,8 +3,6 @@ from typing import Callable
 from curses.ascii import isdigit
 import numpy as np
 
-DIRECTIONS = {"N": (-1, 0), "S": (1, 0), "E": (0, 1), "W": (0, -1)}
-
 
 class World():
     '''
@@ -13,7 +11,7 @@ class World():
     '''
     # What type should this be ?
 
-    def __init__(self, world_map, terrain_types, finite=True):
+    def __init__(self, world_map, terrain_types, finite=False):
         '''
         Here basic information about the world is settled, such as the available terrain types, and the world map itself.
         Information about basic laws of the world should also be settled with this method, such as if the world map is an 
@@ -93,7 +91,7 @@ class EvoWorld(
             "see west": self.see_w
         }
 
-        super().__init__(world_map, terrain_types, "Array", finite)
+        super().__init__(world_map, terrain_types, finite)
 
     # [x]
     def execute_action(self, action):
@@ -124,7 +122,7 @@ class EvoWorld(
         return str(terrain_copy)
 
     # [ ]
-    def place_entity(self, id, position, representation, coexistence = False):
+    def place_entity(self, id, position, representation, coexistence=False):
         # TODO: check which parameters are needed
         entity_information = MapEntityInfo(
             position, coexistence, representation)
@@ -134,3 +132,9 @@ class EvoWorld(
     # [x]
     def remove_entity(self, entity_id):
         del self.entities[entity_id]
+
+    def get_random_position(self):
+        '''
+        This method returns a random position in the world.
+        '''
+        return (np.random.randint(0, self.world_map.shape[0]), np.random.randint(0, self.world_map.shape[1]))
