@@ -1,7 +1,7 @@
 import src.compiler.ply.yacc as yacc
 from src.compiler.lexer import tokens
-from src.compiler.util import parse_number
-from math import pow, sqrt
+from src.compiler.util import parse_number, nth_root
+from math import pow
 
 
 def get_parser(*args, **kwargs):
@@ -62,7 +62,7 @@ def get_parser(*args, **kwargs):
     
     def p_power_root(p):
         "power : atom '@' factor"
-        p[0] = sqrt(p[1]) if p[3] == 2 else pow(p[1], 1 / p[3])
+        p[0] = nth_root(p[1], p[3])
     
     def p_power_atom(p):
         "power : atom"
