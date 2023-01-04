@@ -8,6 +8,11 @@ def get_parser(*args, **kwargs):
     def p_program(p):
         "program : expr"
         p[0] = p[1]
+    
+    # epsilon production
+    def p_epsilon(p):
+        "epsilon :"
+        pass
 
     # expr productions
     def p_expr_sum(p):
