@@ -4,7 +4,7 @@ literals:
     + - * / % ( ) ^ @ < >
 
 reserved:
-    OR AND NOT
+    OR AND NOT TRUE FALSE
 
 tokens:
     INTDIV EQ NEQ GE LE NUMBER
@@ -31,6 +31,7 @@ comparison =>
     expr LE expr
     expr < expr
     expr > expr
+    expr
 
 expr =>
     expr + term
@@ -55,4 +56,6 @@ power =>
 
 atom =>
     NUMBER
+    TRUE
+    FALSE
     ( expr )

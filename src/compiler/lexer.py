@@ -4,9 +4,11 @@ import src.compiler.ply.lex as lex
 literals = '+-*/%()^@<>'
 
 reserved = {
-    'or' : 'OR',
-    'and': 'AND',
-    'not': 'NOT'
+    'or'   : 'OR',
+    'and'  : 'AND',
+    'not'  : 'NOT',
+    'TRUE' : 'TRUE',
+    'FALSE': 'FALSE'
 }
 
 tokens = (

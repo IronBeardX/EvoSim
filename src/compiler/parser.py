@@ -64,6 +64,10 @@ def get_parser(*args, **kwargs):
     def p_comparison_lt(p):
         "comparison : expr '<' expr"
         p[0] = p[1] < p[3]
+    
+    def p_comparison_expr(p):
+        "comparison : expr"
+        p[0] = p[1]
 
     # expr productions
     def p_expr_sum(p):
@@ -121,6 +125,14 @@ def get_parser(*args, **kwargs):
     def p_atom_number(p):
         "atom : NUMBER"
         p[0] = parse_number(p[1])
+    
+    def p_atom_false(p):
+        "atom : FALSE"
+        p[0] = False
+    
+    def p_atom_true(p):
+        "atom : TRUE"
+        p[0] = True
     
     def p_atom_group(p):
         "atom : '(' expr ')'"
