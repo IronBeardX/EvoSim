@@ -1,5 +1,4 @@
 import random
-from math import max
 
 
 class Behavior:
@@ -50,25 +49,28 @@ class RandomBehavior(Behavior):
                 case "attack":
                     attack = 0
                     body_part = None
-                    for damage_dealer in self.physical_properties.keys() if "attack" in damage_dealer else []:
-                        if attack < self.physical_properties[damage_dealer]:
-                            attack = self.physical_properties[damage_dealer]
-                            body_part = damage_dealer
+                    for damage_dealer in self.physical_properties.keys():
+                        if "attack" in damage_dealer:
+                            if attack < self.physical_properties[damage_dealer]:
+                                attack = self.physical_properties[damage_dealer]
+                                body_part = damage_dealer
                     self.physical_properties["hunger"] -= 5
                     action_time += self.physical_properties[body_part]
                     actions.append({"action": "attack", "value": attack})
                 case "defend":
                     defense = 0
                     body_part = None
-                    for damage_dealer in self.physical_properties.keys() if "defense" in damage_dealer else []:
-                        if defense < self.physical_properties[damage_dealer]:
-                            defense = self.physical_properties[damage_dealer]
-                            body_part = damage_dealer
+                    for defense_dealer in self.physical_properties.keys():
+                        if "defend" in defense_dealer:
+                            if defense < self.physical_properties[defense_dealer]:
+                                defense = self.physical_properties[defense_dealer]
+                                body_part = defense_dealer
                     self.physical_properties["hunger"] -= 5
                     action_time += self.physical_properties[body_part]
                     actions.append({"action": "defend", "value": defense})
                 case _:
                     pass
+                #TODO: Add swiming actions
         return actions
 
     def pass_time(self):

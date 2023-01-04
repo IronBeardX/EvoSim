@@ -79,7 +79,7 @@ class Arms(PhysicalGene):
             {"arms": self.value},
             {"arms_defense": self.value},
             {"arms_attack": self.value},
-            {"storage": []}
+            {"storage": []},
             {"defending": False}
         ]
 
@@ -90,7 +90,7 @@ class Horns(PhysicalGene):
                          "int", min_val, max_val, value, mutation_step)
 
     def get_property(self):
-        return [{"horns": self.value}]
+        return [{"horns_attack": self.value}]
 
 
 class Smell(PhysicalGene):
@@ -118,6 +118,15 @@ class Nose(PhysicalGene):
 
     def get_property(self):
         return [{"nose": self.value}]
+
+
+class Mouth(PhysicalGene):
+    def __init__(self, mutation_chance=0.5, min_val=0, max_val=4, value=2, mutation_step=1):
+        super().__init__("mouth", mutation_chance, "physical",
+                         "int", min_val, max_val, value, mutation_step)
+
+    def get_property(self):
+        return [{"mouth": self.value}]
 
 # [ ]Perception Genes
 # These genes gives the organism perception actions

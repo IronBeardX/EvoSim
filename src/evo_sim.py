@@ -37,6 +37,7 @@ class EvoSim:
             # Time comes for us all ...
             for entity_id in self.intelligent_entities:
                 entity = self.intelligent_entities[entity_id]
+                #FIXME: all entities change at the same time
                 entity.pass_time()
             for entity_id in self.entities:
                 entity = self.entities[entity_id]
@@ -48,20 +49,18 @@ class EvoSim:
                     return
 
             # Executing entities actions
-            for entity_id in self.entities:
-                entity = self.entities[entity_id]
+            for entity_id in self.intelligent_entities:
+                entity = self.intelligent_entities[entity_id]
 
                 # Executing perception actions:
                 perception_dict = {}
-                for action in entity.perception_actions:
+                for action in entity.perceptions:
                     perception_dict[action.id] = self.world.execute_action(
                         action)
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
-                world_actions, sim_actions = entity.act(perception_dict)
-                for action in world_actions:
-                    self.world.execute_action(action)
-                for action in sim_actions:
+                actions = entity.decide_action(perception_dict)
+                for action in actions:
                     self.execute_action(action)
 
     def execute_action(self, action):
@@ -76,8 +75,8 @@ class EvoSim:
     def instantiate_entity(self, entity_gen_position, world_position):
         entity = self.entities_gen[entity_gen_position]()
         if entity.is_intelligent:
-            self.intelligent_entities[entity.id] = entity
+            self.intelligent_entities[entity.get_entity_id()] = entity
         else:
             self.entities[entity.id] = entity
-        self.world.place_entity(entity.id, world_position,
+        self.world.place_entity(entity.get_entity_id(), world_position,
                                 entity.rep, entity.coexistence)
