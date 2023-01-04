@@ -3,11 +3,26 @@
 literals:
     + - * / % ( ) ^ @ < >
 
+reserved:
+    OR AND NOT
+
 tokens:
     INTDIV EQ NEQ GE LE NUMBER
 
 
 [parser]
+
+disjunction =>
+    conjunction OR conjunction
+    conjunction
+
+conjunction =>
+    negation AND negation
+    negation
+
+negation =>
+    NOT comparison
+    comparison
 
 comparison =>
     expr EQ expr

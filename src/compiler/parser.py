@@ -7,13 +7,38 @@ from math import pow
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : comparison"
+        "program : disjunction"
         p[0] = p[1]
     
     # epsilon production
     def p_epsilon(p):
         "epsilon :"
         pass
+
+    # boolean expr productions
+    def p_disjunction(p):
+        "disjunction : conjunction OR conjunction"
+        p[0] = p[1] or p[3]
+    
+    def p_disjunction_conjunction(p):
+        "disjunction : conjunction"
+        p[0] = p[1]
+    
+    def p_conjunction(p):
+        "conjunction : negation AND negation"
+        p[0] = p[1] and p[3]
+    
+    def p_conjunction_negation(p):
+        "conjunction : negation"
+        p[0] = p[1]
+    
+    def p_negation(p):
+        "negation : NOT comparison"
+        p[0] = not p[2]
+    
+    def p_negation_comparison(p):
+        "negation : comparison"
+        p[0] = p[1]
 
     # comparison expr productions
     def p_comparison_eq(p):
