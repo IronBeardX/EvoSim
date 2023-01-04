@@ -16,9 +16,19 @@ class PhysicalGene:
     def get_property(self):
         return (self.name, self.value)
 
+    def mutate(self):
+        new_val = self.value
+        if random.random() < self.mutation_chance:
+            value += random.randint(-self.mutation_step, self.mutation_step)
+            if value < self.min:
+                value = self.min
+            if value > self.max:
+                value = self.max
+        return __class__(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+
     @property
     def get_copy(self):
-        return self.__class__(self.name, self.mutation_chance, self.gen_type, self.val_type, self.min, self.max, self.value, self.mutation_step)
+        return self.__class__(self.mutation_chance, self.min, self.max, self.value, self.mutation_step)
 
 
 # [ ]Physical Genes
@@ -28,15 +38,8 @@ class Health(PhysicalGene):
         super().__init__("health", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Health(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"health": self.value}]
 
 
 class Hunger(PhysicalGene):
@@ -44,15 +47,8 @@ class Hunger(PhysicalGene):
         super().__init__("hunger", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Hunger(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"hunger": self.value}]
 
 
 class Legs(PhysicalGene):
@@ -60,15 +56,8 @@ class Legs(PhysicalGene):
         super().__init__("legs", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Legs(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"legs": self.value}]
 
 
 class Eye(PhysicalGene):
@@ -76,47 +65,32 @@ class Eye(PhysicalGene):
         super().__init__("eye", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Eye(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"eye": self.value}]
 
 
 class Arms(PhysicalGene):
-    def __init__(self, mutation_chance=0.5, min_val=1, max_val=5, value=2, mutation_step=1):
+    def __init__(self, mutation_chance=0.5, min_val=1, max_val=50, value=25, mutation_step=1):
         super().__init__("arms", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Arms(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [
+            {"arms": self.value},
+            {"arms_defense": self.value},
+            {"arms_attack": self.value},
+            {"storage": []}
+            {"defending": False}
+        ]
 
 
 class Horns(PhysicalGene):
-    def __init__(self, mutation_chance=0.5, min_val=1, max_val=50, value=2, mutation_step=1):
+    def __init__(self, mutation_chance=0.5, min_val=1, max_val=50, value=20, mutation_step=1):
         super().__init__("horns", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Horns(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"horns": self.value}]
 
 
 class Smell(PhysicalGene):
@@ -124,15 +98,8 @@ class Smell(PhysicalGene):
         super().__init__("body_smell", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Smell(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"smell": self.value}]
 
 
 class Fins(PhysicalGene):
@@ -140,15 +107,8 @@ class Fins(PhysicalGene):
         super().__init__("fins", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Fins(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"fins": self.value}]
 
 
 class Nose(PhysicalGene):
@@ -156,15 +116,8 @@ class Nose(PhysicalGene):
         super().__init__("nose", mutation_chance, "physical",
                          "int", min_val, max_val, value, mutation_step)
 
-    def mutate(self):
-        new_val = self.value
-        if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
-            if value < self.min:
-                value = self.min
-            if value > self.max:
-                value = self.max
-        return Nose(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
+    def get_property(self):
+        return [{"nose": self.value}]
 
 # [ ]Perception Genes
 # These genes gives the organism perception actions
@@ -172,12 +125,11 @@ class Nose(PhysicalGene):
 
 
 class PerceptionGene:
-    def __init__(self, name, perception_func, gen_type="perception"):
+    def __init__(self, name, gen_type="perception"):
         self.name = name
-        self.perception_func = perception_func
         self.gen_type = gen_type
 
-    def perceive(self):
+    def get_property(self):
         pass
 
 
@@ -185,24 +137,39 @@ class Smelling(PerceptionGene):
     def __init__(self):
         super().__init__("smelling")
 
-    def perceive(self):
-        pass
+    def get_property(self):
+        return [
+            "smelling"
+        ]
 
 
 class VisionLinear(PerceptionGene):
     def __init__(self):
-        super().__init__("vision", "PLACEHOLDER")  # TODO
+        super().__init__("vision")
 
     def perceive(self):
         pass
+
+    def get_property(self):
+        return [
+            "vision north",
+            "vision south",
+            "vision east",
+            "vision west"
+        ]
 
 
 class VisionRadial(PerceptionGene):
     def __init__(self):
-        super().__init__("vision", "PLACEHOLDER")  # TODO
+        super().__init__("vision")
 
     def perceive(self):
         pass
+
+    def get_property(self):
+        return [
+            "vision radial"
+        ]
 
 # [ ]Action Genes
 # These genes gives the organism action abilities
@@ -216,20 +183,20 @@ class ActionGene:
     def gen_act(self):
         pass
 
-    def cost_func(self):
+    def get_property(self):
         pass
 
 
 class Move(ActionGene):
     def __init__(self):
-        super().__init__("move")  # TODO
+        super().__init__("move")
 
-    def gen_act(self, value):
+    def get_property(self):
         return [
-            {"action": "move north"},
-            {"action": "move south"},
-            {"action": "move east"},
-            {"action": "move west"}
+            "move north",
+            "move south",
+            "move east",
+            "move west"
         ]
 
 
@@ -237,9 +204,9 @@ class Eat(ActionGene):
     def __init__(self):
         super().__init__("eat")
 
-    def gen_act(self):
+    def get_property(self):
         return [
-            {"action": "eat"}
+            "eat"
         ]
 
 
@@ -247,9 +214,9 @@ class Reproduce(ActionGene):
     def __init__(self):
         super().__init__("reproduce")
 
-    def gen_act(self):
+    def get_property(self):
         return [
-            {"action": "reproduce"}
+            "reproduce"
         ]
 
 
@@ -257,9 +224,9 @@ class Duplicate(ActionGene):
     def __init__(self):
         super().__init__("duplicate")
 
-    def gen_act(self):
+    def get_property(self):
         return [
-            {"name": "duplicate"}
+            "duplicate"
         ]
 
 
@@ -267,9 +234,9 @@ class Attack(ActionGene):
     def __init__(self):
         super().__init__("attack")
 
-    def gen_act(self):
+    def get_property(self):
         return [
-            {"action": "attack"}
+            "attack"
         ]
 
 
@@ -277,9 +244,9 @@ class Defend(ActionGene):
     def __init__(self):
         super().__init__("defend")
 
-    def gen_act(self):
+    def get_property(self):
         return [
-            {"action": "defend"}
+            "defend"
         ]
 
 
@@ -287,9 +254,9 @@ class Pick(ActionGene):
     def __init__(self):
         super().__init__("pick")
 
-    def gen_act(self):
+    def get_property(self):
         return [
-            {"action": "pick"}
+            "pick"
         ]
 
 
@@ -297,12 +264,12 @@ class Swimming(ActionGene):
     def __init__(self):
         super().__init__("swimming")
 
-    def gen_act(self):
+    def get_property(self):
         return [
-            {"action": "swim north"},
-            {"action": "swim south"},
-            {"action": "swim east"},
-            {"action": "swim west"}
+            "swim north",
+            "swim south",
+            "swim east",
+            "swim west"
         ]
 
 
