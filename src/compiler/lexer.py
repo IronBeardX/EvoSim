@@ -1,7 +1,7 @@
 import src.compiler.ply.lex as lex
 
 
-literals = '+-*/%()'
+literals = '+-*/%()^@'
 
 tokens = ('INTDIV', 'NUMBER', 'newline')
 

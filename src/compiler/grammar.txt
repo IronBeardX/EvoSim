@@ -1,7 +1,7 @@
 [lexer]
 
 literals:
-    + - * / % ( )
+    + - * / % ( ) ^ @
 
 tokens:
     INTDIV NUMBER
@@ -22,5 +22,14 @@ term =>
     factor
 
 factor =>
+    - factor
+    power
+
+power =>
+    atom ^ factor
+    atom @ factor
+    atom
+
+atom =>
     NUMBER
     ( expr )

@@ -1,6 +1,7 @@
 import src.compiler.ply.yacc as yacc
 from src.compiler.lexer import tokens
 from src.compiler.util import parse_number
+from math import pow, sqrt
 
 
 def get_parser(*args, **kwargs):
@@ -47,12 +48,32 @@ def get_parser(*args, **kwargs):
         "term : factor"
         p[0] = p[1]
     
-    def p_factor_number(p):
-        "factor : NUMBER"
+    def p_factor_negative(p):
+        "factor : '-' factor"
+        p[0] = -1 * p[2]
+    
+    def p_factor_power(p):
+        "factor : power"
+        p[0] = p[1]
+    
+    def p_power_power(p):
+        "power : atom '^' factor"
+        p[0] = pow(p[1], p[3])
+    
+    def p_power_root(p):
+        "power : atom '@' factor"
+        p[0] = sqrt(p[1]) if p[3] == 2 else pow(p[1], 1 / p[3])
+    
+    def p_power_atom(p):
+        "power : atom"
+        p[0] = p[1]
+    
+    def p_atom_number(p):
+        "atom : NUMBER"
         p[0] = parse_number(p[1])
     
-    def p_factor_group(p):
-        "factor : '(' expr ')'"
+    def p_atom_group(p):
+        "atom : '(' expr ')'"
         p[0] = p[2]
 
     return yacc.yacc(*args, **kwargs)
