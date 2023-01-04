@@ -1,13 +1,25 @@
 import src.compiler.ply.lex as lex
 
 
-literals = '+-*/%()^@'
+literals = '+-*/%()^@<>'
 
-tokens = ('INTDIV', 'NUMBER', 'newline')
+tokens = (
+    'INTDIV',
+    'EQ',
+    'NEQ',
+    'GE',
+    'LE',
+    'NUMBER',
+    'newline'
+)
 
 def get_lexer(*args, **kwargs):
     # token rules
     t_INTDIV = r'//'
+    t_EQ = r'=='
+    t_NEQ = r'!='
+    t_GE = r'>='
+    t_LE = r'<='
     t_NUMBER = r'-?(0|[1-9][0-9]*)(\.[0-9]*)?'
 
     # match newline chars and record line count

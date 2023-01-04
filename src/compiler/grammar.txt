@@ -1,13 +1,21 @@
 [lexer]
 
 literals:
-    + - * / % ( ) ^ @
+    + - * / % ( ) ^ @ < >
 
 tokens:
-    INTDIV NUMBER
+    INTDIV EQ NEQ GE LE NUMBER
 
 
 [parser]
+
+comparison =>
+    expr EQ expr
+    expr NEQ expr
+    expr GE expr
+    expr LE expr
+    expr < expr
+    expr > expr
 
 expr =>
     expr + term

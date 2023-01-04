@@ -7,13 +7,38 @@ from math import pow
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : expr"
+        "program : comparison"
         p[0] = p[1]
     
     # epsilon production
     def p_epsilon(p):
         "epsilon :"
         pass
+
+    # comparison expr productions
+    def p_comparison_eq(p):
+        "comparison : expr EQ expr"
+        p[0] = p[1] == p[3]
+    
+    def p_comparison_neq(p):
+        "comparison : expr NEQ expr"
+        p[0] = p[1] != p[3]
+    
+    def p_comparison_ge(p):
+        "comparison : expr GE expr"
+        p[0] = p[1] >= p[3]
+    
+    def p_comparison_le(p):
+        "comparison : expr LE expr"
+        p[0] = p[1] <= p[3]
+    
+    def p_comparison_gt(p):
+        "comparison : expr '>' expr"
+        p[0] = p[1] > p[3]
+    
+    def p_comparison_lt(p):
+        "comparison : expr '<' expr"
+        p[0] = p[1] < p[3]
 
     # expr productions
     def p_expr_sum(p):
