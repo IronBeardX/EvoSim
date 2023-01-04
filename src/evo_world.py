@@ -34,6 +34,21 @@ class World():
         '''
         return self.entities[entity_id]
 
+    def get_entity_by_position(self, position):
+        '''
+        This method returns the entity that occupies the given position.
+        '''
+        entities = []
+        for i in self.entities.keys():
+            if self.entities[i].position == position:
+                entities.append(i)
+        return entities
+
+    def get_terrain_type(self, position):
+        '''
+        This method returns the terrain type of the given position.
+        '''
+        return self.terrain_types[self.world_map[position[0]][position[1]]]
 
 class MapEntityInfo:
     '''
@@ -61,12 +76,7 @@ class EvoWorld(
     MoveNorth,
     MoveSouth,
     MoveEast,
-    MoveWest,
-
-    SeeNorth,
-    SeeSouth,
-    SeeEast,
-    SeeWest
+    MoveWest
 ):
     def __init__(self, height, width, terrain_types, terrain_dist, finite):
 
@@ -84,11 +94,7 @@ class EvoWorld(
             "move north": self.move_n,
             "move south": self.move_s,
             "move east": self.move_e,
-            "move west": self.move_w,
-            "see north": self.see_n,
-            "see south": self.see_s,
-            "see east": self.see_e,
-            "see west": self.see_w
+            "move west": self.move_w
         }
 
         super().__init__(world_map, terrain_types, finite)
@@ -99,8 +105,10 @@ class EvoWorld(
         This method executes the given action in the world.
         '''
         command = action["command"]
-        if command not in self.world_actions:
-            raise Exception("Invalid command")
+        aw = list(self.world_actions.keys())
+        if command not in list(self.world_actions.keys()):
+            return
+            # raise Exception("Invalid command")
         if "entity" in action:
             entity_id = action["entity"]
             if entity_id not in self.entities:

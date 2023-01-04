@@ -8,12 +8,12 @@ class Entity:
     Basic class of world inhabitants, it encompasses everything that exists in the world excluding the terrain. Entities that don't interact with the world should inherit from this class.
     '''
 
-    def __init__(self, physical={}, intelligence = False, coexistence = True, representation = "E"):
+    def __init__(self, intelligence = False, coexistence = True, representation = "E"):
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
         self._id = uuid4()
-        self.physical_properties = physical
+        self.physical_properties = {}
         self.is_intelligent = intelligence
         self.coexistence = coexistence
         self.rep = representation
@@ -44,8 +44,8 @@ class Organism(
     def _parse_dna(self):
         for gene in self.dna_chain:
             if gene.gen_type == "physical":
-                for property in gene.get_property():
-                    self.physical_properties.update(property)
+                for prop in gene.get_property():
+                    self.physical_properties.update(prop)
             elif gene.gen_type == "perception":
                 self.perceptions.extend(gene.get_property())
             elif gene.gen_type == "action":

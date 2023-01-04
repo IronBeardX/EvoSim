@@ -66,4 +66,4 @@ def entity3_gen():
     
 
 if __name__ == "__main__":
-    main()
+    print(main())

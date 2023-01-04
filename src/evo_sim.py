@@ -61,10 +61,11 @@ class EvoSim:
                 # which returns world and simulation actions to be executed
                 actions = entity.decide_action(perception_dict)
                 for action in actions:
+                    action["entity"] = entity_id
                     self.execute_action(action)
 
     def execute_action(self, action):
-        pass
+        self.world.execute_action(action)
 
     def init_world(self, height, width, terrain_types, terrain_dist, finite):
         self.world_gen = lambda: EvoWorld(height, width, terrain_types, terrain_dist, finite)

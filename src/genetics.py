@@ -152,22 +152,6 @@ class Smelling(PerceptionGene):
         ]
 
 
-class VisionLinear(PerceptionGene):
-    def __init__(self):
-        super().__init__("vision")
-
-    def perceive(self):
-        pass
-
-    def get_property(self):
-        return [
-            "vision north",
-            "vision south",
-            "vision east",
-            "vision west"
-        ]
-
-
 class VisionRadial(PerceptionGene):
     def __init__(self):
         super().__init__("vision")
@@ -202,10 +186,10 @@ class Move(ActionGene):
 
     def get_property(self):
         return [
-            "move north",
-            "move south",
-            "move east",
-            "move west"
+            {"name": "move north", "cost": 10},
+            {"name": "move south", "cost": 10},
+            {"name": "move east", "cost": 10},
+            {"name": "move west", "cost": 10}
         ]
 
 
@@ -215,7 +199,7 @@ class Eat(ActionGene):
 
     def get_property(self):
         return [
-            "eat"
+            {"name": "eat", "cost": 10}
         ]
 
 
@@ -225,7 +209,7 @@ class Reproduce(ActionGene):
 
     def get_property(self):
         return [
-            "reproduce"
+            {"name": "reproduce", "cost": 10}
         ]
 
 
@@ -235,7 +219,7 @@ class Duplicate(ActionGene):
 
     def get_property(self):
         return [
-            "duplicate"
+            {"name": "duplicate", "cost": 10}
         ]
 
 
@@ -245,7 +229,7 @@ class Attack(ActionGene):
 
     def get_property(self):
         return [
-            "attack"
+            {"name": "attack", "cost": 10}
         ]
 
 
@@ -255,7 +239,7 @@ class Defend(ActionGene):
 
     def get_property(self):
         return [
-            "defend"
+            {"name": "defend", "cost": 10}
         ]
 
 
@@ -265,7 +249,7 @@ class Pick(ActionGene):
 
     def get_property(self):
         return [
-            "pick"
+            {"name": "pick", "cost": 10}
         ]
 
 
@@ -275,10 +259,10 @@ class Swimming(ActionGene):
 
     def get_property(self):
         return [
-            "swim north",
-            "swim south",
-            "swim east",
-            "swim west"
+            {"name": "swim north", "cost": 10},
+            {"name": "swim south", "cost": 10},
+            {"name": "swim east", "cost": 10},
+            {"name": "swim west", "cost": 10}
         ]
 
 

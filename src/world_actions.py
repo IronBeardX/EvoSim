@@ -2,147 +2,247 @@ class MoveNorth:
     def move_n(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
+        north_pos = (entity_pos[0] - 1, entity_pos[1])
 
-        if entity_pos[0] == 0:
-            if not self.finite:
-                self.entities[entity_id] = (
-                    self.world_map.shape[0], entity_pos[1])
-        else:
-            self.entities[entity_id] = (entity_pos[0] - 1, entity_pos[1])
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) == "water":
+            # TODO: Raise exception for water tile
+            return False
 
+
+        # check if the entity is in a finite world
+        if north_pos[0] < 0:
+            if self.finite:
+                north_pos = (self.world_map.shape[0]-1, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        north_entities = self.get_entity_by_position(north_pos)
+        north_entities = [self.entities[x].coexist for x in north_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in north_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = north_pos
+        return True
 
 class MoveSouth:
     def move_s(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
+        south_pos = (entity_pos[0] + 1, entity_pos[1])
 
-        if entity_pos[0] == self.world_map.shape[0]:
-            if not self.finite:
-                self.entities[entity_id] = (0, entity_pos[1])
-        else:
-            self.entities[entity_id] = (entity_pos[0] + 1, entity_pos[1])
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) == "water":
+            # TODO: Raise exception for water tile
+            return False
 
 
+        # check if the entity is in a finite world
+        if south_pos[0] < 0:
+            if self.finite:
+                south_pos = (0, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        south_entities = self.get_entity_by_position(south_pos)
+        south_entities = [self.entities[x].coexist for x in south_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in south_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = south_pos
+        return True
 class MoveEast:
     def move_e(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
+        east_pos = (entity_pos[0] + 1, entity_pos[1])
 
-        if entity_pos[1] == self.world_map.shape[1]:
-            if not self.finite:
-                self.entities[entity_id] = (entity_pos[0], 0)
-        else:
-            self.entities[entity_id] = (entity_pos[0], entity_pos[1] + 1)
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) == "water":
+            # TODO: Raise exception for water tile
+            return False
 
 
+        # check if the entity is in a finite world
+        if east_pos[0] < 0:
+            if self.finite:
+                east_pos = (0, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        east_entities = self.get_entity_by_position(east_pos)
+        east_entities = [self.entities[x].coexist for x in east_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in east_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = east_pos
+        return True
 class MoveWest:
     def move_w(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
+        west_pos = (entity_pos[0] + 1, entity_pos[1])
 
-        if entity_pos[1] == 0:
-            if not self.finite:
-                self.entities[entity_id] = (
-                    entity_pos[0], self.world_map.shape[1])
-        else:
-            self.entities[entity_id] = (entity_pos[0], entity_pos[1] - 1)
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) == "water":
+            # TODO: Raise exception for water tile
+            return False
+
+
+        # check if the entity is in a finite world
+        if west_pos[0] < 0:
+            if self.finite:
+                west_pos = (0, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        west_entities = self.get_entity_by_position(west_pos)
+        west_entities = [self.entities[x].coexist for x in west_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in west_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = west_pos
+        return True
+class SwimNorth:
+    def swim_n(self, entity_id):
+        # get entity position from its id
+        entity_pos = self.entities[entity_id].position
+        north_pos = (entity_pos[0] - 1, entity_pos[1])
+
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) != "water":
+            # TODO: Raise exception for water tile
+            return False
+
+
+        # check if the entity is in a finite world
+        if north_pos[0] < 0:
+            if self.finite:
+                north_pos = (self.world_map.shape[0]-1, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        north_entities = self.get_entity_by_position(north_pos)
+        north_entities = [self.entities[x].coexist for x in north_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in north_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = north_pos
+        return True
+
+class SwimSouth:
+    def swim_s(self, entity_id):
+        # get entity position from its id
+        entity_pos = self.entities[entity_id].position
+        south_pos = (entity_pos[0] + 1, entity_pos[1])
+
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) != "water":
+            # TODO: Raise exception for water tile
+            return False
+
+
+        # check if the entity is in a finite world
+        if south_pos[0] < 0:
+            if self.finite:
+                south_pos = (0, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        south_entities = self.get_entity_by_position(south_pos)
+        south_entities = [self.entities[x].coexist for x in south_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in south_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = south_pos
+        return True
+
+
+
+class SwimEast:
+    def swim_e(self, entity_id):
+        # get entity position from its id
+        entity_pos = self.entities[entity_id].position
+        east_pos = (entity_pos[0] + 1, entity_pos[1])
+
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) != "water":
+            # TODO: Raise exception for water tile
+            return False
+
+
+        # check if the entity is in a finite world
+        if east_pos[0] < 0:
+            if self.finite:
+                east_pos = (0, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        east_entities = self.get_entity_by_position(east_pos)
+        east_entities = [self.entities[x].coexist for x in east_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in east_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = east_pos
+        return True
+        
+    
+
+class SwimWest:
+    def swim_w(self, entity_id):
+        # get entity position from its id
+        entity_pos = self.entities[entity_id].position
+        west_pos = (entity_pos[0] + 1, entity_pos[1])
+
+        # check current position is terrain type water
+        if self.get_terrain_type(entity_pos) != "water":
+            # TODO: Raise exception for water tile
+            return False
+
+
+        # check if the entity is in a finite world
+        if west_pos[0] < 0:
+            if self.finite:
+                west_pos = (0, entity_pos[1])
+            else:
+                # TODO: Raise exception for border tile 
+                return False
+        
+        # Check if the entity can coexist with another entities
+        west_entities = self.get_entity_by_position(west_pos)
+        west_entities = [self.entities[x].coexist for x in west_entities] 
+        if self.entities[entity_id].coexist == False and any ([not x for x in west_entities]):
+            # TODO: Raise exception for entity collision
+            return False
+
+        self.entities[entity_id].position = west_pos
+        return True
 
 
 # TODO: Finite worlds exists
-class SeeNorth:
-    def see_n(self, entity_id):
-        return lambda max_steps: self.__see_n(entity_id, max_steps)
-
-    def __see_n(self, entity_id, max_steps):
-        # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        next_pos = (entity_pos[0] - 1, entity_pos[1]) if entity_pos[0] > 0 else (
-            self.world_map.shape[0], entity_pos[1])
-        return self.see(entity_pos, next_pos, max_steps)
-
-    def see(self, first_pos, current_pos, max_steps, current_step=1):
-        # check if current_pos is in the edge of the world
-        for entity in self.entities:
-            if self.entities[entity].position == current_pos:
-                return entity
-        if current_step == max_steps:
-            return None
-        next_pos = (current_pos[0] - 1, current_pos[1]) if current_pos[0] > 0 else (
-            self.world_map.shape[0], current_pos[1])
-        return self.see(first_pos, next_pos, max_steps, current_step + 1)
-
-
-class SeeSouth:
-    def see_s(self, entity_id):
-        return lambda max_steps: self.__see_s(entity_id, max_steps)
-
-    def __see_s(self, entity_id, max_steps):
-        # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        next_pos = (entity_pos[0] + 1, entity_pos[1]
-                    ) if entity_pos[0] < self.world_map.shape[0] else (0, entity_pos[1])
-        return self.see(entity_pos, next_pos, max_steps)
-
-    def see(self, first_pos, current_pos, max_steps, current_step=1):
-        # check if current_pos is in the edge of the world
-        for entity in self.entities:
-            if self.entities[entity].position == current_pos:
-                return entity
-        if current_step == max_steps:
-            return None
-        next_pos = (current_pos[0] + 1, current_pos[1]
-                    ) if current_pos[0] < self.world_map.shape[0] else (0, current_pos[1])
-        return self.see(first_pos, next_pos, max_steps, current_step + 1)
-
-
-class SeeEast:
-    def see_e(self, entity_id):
-        return lambda max_steps: self.__see_e(entity_id, max_steps)
-
-    def __see_e(self, entity_id, max_steps):
-        # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        next_pos = (entity_pos[0], entity_pos[1] +
-                    1) if entity_pos[1] < self.world_map.shape[1] else (entity_pos[0], 0)
-        return self.see(entity_pos, next_pos, max_steps)
-
-    def see(self, first_pos, current_pos, max_steps, current_step=1):
-        # check if current_pos is in the edge of the world
-        for entity in self.entities:
-            if self.entities[entity].position == current_pos:
-                return entity
-        if current_step == max_steps:
-            return None
-        next_pos = (current_pos[0], current_pos[1] +
-                    1) if current_pos[1] < self.world_map.shape[1] else (current_pos[0], 0)
-        return self.see(first_pos, next_pos, max_steps, current_step + 1)
-
-
-class SeeWest:
-    def see_w(self, entity_id):
-        return lambda max_steps: self.__see_w(entity_id, max_steps)
-
-    def __see_w(self, entity_id, max_steps):
-        # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        next_pos = (entity_pos[0], entity_pos[1] - 1) if entity_pos[1] > 0 else (
-            entity_pos[0], self.world_map.shape[1])
-        return self.see(entity_pos, next_pos, max_steps)
-
-    def see(self, first_pos, current_pos, max_steps, current_step=1):
-        # check if current_pos is in the edge of the world
-        for entity in self.entities:
-            if self.entities[entity].position == current_pos:
-                return entity
-        if current_step == max_steps:
-            return None
-        next_pos = (current_pos[0], current_pos[1] - 1) if current_pos[1] > 0 else (
-            current_pos[0], self.world_map.shape[1])
-        return self.see(first_pos, next_pos, max_steps, current_step + 1)
 
 # TODO: Check if copilot hit the bullseye
-
-
 class SeeRadius:
     def see_r(self, entity_id):
         return lambda radius: self.__see_r(entity_id, radius)
@@ -154,7 +254,7 @@ class SeeRadius:
         for entity in self.entities:
             if entity != entity_id:
                 if self.entities[entity].position in self.__get_positions_in_radius(entity_position, radius):
-                    entities_in_radius.append(entity)
+                    entities_in_radius.append((entity, self.entities[entity].position))
 
         return entities_in_radius
 
