@@ -42,14 +42,13 @@ class Smelling:
         entities = self.world.see_r(entity_id, radius)
         for entity, position in entities:
             if "smell" in self.entities[entity].physical_properties:
-                #entity id, posicion, prop
+                # entity id, posicion, prop
                 #
                 #
                 #
                 perception.append(
-                    
-                )
 
+                )
 
 
 class Seeing:

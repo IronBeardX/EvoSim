@@ -1,4 +1,4 @@
-from .world_actions import *
+from .actions_world import *
 from typing import Callable
 from curses.ascii import isdigit
 import numpy as np
@@ -9,7 +9,6 @@ class World():
     Basic class of the world, it contains information about the terrain and the entities that inhabit it. It's responsible
     for updating its state according to the actions of entities and events  that occur in the world. 
     '''
-    # What type should this be ?
 
     def __init__(self, world_map, terrain_types, finite=False):
         '''
@@ -48,7 +47,8 @@ class World():
         '''
         This method returns the terrain type of the given position.
         '''
-        return self.terrain_types[self.world_map[position[0]][position[1]]]
+        return self.terrain_types[self.world_map[position[0], position[1]]]
+
 
 class MapEntityInfo:
     '''
@@ -76,7 +76,12 @@ class EvoWorld(
     MoveNorth,
     MoveSouth,
     MoveEast,
-    MoveWest
+    MoveWest,
+    SwimNorth,
+    SwimSouth,
+    SwimEast,
+    SwimWest,
+    SeeRadius
 ):
     def __init__(self, height, width, terrain_types, terrain_dist, finite):
 
@@ -87,14 +92,19 @@ class EvoWorld(
                 if (i, j) in terrain_dist:
                     world_map[i, j] = terrain_dist[(i, j)]
                 else:
-                    world_map[i, j] = terrain_types[0][0]
+                    world_map[i, j] = terrain_types["default"]
 
         # Initialize world actions
         self.world_actions = {
             "move north": self.move_n,
             "move south": self.move_s,
             "move east": self.move_e,
-            "move west": self.move_w
+            "move west": self.move_w,
+            "swim north": self.swim_n,
+            "swim south": self.swim_s,
+            "swim east": self.swim_e,
+            "swim west": self.swim_w,
+            "see radius": self.see_r
         }
 
         super().__init__(world_map, terrain_types, finite)
@@ -105,7 +115,6 @@ class EvoWorld(
         This method executes the given action in the world.
         '''
         command = action["command"]
-        aw = list(self.world_actions.keys())
         if command not in list(self.world_actions.keys()):
             return
             # raise Exception("Invalid command")
@@ -122,7 +131,6 @@ class EvoWorld(
     # [ ]
     def __str__(self) -> str:
         terrain_copy = self.world_map.copy()
-        # TODO: If two entities coexists in the same cell only the one with higher priority will be shown
         for entity in self.entities.keys():
             entity_position = self.entities[entity].position
             terrain_copy[entity_position[0], entity_position[1]

@@ -27,17 +27,17 @@ class EvoSim:
             self.world = self.world_gen()
             for entity_gen_position, world_position in gen_world_pos:
                 self.instantiate_entity(entity_gen_position, world_position)
+
             self.run_episode()
             self.entities = {}
             self.intelligent_entities = {}
 
-    # Implement statistics
+    #TODO: Implement statistics
     def run_episode(self):
         for round in range(self.max_rounds):
             # Time comes for us all ...
             for entity_id in self.intelligent_entities:
                 entity = self.intelligent_entities[entity_id]
-                #FIXME: all entities change at the same time
                 entity.pass_time()
             for entity_id in self.entities:
                 entity = self.entities[entity_id]
@@ -63,12 +63,16 @@ class EvoSim:
                 for action in actions:
                     action["entity"] = entity_id
                     self.execute_action(action)
+                    print(action["command"])
+                    print(self.world)
+                    print("\n")
 
     def execute_action(self, action):
         self.world.execute_action(action)
 
     def init_world(self, height, width, terrain_types, terrain_dist, finite):
-        self.world_gen = lambda: EvoWorld(height, width, terrain_types, terrain_dist, finite)
+        self.world_gen = lambda: EvoWorld(
+            height, width, terrain_types, terrain_dist, finite)
 
     def add_entity_gen(self, entity_instance_gen):
         self.entities_gen.append(entity_instance_gen)

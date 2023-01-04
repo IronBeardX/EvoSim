@@ -17,7 +17,6 @@ class DirectedGraph:
 
             '''
             self.id = id
-            # TODO: What type should this be?
             self.data = data
 
     def __init__(self) -> None:
@@ -35,7 +34,6 @@ class DirectedGraph:
 
         return self._edges[node_id]
 
-    # TODO: Think if this is what i want:
     def get_node(self, node_id: str) -> Node:
         '''
         Returns the node with the given id. If the node does not exist, it returns None.
@@ -157,6 +155,3 @@ def select_from_options(options: tuple) -> Callable:
     Returns selection value from the options tuple or a random value from it
     '''
     return lambda x = -1: random.choice(options) if x == -1 else options[x]
-
-
-# TODO: More functions will probably be added to this class as the project progresses.
