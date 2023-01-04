@@ -57,7 +57,5 @@ def main():
     return
 
 
-# TODO: Think about defining an action class, could be useful
-# TODO: Think about defining a gene class, could be useful
 if __name__ == "__main__":
     main()

@@ -58,7 +58,7 @@ class RandomBehavior(Behavior):
                     action_time += self.physical_properties[body_part]
                     actions.append({"command": "attack", "value": attack})
                 case "defend":
-                    #TODO: Finish this
+                    # TODO: Finish this
                     defense = 0
                     body_part = None
                     for defense_dealer in self.physical_properties.keys():
@@ -90,7 +90,6 @@ class RandomBehavior(Behavior):
                     actions.append({"command": "swim west"})
                 case _:
                     pass
-                #TODO: Add swimming actions
         return actions
 
     def get_prop_by_name(self, name):
@@ -102,15 +101,15 @@ class RandomBehavior(Behavior):
         self.physical_properties["health"] -= 1
         self.physical_properties["hunger"] -= 1
         if self.physical_properties["health"] <= 0:
-             return False
+            return False
         if self.physical_properties["hunger"] <= 0:
             return False
         return True
-        
 
     def receive_influences(self, influences_list):
         for influence in influences_list:
             match influence["name"]:
                 case "attack":
                     if "defending" in self.physical_properties.keys():
-                        self.physical_properties["health"] -= influence["value"] - self.physical_properties["defending"]
+                        self.physical_properties["health"] -= influence["value"] - \
+                            self.physical_properties["defending"]
