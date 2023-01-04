@@ -1,0 +1,26 @@
+[lexer]
+
+literals:
+    + - * / % ( )
+
+tokens:
+    INTDIV NUMBER
+
+
+[parser]
+
+expr =>
+    expr + term
+    expr - term
+    term
+
+term =>
+    term * factor
+    term / factor
+    term % factor
+    term INTDIV factor
+    factor
+
+factor =>
+    NUMBER
+    ( expr )
