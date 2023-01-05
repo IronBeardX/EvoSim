@@ -247,3 +247,43 @@ class SeeRadius:
                         j = 0
                     positions.append((i, j))
         return positions
+
+
+class TerrainRadius:
+    def terrain_r(self, entity_id, radius):
+        entity_position = self.entities[entity_id].position
+        positions_in_radius = self.__get_positions_in_radius(entity_position, radius)
+        terrain_in_radius = {}
+        for pos in positions_in_radius:
+            rep = self.world_map[pos]
+            terrain_in_radius[pos] = self.terrain_types[rep]
+        
+        # terrain_in_radius = [self.world_map[pos] for pos in terrain_in_radius]
+        #  # self.world_map["position"]
+        # terrain_in_radius = [self.terrain_types[rep] for rep in terrain_in_radius]
+        # # self.terrain_types["rep"]    
+        return terrain_in_radius
+
+    def __get_positions_in_radius(self, entity_position, radius):
+        positions = []
+        for i in range(entity_position[0] - radius, entity_position[0] + radius + 1):
+            for j in range(entity_position[1] - radius, entity_position[1] + radius + 1):
+                if i >= 0 and j >= 0 and i < self.world_map.shape[0] and j < self.world_map.shape[1]:
+                    positions.append((i, j))
+                if not self.finite:
+                    if i < 0:
+                        i = self.world_map.shape[0] - 1
+                    if j < 0:
+                        j = self.world_map.shape[1] - 1
+                    if i >= self.world_map.shape[0]:
+                        i = 0
+                    if j >= self.world_map.shape[1]:
+                        j = 0
+                    positions.append((i, j))
+        return positions
+
+class ManhatanDistance:
+    def distance(self, entity_id, other_entity_id):
+        entity_position = self.entities[entity_id].position
+        other_entity_position = self.entities[other_entity_id].position
+        return abs(entity_position[0] - other_entity_position[0]) + abs(entity_position[1] - other_entity_position[1])

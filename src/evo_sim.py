@@ -13,11 +13,12 @@ class EvoSim:
                  episodes_total=10,
                  max_rounds_per_episode=1000,
                  stop_condition=None,
-                 available_commands=None
+                 available_commands={}
                  ):
         self.init_world(height, width, terrain_types, terrain_dist, finite)
         self.entities_gen = []
         self.entities = {}
+        self.banished_entities = {}
         self.intelligent_entities = {}
         self.dead_entities = {}
         self.episodes_total = episodes_total
@@ -25,8 +26,16 @@ class EvoSim:
         self.stop_condition = stop_condition
         # TODO: this should be imported
         default_commands = {"floor": self.floor,
-                            "smell": self.smell, "see": self.see}
-        self.available_commands = default_commands if not available_commands else available_commands
+                            "smell": self.smell,
+                            "see": self.see,
+                            "pick": self.pick,
+                            "attack": self.attack,
+                            "eat": self.eat,
+                            "reproduce": self.reproduce,
+                            "duplicate": self.duplicate
+                            }
+        self.available_commands = default_commands if not available_commands else default_commands.update(
+            available_commands)
 
     def run(self, gen_world_pos):
         for episode in range(self.episodes_total):
@@ -59,7 +68,7 @@ class EvoSim:
             # Executing entities actions
             for entity_id in self.intelligent_entities:
                 entity = self.intelligent_entities[entity_id]
-                #TODO: perceptions should be before pass time in intelligent entities
+                # TODO: perceptions should be before pass time in intelligent entities
                 # Executing perception actions:
                 perception_list = []
                 for action in entity.get_perceptions():
@@ -75,7 +84,8 @@ class EvoSim:
                             entity_id, day, *parameters)
                         for info in new_information:
                             self.update_perception(info, perception_list)
-                self.intelligent_entities[entity_id].update_knowledge(perception_list)
+                self.intelligent_entities[entity_id].update_knowledge(
+                    perception_list)
 
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
@@ -106,9 +116,8 @@ class EvoSim:
         position = self.world.entities[ent_id].position
         return (position, self.world.get_pos_terrain(position))
 
-
     def smell(self, ent_id, day, r):
-        #FIXME: should not be only intelligent
+        # FIXME: should not be only intelligent
         entities_list = [(self.intelligent_entities[other_id], pos)
                          for other_id, pos in self.world.see_r(ent_id, r)]
         perception_list = []
@@ -127,8 +136,9 @@ class EvoSim:
                          for other_id, pos in self.world.see_r(ent_id, r)]
         perception_list = []
         for entity, pos in entities_list:
-            #TODO: add edible, color and shape
-            entity_info = {"entity": entity.get_entity_id(), "day":day, "position": pos}
+            # TODO: add edible, color and shape
+            entity_info = {"entity": entity.get_entity_id(),
+                           "day": day, "position": pos}
             if "legs" in entity.physical_properties:
                 entity_info["legs"] = entity.physical_properties["legs"]
             if "arms" in entity.physical_properties:
@@ -137,11 +147,78 @@ class EvoSim:
                 entity_info["horns"] = entity.physical_properties["horns"]
             if "fins" in entity.physical_properties:
                 entity_info["fins"] = entity.physical_properties["fins"]
-            perception_list.append(entity_info)   
+            perception_list.append(entity_info)
         return perception_list
 
+    def attack(self, ent_id, other_id, value):
+        # Check if the ids are correct:
+        if (ent_id not in self.intelligent_entities) or (other_id not in self.intelligent_entities):
+            return
+        # Check if the entities are adjacent:
+        if self.world.distance(ent_id, other_id) > 1:
+            return
+
+        other_entity = self.intelligent_entities[other_id]
+        # influencing other entity
+        other_entity.receive_influences({"damage": value})
+
+    def pick(self, ent_id, item_id):
+        # check if the ids are correct
+        if item not in self.world.entities:
+            return
+        if ent_id not in self.world.intelligent_entities:
+            return
+        item = self.world.entities[item_id]
+        entity = self.world.intelligent_entities[ent_id]
+        # check if the entity is adjacent to the item:
+        position = entity.position
+        item_position = item.position
+        if self.world.distance(position, item_position) > 1:
+            return
+        # check if the item is storable:
+        if "storable" not in item.physical_properties:
+            return
+        # check if the entity has space to store the item:
+        if ("storage" not in entity.physical_properties) or (len(entity.physical_properties["storage"]) >= 0):
+            return
+
+        # store the item and remove it from the world:
+        entity.receive_influences({"storage": item_id})
+        del self.world.remove_entity(item_id)
+
+    def eat(self, ent_id, food_id):
+        # Check if the entity and the food exixts:
+        if ent_id not in self.intelligent_entities:
+            return
+        if food_id not in self.entities:
+            return
+        entity = self.intelligent_entities[ent_id]
+        food = self.entities[food_id]
+
+        # Check if the food is edible:
+        if "edible" not in food.physical_properties:
+            return
+
+        # Check if the entity is adjacent to the food:
+        position = entity.position
+        food_position = food.position
+        if self.world.distance(position, food_position) > 1:
+            return
+
+        entity.receive_influences({"nutrients": food.nutrients})
+        self.banished_entities[food_id] = self.entities.pop(food_id)
+        del self.world.remove(food_id)
+
+    def reproduce(self, ent_id, other_id):
+        # TODO:
+        pass
+
+    def duplicate(self, ent_id):
+        # TODO:
+        pass
+
     def execute_action(self, action):
-        #FIXME:
+        # FIXME:
         self.world.execute_action(action)
 
     def init_world(self, height, width, terrain_types, terrain_dist, finite):

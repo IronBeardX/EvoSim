@@ -13,9 +13,11 @@ class RandomBehavior(Behavior):
         for perception in self.perceptions:
             match perception:
                 case "smelling":
-                    perceptions.append({"command":"smell", "parameters":[self.physical_properties["nose"]]})
+                    perceptions.append({"command": "smell", "parameters": [
+                                       self.physical_properties["nose"]]})
                 case "vision":
-                    perceptions.append({"command":"see", "parameters":[self.physical_properties["eye"]]})
+                    perceptions.append({"command": "see", "parameters": [
+                                       self.physical_properties["eye"]]})
                 case _:
                     print(perception + " not found")
         return perceptions
@@ -39,9 +41,7 @@ class RandomBehavior(Behavior):
                     return
             self.knowledge.append(new_info)
 
-
-
-    def decide_action(self, perceptions, day, time = 10):
+    def decide_action(self, perceptions, day, time=10):
         actions = []
         action_time = 0
         while action_time < time:
@@ -145,11 +145,10 @@ class RandomBehavior(Behavior):
 
 
 class WatcherBehavior(RandomBehavior):
-    def decide_action(self, perceptions, day, time = 10):
+    def decide_action(self, perceptions, day, time=10):
         return super().decide_action(perceptions, day, time)
+
 
 class Smeller(RandomBehavior):
-    def decide_action(self, perceptions, day, time = 10):
+    def decide_action(self, perceptions, day, time=10):
         return super().decide_action(perceptions, day, time)
-
-

@@ -82,7 +82,8 @@ class EvoWorld(
     SwimSouth,
     SwimEast,
     SwimWest,
-    SeeRadius
+    SeeRadius,
+    ManhatanDistance
 ):
     def __init__(self, height, width, terrain_types, terrain_dist, finite):
 
@@ -112,7 +113,6 @@ class EvoWorld(
 
         super().__init__(world_map, terrain_types, finite)
 
-    # [x]
     def execute_action(self, action):
         '''
         This method executes the given action in the world.
@@ -131,7 +131,6 @@ class EvoWorld(
         else:
             self.world_actions[command](entity_id)
 
-    # [ ]
     def __str__(self) -> str:
         terrain_copy = self.world_map.copy()
         for entity in self.entities.keys():
@@ -140,7 +139,6 @@ class EvoWorld(
                          ] = self.entities[entity].representation
         return str(terrain_copy)
 
-    # [ ]
     def place_entity(self, id, position, representation, coexistence=False):
         # TODO: check which parameters are needed
         entity_information = MapEntityInfo(
@@ -148,7 +146,6 @@ class EvoWorld(
 
         self.entities[id] = entity_information
 
-    # [x]
     def remove_entity(self, entity_id):
         del self.entities[entity_id]
 
