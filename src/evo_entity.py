@@ -51,5 +51,3 @@ class Organism(
                 self.perceptions.extend(gene.get_property())
             elif gene.gen_type == "action":
                 self.actions.extend(gene.get_property())
-
-
