@@ -161,7 +161,7 @@ class VisionRadial(PerceptionGene):
 
     def get_property(self):
         return [
-            "vision radial"
+            "vision"
         ]
 
 # [ ]Action Genes
