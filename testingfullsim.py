@@ -4,70 +4,64 @@ from src.evo_world import *
 from src.genetics import *
 from src.utils import *
 
-# PHYSICAL
-health = Health()
-hunger = Hunger()
-legs = Legs()
-eye = Eye()
-arms = Arms()
-horns = Horns()
-smell = Smell()
-fins = Fins()
-nose = Nose()
-mouth = Mouth()
-# PERCEPTION
-vision_rad = VisionRadial()
-smelling = Smelling()
-# ACTION
-move = Move()
-eat = Eat()
-rep = Reproduce()
-dup = Duplicate()
-attack = Attack()
-defend = Defend()
-pick = Pick()
-swimming = Swimming()
-WORLD_DIST1 = [(x, 25) for x in range(50)] + [(x, 26) for x in range(50)]
-ONLY_PHY = [health.get_copy, hunger.get_copy, legs.get_copy, eye.get_copy,
-            arms.get_copy, horns.get_copy, smell.get_copy, fins.get_copy, nose.get_copy]
 
-ONLY_PER = [health, hunger, smell, eye, vision_rad, smelling]
+def gen_basic_dna_chain():
+    return [Health(), Hunger(), Smell(), Mouth(), Eat()]
 
-ONLY_ACT = [health, hunger, mouth, legs, eye, arms, horns, smell,
-            fins, nose, move, eat, rep, dup, attack, defend, pick, swimming]
+def smeller_ext(dna):
+    return [Nose(), Smelling()]
+
+def watcher_ext(dna):
+    return [Eye(), VisionRadial()]
+
+def walker_ext(dna):
+    return [Legs(), Move()]
+
+def swimmer_ext(dna):
+    return [Fins(), Swimming()]
+
+def arms_ext(dna):
+    return [Arms(), Attack(), Pick()]
 
 
 def main():
     initial_dist = {}
-    for position in WORLD_DIST1:
-        initial_dist[position] = "W"
     sim = EvoSim(15,
                  15,
-                 {"G": "grass", "D": "dirt", "W": "water", "default": "G"},
+                 {"G": "grass", "D": "dirt", "W": "water"},
                  initial_dist,
                  False,
                  1,
                  10
                  )
-    sim.add_entity_gen(entity1_gen)
-    sim.add_entity_gen(entity2_gen)
-    sim.add_entity_gen(entity3_gen)
+    sim.add_entity_gen(smeller_gen)
+    sim.add_entity_gen(walker_gen)
+    sim.add_entity_gen(random_gen)
     #clean terminal
     print(chr(27) + "[2J")
-    sim.run([(2, (0, 0)), (2, (0, 1)), (2, (0, 2))])
+    sim.run([(0, (0, 0)), (1, (0, 1)), (2, (0, 2))])
     return
 
 
-def entity1_gen():
-    return Organism(ONLY_PHY)
+def smeller_gen():
+    dna = gen_basic_dna_chain()
+    dna.extend(smeller_ext(dna))
+    dna.extend(walker_ext(dna))
+    return Organism(dna)
 
 
-def entity2_gen():
-    return Organism(ONLY_PER)
+def walker_gen():
+    dna = gen_basic_dna_chain()
+    dna.extend(watcher_ext(dna))
+    dna.extend(walker_ext(dna))
+    return Organism(dna)
 
-
-def entity3_gen():
-    return Organism(ONLY_ACT)
+def random_gen():
+    dna = gen_basic_dna_chain()
+    dna.extend(walker_ext(dna))
+    dna.extend(swimmer_ext(dna))
+    dna.extend(arms_ext(dna))
+    return Organism(dna)
 
 
 if __name__ == "__main__":

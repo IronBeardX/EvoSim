@@ -2,6 +2,7 @@ from .actions_world import *
 from typing import Callable
 from curses.ascii import isdigit
 import numpy as np
+import random
 
 
 class World():
@@ -91,8 +92,10 @@ class EvoWorld(
             for j in range(width):
                 if (i, j) in terrain_dist:
                     world_map[i, j] = terrain_dist[(i, j)]
-                else:
+                elif "default" in terrain_types:
                     world_map[i, j] = terrain_types["default"]
+                else:
+                    world_map[i, j] = random.choice(list(terrain_types.keys()))
 
         # Initialize world actions
         self.world_actions = {
@@ -154,3 +157,6 @@ class EvoWorld(
         This method returns a random position in the world.
         '''
         return (np.random.randint(0, self.world_map.shape[0]), np.random.randint(0, self.world_map.shape[1]))
+
+    def get_pos_terrain(self, position):
+        return self.terrain_types[self.world_map[position]]

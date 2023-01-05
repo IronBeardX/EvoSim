@@ -39,6 +39,7 @@ class Organism(
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
+        self.knowledge = []
         self._parse_dna()
 
     def _parse_dna(self):
@@ -50,3 +51,5 @@ class Organism(
                 self.perceptions.extend(gene.get_property())
             elif gene.gen_type == "action":
                 self.actions.extend(gene.get_property())
+
+

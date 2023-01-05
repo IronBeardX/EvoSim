@@ -2,20 +2,49 @@ import random
 
 
 class Behavior:
-    def __init__(self, pass_time):
-        pass
-
     def decide_action(self, organism_state, world_state, action_options):
         pass
 
 
 class RandomBehavior(Behavior):
 
-    def decide_action(self, action_options):
+    def get_perceptions(self):
+        perceptions = []
+        for perception in self.perceptions:
+            match perception:
+                case "smelling":
+                    perceptions.append({"command":"smell", "parameters":[self.physical_properties["nose"]]})
+                case "vision":
+                    perceptions.append({"command":"see", "parameters":[self.physical_properties["eye"]]})
+                case _:
+                    print(perception + " not found")
+        return perceptions
+
+    def update_knowledge(self, new_knowledge):
+        for information in new_knowledge:
+            self.update_info(information)
+
+    def update_info(self, new_info):
+        if "entity" in list(new_info.keys()):
+            entity_id = new_info["entity"]
+            for old_info in self.knowledge:
+                if ("entity" in old_info) and entity_id == old_info["entity"]:
+                    old_info.update(new_info)
+                    return
+            self.knowledge.append(new_info)
+        if "floor" in list(new_info.keys()):
+            for old_info in self.knowledge:
+                if ("floor" in old_info):
+                    old_info.update(new_info)
+                    return
+            self.knowledge.append(new_info)
+
+
+
+    def decide_action(self, perceptions, day, time = 10):
         actions = []
-        speed = 10
         action_time = 0
-        while action_time < speed:
+        while action_time < time:
             action = random.choice(self.actions)
             match action["name"]:
                 case "move north":
@@ -113,3 +142,14 @@ class RandomBehavior(Behavior):
                     if "defending" in self.physical_properties.keys():
                         self.physical_properties["health"] -= influence["value"] - \
                             self.physical_properties["defending"]
+
+
+class WatcherBehavior(RandomBehavior):
+    def decide_action(self, perceptions, day, time = 10):
+        return super().decide_action(perceptions, day, time)
+
+class Smeller(RandomBehavior):
+    def decide_action(self, perceptions, day, time = 10):
+        return super().decide_action(perceptions, day, time)
+
+
