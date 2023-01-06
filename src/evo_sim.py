@@ -55,7 +55,6 @@ class EvoSim:
             self.intelligent_entities = {}
             self.dead_entities = {}
 
-    # TODO: Implement statistics
     def run_episode(self):
         for day in range(self.max_rounds):
             # Checking stop condition if defined
@@ -96,19 +95,18 @@ class EvoSim:
                     self.world.remove_entity(entity_id)
                     # print : entity_id, "was banished"
                     if self.visualization:
-                        self.visualization_fun(banished = entity_id)
+                        self.visualization_fun(banished=entity_id)
                     continue
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
-                actions = entity.decide_action(
-                    perception_list, day, time=self.actions_time)
+                actions = entity.decide_action(day, time=self.actions_time)
                 for action in actions:
                     action["entity"] = entity_id
                     self.execute_action(action)
                     if self.visualization:
                         self.visualization_fun(action)
 
-    def visualization_fun(self, action = None, banished = None):
+    def visualization_fun(self, action=None, banished=None):
         if action:
             print(action["command"])
         if banished:
@@ -130,6 +128,7 @@ class EvoSim:
                         f"{Fore.RED}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
                 else:
                     print(self.world.world_rep()[i, j], end=" ")
+            print("\n")
         print("\n \n")
 
     def update_perception(self, new_info, current_info):
@@ -161,17 +160,19 @@ class EvoSim:
                     "smell": entity.physical_properties["smell"],
                     "position": pos,
                     "day": day,
-                    "distance": distance
+                    "distance": distance,
+                    "reproductive": True
                 })
         return perception_list
 
     def see(self, ent_id, day, r):
+        #TODO: nearby tarrain should be seen
         entities_list = self.__entities_in_radius(ent_id, r)
         perception_list = []
         for entity, pos, distance in entities_list:
             # TODO: add color and shape
             entity_info = {"entity": entity.get_entity_id(),
-                           "day": day, "position": pos, "distance": distance}
+                           "day": day, "position": pos, "distance": distance, "reproductive": True}
             if "legs" in entity.physical_properties:
                 entity_info["legs"] = entity.physical_properties["legs"]
             if "arms" in entity.physical_properties:
@@ -184,6 +185,7 @@ class EvoSim:
                 entity_info["edible"] = entity.physical_properties["edible"]
             if "storable" in entity.physical_properties:
                 entity_info["storable"] = entity.physical_properties["edible"]
+            
             perception_list.append(entity_info)
         return perception_list
 
