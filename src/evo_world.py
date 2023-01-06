@@ -83,7 +83,8 @@ class EvoWorld(
     SwimEast,
     SwimWest,
     SeeRadius,
-    ManhatanDistance
+    ManhatanDistance,
+    TerrainRadius
 ):
     def __init__(self, height, width, terrain_types, terrain_dist, finite):
 

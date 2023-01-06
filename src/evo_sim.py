@@ -73,14 +73,15 @@ class EvoSim:
                 # TODO: perceptions should be before pass time in intelligent entities
                 # Executing perception actions:
                 perception_list = []
+                if "floor" in self.available_commands:
+                    position, floor = self.available_commands["floor"](
+                        entity_id)
+                    perception_list.append(
+                        {"floor": floor, "position": position})
                 for action in entity.get_perceptions():
                     command = action["command"]
                     parameters = action["parameters"]
-                    if "floor" in self.available_commands:
-                        position, floor = self.available_commands["floor"](
-                            entity_id)
-                        perception_list.append(
-                            {"floor": floor, "position": position})
+                    new_per = []
                     if command in self.available_commands:
                         new_information = self.available_commands[command](
                             entity_id, day, *parameters)
@@ -145,6 +146,12 @@ class EvoSim:
                     old_info.update(new_info)
                     return
             current_info.append(new_info)
+        if "surroundings" in list(new_info.keys()):
+            for old_info in current_info:
+                if ("surroundings" in old_info):
+                    old_info.update(new_info)
+                    return
+            current_info.append(new_info)
 
     def floor(self, ent_id):
         position = self.world.entities[ent_id].position
@@ -166,13 +173,18 @@ class EvoSim:
         return perception_list
 
     def see(self, ent_id, day, r):
-        #TODO: nearby tarrain should be seen
+        # TODO: nearby tarrain should be seen
         entities_list = self.__entities_in_radius(ent_id, r)
         perception_list = []
         for entity, pos, distance in entities_list:
             # TODO: add color and shape
-            entity_info = {"entity": entity.get_entity_id(),
-                           "day": day, "position": pos, "distance": distance, "reproductive": True}
+            entity_info = {
+                "entity": entity.get_entity_id(),
+                "day": day,
+                "position": pos,
+                "distance": distance,
+                "reproductive": True,
+            }
             if "legs" in entity.physical_properties:
                 entity_info["legs"] = entity.physical_properties["legs"]
             if "arms" in entity.physical_properties:
@@ -183,10 +195,14 @@ class EvoSim:
                 entity_info["fins"] = entity.physical_properties["fins"]
             if "edible" in entity.physical_properties:
                 entity_info["edible"] = entity.physical_properties["edible"]
+            if "storage" in entity.physical_properties:
+                entity_info["storage"] = len(
+                    entity.physical_properties["storage"])
             if "storable" in entity.physical_properties:
-                entity_info["storable"] = entity.physical_properties["edible"]
-            
+                entity_info["storable"] = entity.physical_properties["storable"]
             perception_list.append(entity_info)
+        perception_list.append(
+            {"surroundings": self.world.terrain_r(ent_id, r)})
         return perception_list
 
     def __entities_in_radius(self, ent_id, r):
