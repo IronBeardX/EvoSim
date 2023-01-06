@@ -21,7 +21,23 @@ reserved = {
     'stop'      : 'STOP',
     'if'        : 'IF',
     'true'      : 'TRUE',
-    'false'     : 'FALSE'
+    'false'     : 'FALSE',
+    'gene'      : 'GENE',
+    'health'    : 'HEALTH',
+    'hunger'    : 'HUNGER',
+    'legs'      : 'LEGS',
+    'eyes'      : 'EYES',
+    'arms'      : 'ARMS',
+    'horns'     : 'HORNS',
+    'smell'     : 'SMELL',
+    'fins'      : 'FINS',
+    'nose'      : 'NOSE',
+    'mouth'     : 'MOUTH',
+    'value'     : 'VALUE',
+    'in'        : 'IN',
+    'mutation'  : 'MUTATION',
+    'chance'    : 'CHANCE',
+    'step'      : 'STEP'
 }
 
 tokens = (

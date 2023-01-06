@@ -5,7 +5,8 @@ literals:
 
 reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
-    SIMULATION EPISODES STOP MAX_ROUNDS IF
+    SIMULATION EPISODES STOP MAX_ROUNDS IF GENE HEALTH HUNGER LEGS EYES ARMS 
+    HORNS SMELL FINS NOSE MOUTH VALUE IN MUTATION CHANCE STEP
 
 tokens:
     INTDIV EQ NEQ GE LE NUMBER ID
@@ -17,6 +18,37 @@ tokens:
 maybe_nl =>
     newline
     epsilon
+
+
+gene_stmt =>
+    GENE phygene_stmt
+
+phygene_stmt =>
+    phygene { maybe_nl phygeneprop_list }
+
+phygene =>
+    HEALTH
+    HUNGER
+    LEGS
+    EYES
+    ARMS
+    HORNS
+    SMELL
+    FINS
+    NOSE
+    MOUTH
+
+phygeneprop_list =>
+    phygeneprop maybe_nl phygeneprop_list
+    epsilon
+
+phygeneprop =>
+    VALUE NUMBER IN { NUMBER NUMBER }
+    MUTATION { maybe_nl mutationprop maybe_nl mutationprop maybe_nl }
+
+mutationprop =>
+    CHANCE NUMBER
+    STEP NUMBER
 
 
 sim_stmt =>

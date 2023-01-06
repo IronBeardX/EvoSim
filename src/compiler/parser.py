@@ -8,7 +8,8 @@ from src.compiler.ast import (
     UnaryOpNode,
     BinaryOpNode,
     WorldNode,
-    SimulationNode
+    SimulationNode,
+    PhyGeneNode
 )
 
 
@@ -16,7 +17,7 @@ from src.compiler.ast import (
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : sim_stmt"
+        "program : gene_stmt"
         p[0] = p[1]
     
     # handy productions
@@ -31,6 +32,42 @@ def get_parser(*args, **kwargs):
     def p_maybe_epsilon(p):
         "maybe_newline : epsilon"
         pass
+
+    # gene stmt productions
+    def p_gene(p):
+        "gene_stmt : GENE phygene_stmt"
+        p[0] = p[2]
+
+    def p_phygene_stmt(p):
+        "phygene_stmt : phygene '{' maybe_newline phygeneprop maybe_newline phygeneprop maybe_newline '}'"
+        p[0] = PhyGeneNode({**p[1], **p[4], **p[6]})
+    
+    def p_phygene(p):
+        '''phygene : HEALTH
+                   | HUNGER
+                   | LEGS
+                   | EYES
+                   | ARMS
+                   | HORNS
+                   | SMELL
+                   | FINS
+                   | NOSE
+                   | MOUTH'''
+        p[0] = {"class": p[1]}
+
+    def p_phygeneprop_value(p):
+        "phygeneprop : VALUE NUMBER IN '{' NUMBER NUMBER '}'"
+        m, mx = parse_number(p[5]), parse_number(p[6])
+        p[0] = {"value": (parse_number(2), {"min": m, "max": mx})}
+    
+    def p_phygeneprop_mutation(p):
+        "phygeneprop : MUTATION '{' maybe_newline mutationprop maybe_newline mutationprop maybe_newline '}'"
+        p[0] = {"mutation": {**p[4], **p[6]}}
+    
+    def p_mutationprop(p):
+        '''mutationprop : CHANCE NUMBER
+                        | STEP NUMBER'''
+        p[0] = {p[1]: parse_number(p[2])}
 
     # world stmt productions
     def p_world(p):

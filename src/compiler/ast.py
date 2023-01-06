@@ -39,3 +39,7 @@ class WorldNode(Node):
 class SimulationNode(Node):
     def __init__(self, props):
         pass
+
+class PhyGeneNode(Node):
+    def __init__(self, props):
+        pass
