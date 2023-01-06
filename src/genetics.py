@@ -48,7 +48,10 @@ class Hunger(PhysicalGene):
                          "int", min_val, max_val, value, mutation_step)
 
     def get_property(self):
-        return [{"hunger": self.value}]
+        return [{
+            "hunger": self.value,
+            "max hunger": self.value
+            }]
 
 
 class Legs(PhysicalGene):

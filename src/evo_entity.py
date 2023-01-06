@@ -26,9 +26,9 @@ class Entity:
 
     def pass_time(self):
         pass
+
 class Organism(
-    Entity,
-    RandomBehavior
+    Entity
 ):
     def __init__(self, dna_chain):
         '''
@@ -53,6 +53,29 @@ class Organism(
             elif gene.gen_type == "action":
                 self.actions.extend(gene.get_property())
 
+    def pass_time(self):
+        floor = "grass"
+        for info in self.knowledge:
+            if "floor" in info.keys():
+                floor = info["floor"]
+                break
+        #Check if the entity can stand in that floor
+        match floor:
+            case "water":
+                if "fins" not in self.physical_properties.keys():
+                    self.physical_properties["health"] -= 10
+            case _:
+                pass
+
+        self.physical_properties["health"] -= 1
+        self.physical_properties["hunger"] -= 1
+        if self.physical_properties["health"] <= 0:
+            return False
+        if self.physical_properties["hunger"] <= 0:
+            return False
+        if "defending" in list(self.physical_properties.keys()):
+            self.physical_properties["defending"] = False
+        return True
 
 class Food(Entity):
     def __init__(self, Nutrition=10, intelligence=False, coexistence=True, rep="F"):
