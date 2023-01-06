@@ -51,3 +51,21 @@ class Organism(
                 self.perceptions.extend(gene.get_property())
             elif gene.gen_type == "action":
                 self.actions.extend(gene.get_property())
+
+
+class Food(Entity):
+    def __init__(self, Nutrition=10, intelligence=False, coexistence=True, rep="F"):
+        '''
+        Here basic information about the entity is stored, such as its id, type, color, etc.
+        '''
+        super().__init__(representation=rep)
+        self.physical_properties = {"edible": Nutrition}
+
+
+class PackableFood(Entity):
+    def __init__(self, Nutrition=10, intelligence=False, coexistence=True, rep="P"):
+        '''
+        Here basic information about the entity is stored, such as its id, type, color, etc.
+        '''
+        super().__init__(representation=rep)
+        self.physical_properties = {"edible": Nutrition, "storable": True}

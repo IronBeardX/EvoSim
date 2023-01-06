@@ -184,7 +184,7 @@ class EvoSim:
 
         # store the item and remove it from the world:
         entity.receive_influences({"storage": item_id})
-        del self.world.remove_entity(item_id)
+        self.world.remove_entity(item_id)
 
     def eat(self, ent_id, food_id):
         # Check if the entity and the food exixts:
@@ -205,9 +205,10 @@ class EvoSim:
         if self.world.distance(position, food_position) > 1:
             return
 
-        entity.receive_influences({"nutrients": food.nutrients})
+        entity.receive_influences(
+            {"nutrients": food.physical_properties["edible"]})
         self.banished_entities[food_id] = self.entities.pop(food_id)
-        del self.world.remove(food_id)
+        self.world.remove_entity(food_id)
 
     def reproduce(self, ent_id, other_id):
         # TODO:
@@ -218,8 +219,10 @@ class EvoSim:
         pass
 
     def execute_action(self, action):
-        # FIXME:
-        self.world.execute_action(action)
+        if action in list(self.available_commands.keys()):
+            self.available_commands[action["command"]](*action["parameters"])
+        else:
+            self.world.execute_action(action)
 
     def init_world(self, height, width, terrain_types, terrain_dist, finite):
         self.world_gen = lambda: EvoWorld(

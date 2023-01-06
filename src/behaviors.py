@@ -85,7 +85,9 @@ class RandomBehavior(Behavior):
                                 body_part = damage_dealer
                     self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties[body_part]
-                    actions.append({"command": "attack", "value": attack})
+                    objective = self.rand_ent()
+                    actions.append(
+                        {"command": "attack", "parameters": [objective, attack]})
                 case "defend":
                     # TODO: Finish this
                     defense = 0
@@ -120,6 +122,13 @@ class RandomBehavior(Behavior):
                 case _:
                     pass
         return actions
+
+    def rand_ent(self):
+        entity_list = []
+        for info in self.knowledge:
+            if "entity" in info.keys():
+                entity_list.append(info["entity"])
+        return random.choice(entity_list) if len(entity_list) > 0 else "none"
 
     def get_prop_by_name(self, name):
         for action in self.actions:
