@@ -132,8 +132,7 @@ class EvoSim:
         return perception_list
 
     def see(self, ent_id, day, r):
-        entities_list = [(self.intelligent_entities[other_id], pos)
-                         for other_id, pos in self.world.see_r(ent_id, r)]
+        entities_list = self.__entities_in_radius(ent_id, r)
         perception_list = []
         for entity, pos in entities_list:
             # TODO: add edible, color and shape
@@ -147,8 +146,23 @@ class EvoSim:
                 entity_info["horns"] = entity.physical_properties["horns"]
             if "fins" in entity.physical_properties:
                 entity_info["fins"] = entity.physical_properties["fins"]
+            if "edible" in entity.physical_properties:
+                entity_info["edible"] = entity.physical_properties["edible"]
+            if "storable" in entity.physical_properties:
+                entity_info["storable"] = entity.physical_properties["edible"]
             perception_list.append(entity_info)
         return perception_list
+
+    def __entities_in_radius(self, ent_id, r):
+        entities_id_list = [(other_id, pos)
+                         for other_id, pos in self.world.see_r(ent_id, r)]
+        entities = []
+        for ent_id, pos in entities_id_list:
+            if ent_id in self.entities:
+                entities.append((self.entities[ent_id], pos))
+            elif ent_id in self.intelligent_entities:
+                entities.append((self.intelligent_entities[ent_id], pos))
+        return entities
 
     def attack(self, ent_id, other_id, value):
         # Check if the ids are correct:
@@ -164,22 +178,20 @@ class EvoSim:
 
     def pick(self, ent_id, item_id):
         # check if the ids are correct
-        if item not in self.world.entities:
+        if item_id not in self.entities:
             return
-        if ent_id not in self.world.intelligent_entities:
+        if ent_id not in self.intelligent_entities:
             return
-        item = self.world.entities[item_id]
-        entity = self.world.intelligent_entities[ent_id]
+        item = self.entities[item_id]
+        entity = self.intelligent_entities[ent_id]
         # check if the entity is adjacent to the item:
-        position = entity.position
-        item_position = item.position
-        if self.world.distance(position, item_position) > 1:
+        if self.world.distance(ent_id, item_id) > 1:
             return
         # check if the item is storable:
         if "storable" not in item.physical_properties:
             return
         # check if the entity has space to store the item:
-        if ("storage" not in entity.physical_properties) or (len(entity.physical_properties["storage"]) >= 0):
+        if ("storage" not in entity.physical_properties) or (len(entity.physical_properties["storage"]) > 0):
             return
 
         # store the item and remove it from the world:
@@ -200,9 +212,7 @@ class EvoSim:
             return
 
         # Check if the entity is adjacent to the food:
-        position = entity.position
-        food_position = food.position
-        if self.world.distance(position, food_position) > 1:
+        if self.world.distance(ent_id, food_id) > 1:
             return
 
         entity.receive_influences(
@@ -219,8 +229,8 @@ class EvoSim:
         pass
 
     def execute_action(self, action):
-        if action in list(self.available_commands.keys()):
-            self.available_commands[action["command"]](*action["parameters"])
+        if action["command"] in list(self.available_commands.keys()):
+            self.available_commands[action["command"]](action["entity"], *action["parameters"])
         else:
             self.world.execute_action(action)
 
@@ -236,6 +246,6 @@ class EvoSim:
         if entity.is_intelligent:
             self.intelligent_entities[entity.get_entity_id()] = entity
         else:
-            self.entities[entity.id] = entity
+            self.entities[entity.get_entity_id()] = entity
         self.world.place_entity(entity.get_entity_id(), world_position,
                                 entity.rep, entity.coexistence)
