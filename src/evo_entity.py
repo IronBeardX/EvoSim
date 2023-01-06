@@ -54,6 +54,7 @@ class Organism(
                 self.actions.extend(gene.get_property())
 
     def pass_time(self):
+        #TODO: if the organism dies, it must drop its inventory
         floor = "grass"
         for info in self.knowledge:
             if "floor" in info.keys():
@@ -96,4 +97,8 @@ class PackableFood(Entity):
 
 class RandomOrg(Organism, RandomBehavior):
     def __init__(self, dna_chain, representation="R"):
+        super().__init__(dna_chain, representation=representation)
+
+class OpportunisticOrg(Organism, OpportunisticBehavior):
+    def __init__(self, dna_chain, representation="O"):
         super().__init__(dna_chain, representation=representation)

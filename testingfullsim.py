@@ -51,11 +51,11 @@ def main():
                  5,
                  visualization=True
                  )
-    sim.add_entity_gen(random_gen)
+    sim.add_entity_gen(fully_capable_opportunistic_gen)
     sim.add_entity_gen(pickable_gen)
     sim.add_entity_gen(food_gen)
     #generate entities generation list in random positions
-    positions_ent = gen_random_position_tuple_list(19, 19, 3)
+    positions_ent = gen_random_position_tuple_list(19, 19, 10)
     positions_food = gen_random_position_tuple_list(19, 19, 20)
     positions_pick = gen_random_position_tuple_list(19, 19, 20)
     # create the (generator_position, position) list
@@ -93,6 +93,17 @@ def random_gen():
     dna.extend(eater_ext(dna))
     dna.extend(pick_ext(dna))
     return RandomOrg(dna)
+
+def fully_capable_opportunistic_gen():
+    dna = gen_basic_dna_chain()
+    dna.extend(smeller_ext(dna))
+    dna.extend(watcher_ext(dna))
+    dna.extend(walker_ext(dna))
+    dna.extend(swimmer_ext(dna))
+    dna.extend(arms_ext(dna))
+    dna.extend(eater_ext(dna))
+    dna.extend(pick_ext(dna))
+    return OpportunisticOrg(dna)
 
 
 def gen_random_position_tuple_list(x, y, n):

@@ -132,7 +132,7 @@ class EvoWorld(
             self.world_actions[command](entity_id)
 
     def __str__(self) -> str:
-        #This methods returns a string representation of the world
+        # This methods returns a string representation of the world
         terrain_copy = self.world_map.copy()
         for entity in self.entities.keys():
             entity_position = self.entities[entity].position
@@ -152,8 +152,6 @@ class EvoWorld(
             terrain_copy[entity_position[0], entity_position[1]
                          ] = self.entities[entity].representation
         return terrain_copy
-
-                
 
     def place_entity(self, id, position, representation, coexistence=False):
         entity_information = MapEntityInfo(

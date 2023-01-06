@@ -283,7 +283,25 @@ class TerrainRadius:
         return positions
 
 class ManhatanDistance:
+    
     def distance(self, entity_id, other_entity_id):
+        # This should return a correct value if the world is not finite
         entity_position = self.entities[entity_id].position
         other_entity_position = self.entities[other_entity_id].position
-        return abs(entity_position[0] - other_entity_position[0]) + abs(entity_position[1] - other_entity_position[1])
+        if self.finite:
+            return abs(entity_position[0] - other_entity_position[0]) + abs(entity_position[1] - other_entity_position[1])
+        # TODO: check this
+        else:
+            # Check if the distance is shorter if we go through the other side of the world
+            if abs(entity_position[0] - other_entity_position[0]) > self.world_map.shape[0] / 2:
+                if entity_position[0] > other_entity_position[0]:
+                    entity_position = (entity_position[0] - self.world_map.shape[0], entity_position[1])
+                else:
+                    other_entity_position = (other_entity_position[0] - self.world_map.shape[0], other_entity_position[1])
+            if abs(entity_position[1] - other_entity_position[1]) > self.world_map.shape[1] / 2:
+                if entity_position[1] > other_entity_position[1]:
+                    entity_position = (entity_position[0], entity_position[1] - self.world_map.shape[1])
+                else:
+                    other_entity_position = (other_entity_position[0], other_entity_position[1] - self.world_map.shape[1])
+            return abs(entity_position[0] - other_entity_position[0]) + abs(entity_position[1] - other_entity_position[1])
+

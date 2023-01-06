@@ -2,7 +2,7 @@ import random
 
 
 class Behavior:
-    def decide_action(self, organism_state, world_state, action_options):
+    def decide_action(self, day, time):
         pass
 
 
@@ -41,12 +41,13 @@ class RandomBehavior(Behavior):
                     return
             self.knowledge.append(new_info)
 
-    def decide_action(self, perceptions, day, time=10):
+    def decide_action(self, day, time=10):
         actions = []
         action_time = 0
         while action_time < time:
             action = random.choice(self.actions)
             match action["name"]:
+                # TODO: the actions in each case should be in methods for easier usage
                 case "move north":
                     self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
@@ -189,10 +190,147 @@ class RandomBehavior(Behavior):
                 case _:
                     raise Exception("Influence not found")
 
+    def _edible_ent_in_knowledge(self):
+        # this method returns all the edible entities in the knowledge
+        edible_ents = []
+        for info in self.knowledge:
+            if "edible" in info.keys():
+                edible_ents.append(info)
+        return edible_ents
 
-class RobberBehavior(RandomBehavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
+    def _non_edible_ent_in_knowledge(self):
+        # this method returns all the non edible entities in the knowledge
+        non_edible_ents = []
+        for info in self.knowledge:
+            if "edible" not in info.keys() and "entity" in info.keys():
+                non_edible_ents.append(info)
+        return non_edible_ents
+
+    def _fuzzy_goal_selector(self, goal):
+        # TODO: return the priority with the new normalized valor
+        current_goal = "none"
+        normalized_goal_vector = []
+        total = 0
+        for g in goal:
+            total += g["priority"]
+        for g in goal:
+            normalized_goal_vector.append(g["priority"] / total)
+
+        relative_frequency = []
+        for i in range(len(goal)):
+            relative_frequency.append(0)
+            for j in range(i + 1):
+                relative_frequency[i] += normalized_goal_vector[j]
+
+        random_number = random.random()
+        for i in range(len(goal)):
+            if random_number <= relative_frequency[i]:
+                current_goal = goal[i]
+                break
+        return current_goal
+
+
+class OpportunisticBehavior(RandomBehavior):
+    def decide_action(self, day, time=10):
+        # This will be a behavior that will try to take the food, and eat it when far from other entities
+        # this will be implemented with an algorithm similar to Simulated annealing(but not exactly) that will try to find the best path to the food
+        # and will measure risk reward of each action based on hunger, distance to food and distance to other entities and will fight only if
+        # the reward is greater than the risk.
+
+        actions = []
+
+        # First we will determine our current goal from reproduction, food, fighting or exploring
+
+        # Checking how hungry are we
+        hungry_level = None
+        if self.physical_properties["hunger"] < 10:
+            hungry_level = "famished"
+        elif self.physical_properties["hunger"] < 25:
+            hungry_level = "very hungry"
+        elif self.physical_properties["hunger"] < 50:
+            hungry_level = "hungry"
+        elif self.physical_properties["hunger"] >= 50:
+            hungry_level = "not hungry"
+        elif self.physical_properties["hunger"] >= 75:
+            hungry_level = "satisfied"
+        elif self.physical_properties["hunger"] >= 90:
+            hungry_level = "full"
+
+        # Getting all the food in the knowledge and if there is any food
+        any_food = False
+        # If theres food nearby information like its position and distance will be in this variable
+        food_in_sight = []
+        for food in self._edible_ent_in_knowledge():
+            any_food = True
+            food_in_sight.append(food)
+
+        # Getting all the non food entities in the knowledge and if there is any entity
+        any_entity = False
+        reproductive_entity = False
+        # If theres entities nearby information like its position, distance, their storage and if they are available for reproduction will be in this variable
+        entities_in_sight = []
+        for entity in self._non_edible_ent_in_knowledge():
+            any_entity = True
+            entities_in_sight.append(entity)
+            # TODO: chech if "reproductive" is the correct key
+            if entity["reproductive"] == True:
+                reproductive_entity = True
+
+        # Now we will determine our current goals and how badly we want to achieve them
+        goal = []
+        # Food goal priority will be lowered if we have food in the storage
+        if "storage" in self.physical_properties.keys():
+            stored_food = int(len(self.physical_properties["storage"]) > 0)
+
+        # If we are famished we will try to get food as soon as possible
+        if hungry_level == "famished":
+            goal.append({"goal": "food", "priority": 100})
+        # If we are very hungry we will try to get food as soon as possible or eat if we have food in the storage
+        elif hungry_level == "very hungry":
+            goal.append({"goal": "food", "priority": 80 - stored_food * 20})
+        elif hungry_level == "hungry":
+            goal.append({"goal": "food", "priority": 60 - stored_food * 20})
+        elif hungry_level == "not hungry":
+            goal.append({"goal": "food", "priority": 40 - stored_food * 20})
+        elif hungry_level == "satisfied":
+            goal.append({"goal": "food", "priority": 20 - stored_food * 20})
+        elif hungry_level == "full":
+            goal.append({"goal": "food", "priority": 1 - stored_food})
+        # TODO: think about time between reproductions
+        # reproduction urgency will depend on how much time has passed since the simulation started (day)
+        # the more time it passes, the more the urgency will increase
+
+        # If we are not hungry we will try to reproduce
+        if hungry_level != "famished" and hungry_level != "very hungry":
+            goal.append({"goal": "reproduction", "priority": 1 + day})
+
+        # With the goal list we will determine the most urgent goal using fuzzy logic
+        current_goal = "none" if len(
+            goal) <= 0 else self._fuzzy_goal_selector(goal)
+        # Now we will determine the best action to achieve our current goal using simulated annealing with the priority of the goal as the temperature
+        # and the reward of each action as the energy
+        actions.extend(self._simulated_annealing(current_goal, day, any_food, food_in_sight, any_entity, entities_in_sight, reproductive_entity, time, 10))
+
+    def _simulated_annealing(self, current_goal, day, any_food, food_in_sight, any_entity, entities_in_sight, reproductive_entity, time, max_iterations):
+        # This method will return a list of actions to achieve the current goal using simulated annealing
+        # The reward of each "state" will be the distance to the food or the reproductive entity
+        # The risk of each "state" will be the distance to the other entities in the final position
+        # The "state" refereed earlier is a list of actions
+
+        # First we will determine the temperature
+        temperature = current_goal["priority"]
+
+        # First we generate an initial state
+        match current_goal["goal"]:
+            case "reproduction":
+                pass
+            case "food":
+                pass
+
+        # Next we generate variations of this state and change it depending on the temperature and
+        # the values of both states
+
+
 
 
 class GluttonyBehavior(Behavior):
@@ -206,5 +344,10 @@ class FighterBehavior(Behavior):
 
 
 class LoverBehavior(Behavior):
+    def decide_action(self, perceptions, day, time=10):
+        pass
+
+
+class ExplorerBehavior(Behavior):
     def decide_action(self, perceptions, day, time=10):
         pass
