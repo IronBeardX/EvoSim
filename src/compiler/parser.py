@@ -31,12 +31,9 @@ def get_parser(*args, **kwargs):
         "world_stmt : WORLD '{' maybe_newline worldprop maybe_newline worldprop maybe_newline '}'"
         p[0] = WorldNode({**p[4], **p[6]})
     
-    def p_worldprop_size(p):
-        "worldprop : SIZE worldsize"
-        p[0] = p[2]
-    
-    def p_worldprop_terrain(p):
-        "worldprop : TERRAIN worldterrain"
+    def p_worldprop(p):
+        '''worldprop : SIZE worldsize
+                     | TERRAIN worldterrain'''
         p[0] = p[2]
     
     def p_worldsize_infinite(p):
