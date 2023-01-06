@@ -120,7 +120,8 @@ class RandomBehavior(Behavior):
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim west"})
                 case _:
-                    pass
+                    raise Exception("Action not found")
+        self.knowledge = []
         return actions
 
     def rand_ent(self):
@@ -135,24 +136,56 @@ class RandomBehavior(Behavior):
             if action["name"] == self.name:
                 return action
 
-    def pass_time(self):
+        # TODO: get the floor from the knowledge
+        floor = "grass"
+        for info in self.knowledge:
+            if "floor" in info.keys():
+                floor = info["floor"]
+                break
+        # Check if the entity can stand in that floor
+        match floor:
+            case "water":
+                if "fins" not in self.physical_properties.keys():
+                    self.physical_properties["health"] -= 10
+            case _:
+                pass
+
         self.physical_properties["health"] -= 1
         self.physical_properties["hunger"] -= 1
         if self.physical_properties["health"] <= 0:
             return False
         if self.physical_properties["hunger"] <= 0:
             return False
+        if "defending" in list(self.physical_properties.keys()):
+            self.physical_properties["defending"] = False
         return True
 
     def receive_influences(self, influences_list):
-        #TODO: implement this
-        return
         for influence in influences_list:
             match influence["name"]:
-                case "attack":
-                    if "defending" in self.physical_properties.keys():
-                        self.physical_properties["health"] -= influence["value"] - \
-                            self.physical_properties["defending"]
+                case "damage":
+                    if "defending" in self.physical_properties.keys() and self.physical_properties["defending"]:
+                        # find max defense in body
+                        defense = 0
+                        body_part = None
+                        for defense_dealer in self.physical_properties.keys():
+                            if "defense" in defense_dealer:
+                                if defense < self.physical_properties[defense_dealer]:
+                                    defense = self.physical_properties[defense_dealer]
+                                    body_part = defense_dealer
+                        self.physical_properties["health"] -= influence["value"] - defense
+                    if self.physical_properties["health"] <= 0:
+                        self.physical_properties["health"] = 0
+                case "storage":
+                    self.physical_properties["storage"].append(
+                        influence["value"])
+                case "nutrients":
+                    if self.physical_properties["hunger"] + influence["value"] > self.physical_properties["max hunger"]:
+                        self.physical_properties["hunger"] = self.physical_properties["max hunger"]
+                    else:
+                        self.physical_properties["hunger"] += influence["value"]
+                case _:
+                    raise Exception("Influence not found")
 
 
 class WatcherBehavior(RandomBehavior):
@@ -167,7 +200,7 @@ class Smeller(RandomBehavior):
 
 class SEater(RandomBehavior):
     def decide_action(self, perceptions, day, time=10):
-        #get the entty in the south
+        # get the entty in the south
         food = None
         for action in self.actions:
             if action["name"] == "eat":
@@ -176,6 +209,7 @@ class SEater(RandomBehavior):
                     if "entity" in info:
                         food = info["entity"]
                         return [{"command": "eat", "parameters": [food]}]
+
 
 class SPicker(RandomBehavior):
     def decide_action(self, perceptions, day, time=10):
@@ -186,7 +220,8 @@ class SPicker(RandomBehavior):
                 for info in self.knowledge:
                     if "entity" in info:
                         food = info["entity"]
-                        return [{"command":"pick", "parameters":[food]}]
+                        return [{"command": "pick", "parameters": [food]}]
+
 
 class SAtaker(RandomBehavior):
     def decide_action(self, perceptions, day, time=10):
@@ -196,9 +231,10 @@ class SAtaker(RandomBehavior):
                 for info in self.knowledge:
                     if "entity" in info:
                         food = info["entity"]
-                        return [{"command":"attack", "parameters":[food, self.physical_properties["arms_attack"]]}]
+                        return [{"command": "attack", "parameters": [food, self.physical_properties["arms_attack"]]}]
+
 
 class Defender(RandomBehavior):
     def decide_action(self, perceptions, day, time=10):
-        self.defending = True
+        self.physical_properties["defending"] = True
         return []

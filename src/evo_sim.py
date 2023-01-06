@@ -51,22 +51,23 @@ class EvoSim:
     # TODO: Implement statistics
     def run_episode(self):
         for day in range(self.max_rounds):
-            # Time comes for us all ...
-            # TODO: pass time function tells if an entity is dead
-            for entity_id in self.intelligent_entities:
-                entity = self.intelligent_entities[entity_id]
-                entity.pass_time()
-            for entity_id in self.entities:
-                entity = self.entities[entity_id]
-                entity.pass_time()
-
             # Checking stop condition if defined
             if self.stop_condition is not None:
                 if self.stop_condition(self):
                     return
+            
+            # Time comes for us all ...
+            # TODO: Fix sim flow for int entities, it should be, percept, pass time, act ...
+            # for entity_id in self.intelligent_entities:
+            #     entity = self.intelligent_entities[entity_id]
+            #     entity.pass_time()
+            for entity_id in self.entities:
+                entity = self.entities[entity_id]
+                entity.pass_time()
+
 
             # Executing entities actions
-            for entity_id in self.intelligent_entities:
+            for entity_id in list(self.intelligent_entities.keys()):
                 entity = self.intelligent_entities[entity_id]
                 # TODO: perceptions should be before pass time in intelligent entities
                 # Executing perception actions:
@@ -86,7 +87,15 @@ class EvoSim:
                             self.update_perception(info, perception_list)
                 self.intelligent_entities[entity_id].update_knowledge(
                     perception_list)
-
+                
+                if not entity.pass_time():
+                    self.banished_entities[entity_id] = self.intelligent_entities.pop(entity_id)
+                    self.world.remove_entity(entity_id)
+                    # print : entity_id, "was banished"
+                    print(f"{entity_id} was banished")
+                    print("\n")
+                    print(self.world)
+                    continue
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
                 actions = entity.decide_action(perception_list, day)
@@ -135,7 +144,7 @@ class EvoSim:
         entities_list = self.__entities_in_radius(ent_id, r)
         perception_list = []
         for entity, pos in entities_list:
-            # TODO: add edible, color and shape
+            # TODO: add color and shape
             entity_info = {"entity": entity.get_entity_id(),
                            "day": day, "position": pos}
             if "legs" in entity.physical_properties:
@@ -155,7 +164,7 @@ class EvoSim:
 
     def __entities_in_radius(self, ent_id, r):
         entities_id_list = [(other_id, pos)
-                         for other_id, pos in self.world.see_r(ent_id, r)]
+                            for other_id, pos in self.world.see_r(ent_id, r)]
         entities = []
         for ent_id, pos in entities_id_list:
             if ent_id in self.entities:
@@ -174,7 +183,7 @@ class EvoSim:
 
         other_entity = self.intelligent_entities[other_id]
         # influencing other entity
-        other_entity.receive_influences({"damage": value})
+        other_entity.receive_influences([{"name":"damage","value": value}])
 
     def pick(self, ent_id, item_id):
         # check if the ids are correct
@@ -195,7 +204,8 @@ class EvoSim:
             return
 
         # store the item and remove it from the world:
-        entity.receive_influences({"storage": item_id})
+        entity.receive_influences([{"name":"storage", "value":item_id}])
+        self.banished_entities[item_id] = self.entities.pop(item_id)
         self.world.remove_entity(item_id)
 
     def eat(self, ent_id, food_id):
@@ -216,7 +226,7 @@ class EvoSim:
             return
 
         entity.receive_influences(
-            {"nutrients": food.physical_properties["edible"]})
+            [{"name": "nutrients", "value": food.physical_properties["edible"]}])
         self.banished_entities[food_id] = self.entities.pop(food_id)
         self.world.remove_entity(food_id)
 
@@ -230,7 +240,8 @@ class EvoSim:
 
     def execute_action(self, action):
         if action["command"] in list(self.available_commands.keys()):
-            self.available_commands[action["command"]](action["entity"], *action["parameters"])
+            self.available_commands[action["command"]](
+                action["entity"], *action["parameters"])
         else:
             self.world.execute_action(action)
 
