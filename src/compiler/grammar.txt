@@ -5,7 +5,7 @@ literals:
 
 reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
-    SIMULATION EPISODES STOP MAX_ROUNDS IF GENE HEALTH HUNGER LEGS EYES ARMS 
+    SIMULATION EPISODES STOP MAX_ROUNDS IF ELSE GENE HEALTH HUNGER LEGS EYES ARMS 
     HORNS SMELL FINS NOSE MOUTH VALUE IN MUTATION CHANCE STEP
 
 tokens:
@@ -13,6 +13,22 @@ tokens:
 
 
 [parser]
+
+stmt_list =>
+    stmt newline stmt_list
+    epsilon
+
+stmt =>
+    if_stmt
+
+
+if_stmt =>
+    IF disjunction { maybe_nl stmt_list } else_stmt
+
+else_stmt =>
+    ELSE if_stmt
+    ELSE { maybe_nl stmt_list }
+    epsilon
 
 
 maybe_nl =>

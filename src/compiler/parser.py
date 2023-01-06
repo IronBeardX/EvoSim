@@ -4,12 +4,9 @@ import src.compiler.ply.yacc as yacc
 from src.compiler.lexer import tokens
 from src.compiler.util import parse_number, nth_root
 from src.compiler.ast import (
-    ValueNode,
-    UnaryOpNode,
-    BinaryOpNode,
-    WorldNode,
-    SimulationNode,
-    PhyGeneNode
+    ValueNode, UnaryOpNode, BinaryOpNode,
+    WorldNode, SimulationNode, PhyGeneNode,
+    IfNode, ElseNode
 )
 
 
@@ -32,6 +29,19 @@ def get_parser(*args, **kwargs):
     def p_maybe_epsilon(p):
         "maybe_newline : epsilon"
         pass
+
+    # generic stmt productions
+    def p_stmt_list(p):
+        "stmt_list : stmt newline stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_stmt_list_epsilon(p):
+        "stmt_list : epsilon"
+        p[0] = []
+    
+    def p_stmt(p):
+        "stmt : if_stmt"
+        p[0] = p[1]
 
     # gene stmt productions
     def p_gene(p):
@@ -137,6 +147,23 @@ def get_parser(*args, **kwargs):
     def p_simprop_stop(p):
         "simprop : STOP IF disjunction"
         p[0] = {'stop': p[3]}
+    
+    # if-else stmt productions
+    def p_if(p):
+        "if_stmt : IF disjunction '{' maybe_newline stmt_list '}' else_stmt"
+        p[0] = IfNode(p[2], p[5], p[7])
+
+    def p_else_if(p):
+        "else_stmt : ELSE if_stmt"
+        p[0] = p[2]
+    
+    def p_else(p):
+        "else_stmt : ELSE '{' maybe_newline stmt_list '}'"
+        p[0] = ElseNode(p[4])
+
+    def p_else_epsilon(p):
+        "else_stmt : epsilon"
+        p[0] = None
 
     # boolean expr productions
     def p_disjunction(p):

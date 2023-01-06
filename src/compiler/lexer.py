@@ -20,6 +20,7 @@ reserved = {
     'max_rounds': 'MAX_ROUNDS',
     'stop'      : 'STOP',
     'if'        : 'IF',
+    'else'      : 'ELSE',
     'true'      : 'TRUE',
     'false'     : 'FALSE',
     'gene'      : 'GENE',

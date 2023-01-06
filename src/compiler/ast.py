@@ -43,3 +43,28 @@ class SimulationNode(Node):
 class PhyGeneNode(Node):
     def __init__(self, props):
         pass
+
+class IfNode(Node):
+    def __init__(self, condition_node, body_nodes, else_node):
+        self.condition = condition_node
+        self.body = body_nodes
+        self.else_node = else_node
+    
+    def evaluate(self, context: Context):
+        child_context = context.new_child()
+
+        if (self.condition.evaluate(child_context)):
+            for node in self.body:
+                node.evaluate(child_context)
+        elif self.else_node:
+            self.else_node.evaluate(context)
+
+class ElseNode(Node):
+    def __init__(self, body_nodes):
+        self.body = body_nodes or []
+    
+    def evaluate(self, context: Context):
+        child_context = context.new_child()
+
+        for node in self.body:
+            node.evaluate(child_context)
