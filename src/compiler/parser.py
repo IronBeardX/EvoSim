@@ -4,9 +4,10 @@ import src.compiler.ply.yacc as yacc
 from src.compiler.lexer import tokens
 from src.compiler.util import parse_number, nth_root
 from src.compiler.ast import (
-    ValueNode, UnaryOpNode, BinaryOpNode,
+    ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
     WorldNode, SimulationNode, PhyGeneNode,
-    IfNode, ElseNode
+    IfNode, ElseNode,
+    VariableSettingNode
 )
 
 
@@ -40,7 +41,8 @@ def get_parser(*args, **kwargs):
         p[0] = []
     
     def p_stmt(p):
-        "stmt : if_stmt"
+        '''stmt : if_stmt
+                | var_stmt'''
         p[0] = p[1]
 
     # gene stmt productions
@@ -147,6 +149,11 @@ def get_parser(*args, **kwargs):
     def p_simprop_stop(p):
         "simprop : STOP IF disjunction"
         p[0] = {'stop': p[3]}
+    
+    # var setting stmt
+    def p_var(p):
+        "var_stmt : ID '=' disjunction"
+        p[0] = VariableSettingNode(p[1], p[3])
     
     # if-else stmt productions
     def p_if(p):
@@ -283,6 +290,10 @@ def get_parser(*args, **kwargs):
     def p_atom_true(p):
         "atom : TRUE"
         p[0] = ValueNode(True)
+    
+    def p_atom_var(p):
+        "atom : ID"
+        p[0] = VariableNode(p[1])
     
     def p_atom_group(p):
         "atom : '(' expr ')'"

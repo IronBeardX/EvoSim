@@ -12,6 +12,13 @@ class ValueNode(Node):
     def evaluate(self, context: Context):
         return self.value
 
+class VariableNode(Node):
+    def __init__(self, name):
+        self.name = name
+    
+    def evaluate(self, context: Context):
+        return context.get_var(self.name)
+
 class UnaryOpNode(Node):
     def __init__(self, node, apply):
         self.node = node
@@ -68,3 +75,12 @@ class ElseNode(Node):
 
         for node in self.body:
             node.evaluate(child_context)
+
+class VariableSettingNode(Node):
+    def __init__(self, name, node):
+        self.name = name
+        self.node = node
+    
+    def evaluate(self, context: Context):
+        value = self.node.evaluate(context)
+        context.set_var(self.name, value)

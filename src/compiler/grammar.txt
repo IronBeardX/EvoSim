@@ -1,7 +1,7 @@
 [lexer]
 
 literals:
-    + - * / % ( ) ^ @ < > { }
+    + - * / % ( ) ^ @ < > { } =
 
 reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
@@ -20,6 +20,11 @@ stmt_list =>
 
 stmt =>
     if_stmt
+    var_stmt
+
+
+var_stmt =>
+    ID = disjunction
 
 
 if_stmt =>
@@ -152,4 +157,5 @@ atom =>
     NUMBER
     TRUE
     FALSE
+    ID
     ( expr )
