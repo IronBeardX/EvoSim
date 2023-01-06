@@ -26,8 +26,8 @@ def arms_ext(dna):
 
 def main():
     initial_dist = {}
-    sim = EvoSim(15,
-                 15,
+    sim = EvoSim(150,
+                 150,
                  {"G": "grass", "D": "dirt", "W": "water"},
                  initial_dist,
                  False,
@@ -46,19 +46,16 @@ def main():
 def smeller_gen():
     dna = gen_basic_dna_chain()
     dna.extend(smeller_ext(dna))
-    dna.extend(walker_ext(dna))
     return Organism(dna)
 
 
 def walker_gen():
     dna = gen_basic_dna_chain()
     dna.extend(watcher_ext(dna))
-    dna.extend(walker_ext(dna))
     return Organism(dna)
 
 def random_gen():
     dna = gen_basic_dna_chain()
-    dna.extend(walker_ext(dna))
     dna.extend(swimmer_ext(dna))
     dna.extend(arms_ext(dna))
     return Organism(dna)
