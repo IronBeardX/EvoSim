@@ -270,7 +270,7 @@ class TerrainRadius:
             for j in range(entity_position[1] - radius, entity_position[1] + radius + 1):
                 if i >= 0 and j >= 0 and i < self.world_map.shape[0] and j < self.world_map.shape[1]:
                     positions.append((i, j))
-                if not self.finite:
+                if self.finite:
                     if i < 0:
                         i = self.world_map.shape[0] - 1
                     if j < 0:
