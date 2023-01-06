@@ -35,3 +35,7 @@ class BinaryOpNode(Node):
 class WorldNode(Node):
     def __init__(self, props):
         pass
+
+class SimulationNode(Node):
+    def __init__(self, props):
+        pass

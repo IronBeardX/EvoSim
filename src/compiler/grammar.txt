@@ -5,6 +5,7 @@ literals:
 
 reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
+    SIMULATION EPISODES STOP MAX_ROUNDS IF
 
 tokens:
     INTDIV EQ NEQ GE LE NUMBER ID
@@ -13,13 +14,22 @@ tokens:
 [parser]
 
 
-maybe_newline =>
+maybe_nl =>
     newline
     epsilon
 
 
+sim_stmt =>
+    SIMULATION => { maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl }
+
+simprop =>
+    EPISODES NUMBER
+    MAX_ROUNDS NUMBER
+    STOP IF disjunction
+
+
 world_stmt =>
-    WORLD { maybe_newline worldprop maybe_newline worldprop maybe_newline }
+    WORLD { maybe_nl worldprop maybe_nl worldprop maybe_nl }
 
 worldprop =>
     SIZE worldsize
@@ -27,22 +37,22 @@ worldprop =>
 
 worldsize =>
     INFINITE
-    { maybe_newline WIDTH NUMBER maybe_newline HEIGHT NUMBER maybe_newline } 
+    { maybe_nl WIDTH NUMBER maybe_nl HEIGHT NUMBER maybe_nl } 
 
 worldterrain =>
-    { maybe_newline terrainprop_list }
+    { maybe_nl terrainprop_list }
 
 terrainprop_list =>
-    terrainprop maybe_newline terrainprop_list
+    terrainprop maybe_nl terrainprop_list
     epsilon
 
 terrainprop =>
     DEFAULT ID
-    ID AT { maybe_newline NUMBER maybe_newline terrainposn_list }
+    ID AT { maybe_nl NUMBER maybe_nl terrainposn_list }
     ID
 
 terrainposn_list =>
-    NUMBER maybe_newline terrainposn_list
+    NUMBER maybe_nl terrainposn_list
     epsilon
 
 

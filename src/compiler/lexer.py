@@ -4,19 +4,24 @@ import src.compiler.ply.lex as lex
 literals = '+-*/%()^@<{>}'
 
 reserved = {
-    'or'      : 'OR',
-    'and'     : 'AND',
-    'not'     : 'NOT',
-    'world'   : 'WORLD',
-    'width'   : 'WIDTH',
-    'height'  : 'HEIGHT',
-    'infinite': 'INFINITE',
-    'default' : 'DEFAULT',
-    'at'      : 'AT',
-    'size'    : 'SIZE',
-    'terrain' : 'TERRAIN',
-    'true'    : 'TRUE',
-    'false'   : 'FALSE'
+    'or'        : 'OR',
+    'and'       : 'AND',
+    'not'       : 'NOT',
+    'world'     : 'WORLD',
+    'width'     : 'WIDTH',
+    'height'    : 'HEIGHT',
+    'infinite'  : 'INFINITE',
+    'default'   : 'DEFAULT',
+    'at'        : 'AT',
+    'size'      : 'SIZE',
+    'terrain'   : 'TERRAIN',
+    'simulation': 'SIMULATION',
+    'episodes'  : 'EPISODES',
+    'max_rounds': 'MAX_ROUNDS',
+    'stop'      : 'STOP',
+    'if'        : 'IF',
+    'true'      : 'TRUE',
+    'false'     : 'FALSE'
 }
 
 tokens = (

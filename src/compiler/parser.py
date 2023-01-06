@@ -3,14 +3,20 @@ from math import pow
 import src.compiler.ply.yacc as yacc
 from src.compiler.lexer import tokens
 from src.compiler.util import parse_number, nth_root
-from src.compiler.ast import ValueNode, UnaryOpNode, BinaryOpNode, WorldNode
+from src.compiler.ast import (
+    ValueNode,
+    UnaryOpNode,
+    BinaryOpNode,
+    WorldNode,
+    SimulationNode
+)
 
 
 
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : world_stmt"
+        "program : sim_stmt"
         p[0] = p[1]
     
     # handy productions
@@ -75,6 +81,20 @@ def get_parser(*args, **kwargs):
     def p_terrainposn_list_epsilon(p):
         "terrainposn_list : epsilon"
         p[0] = []
+    
+    # simulation stmt productions
+    def p_sim(p):
+        "sim_stmt : SIMULATION '{' maybe_newline simprop maybe_newline simprop maybe_newline simprop maybe_newline '}'"
+        p[0] = SimulationNode({**p[4], **p[6], **p[8]})
+    
+    def p_simprop(p):
+        '''simprop : EPISODES NUMBER
+                   | MAX_ROUNDS NUMBER'''
+        p[0] = {p[1]: parse_number(p[2])}
+    
+    def p_simprop_stop(p):
+        "simprop : STOP IF disjunction"
+        p[0] = {'stop': p[3]}
 
     # boolean expr productions
     def p_disjunction(p):
