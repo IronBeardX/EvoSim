@@ -44,11 +44,16 @@ def get_parser(*args, **kwargs):
     
     def p_worldsize_infinite(p):
         "worldsize : INFINITE"
-        p[0] = {"size": (True, -1, -1)}
+        p[0] = {"size": (True, {"width": -1, "height": -1})}
     
     def p_worldsize(p):
-        "worldsize : '{' maybe_newline WIDTH NUMBER maybe_newline HEIGHT NUMBER maybe_newline '}'"
-        p[0] = {"size": (False, parse_number(p[4]), parse_number(p[7]))}
+        "worldsize : '{' maybe_newline worldsizeprop maybe_newline worldsizeprop maybe_newline '}'"
+        p[0] = {"size": (False, {**p[3], **p[5]})}
+    
+    def p_worldsizeprop(p):
+        '''worldsizeprop : WIDTH NUMBER
+                         | HEIGHT NUMBER'''
+        p[0] = {p[1]: parse_number(p[2])}
     
     def p_worldterrain(p):
         "worldterrain : '{' maybe_newline terrainprop_list '}'"
@@ -72,11 +77,11 @@ def get_parser(*args, **kwargs):
     
     def p_terrainprop_at(p):
         "terrainprop : ID AT '{' maybe_newline NUMBER maybe_newline terrainposn_list '}'"
-        p[0] = (p[1], False, [p[5], *p[7]])
+        p[0] = (p[1], False, [parse_number(p[5]), *p[7]])
     
     def p_terrainposn_list(p):
         "terrainposn_list : NUMBER maybe_newline terrainposn_list"
-        p[0] = [p[1], *p[3]]
+        p[0] = [parse_number(p[1]), *p[3]]
     
     def p_terrainposn_list_epsilon(p):
         "terrainposn_list : epsilon"
