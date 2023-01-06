@@ -225,7 +225,7 @@ class SeeRadius:
             if entity != entity_id:
                 if self.entities[entity].position in valid_pos:
                     entities_in_radius.append(
-                        (entity, self.entities[entity].position))
+                        (entity, self.entities[entity].position, self.distance(entity_id, entity)))
 
         return entities_in_radius
 
