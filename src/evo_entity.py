@@ -24,7 +24,8 @@ class Entity:
     def get_entity_id(self):
         return str(self._id)
 
-
+    def pass_time(self):
+        pass
 class Organism(
     Entity,
     RandomBehavior
@@ -63,9 +64,26 @@ class Food(Entity):
 
 
 class PackableFood(Entity):
-    def __init__(self, Nutrition=10, intelligence=False, coexistence=True, rep="P"):
+    def __init__(self, Nutrition=5, intelligence=False, coexistence=True, rep="P"):
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
         super().__init__(representation=rep)
         self.physical_properties = {"edible": Nutrition, "storable": True}
+
+
+class SEOrg(Organism, SEater):
+    def __init__(self, dna_chain):
+        super().__init__(dna_chain)
+
+class SPOrg(Organism, SPicker):
+    def __init__(self, dna_chain):
+        super().__init__(dna_chain)
+
+class SAOrg(Organism, SAtaker):
+    def __init__(self, dna_chain):
+        super().__init__(dna_chain)
+
+class DOrg(Organism, Defender):
+    def __init__(self, dna_chain):
+        super().__init__(dna_chain)

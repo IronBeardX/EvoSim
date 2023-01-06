@@ -145,6 +145,8 @@ class RandomBehavior(Behavior):
         return True
 
     def receive_influences(self, influences_list):
+        #TODO: implement this
+        return
         for influence in influences_list:
             match influence["name"]:
                 case "attack":
@@ -161,3 +163,42 @@ class WatcherBehavior(RandomBehavior):
 class Smeller(RandomBehavior):
     def decide_action(self, perceptions, day, time=10):
         return super().decide_action(perceptions, day, time)
+
+
+class SEater(RandomBehavior):
+    def decide_action(self, perceptions, day, time=10):
+        #get the entty in the south
+        food = None
+        for action in self.actions:
+            if action["name"] == "eat":
+                self.physical_properties["hunger"] -= action["cost"]
+                for info in self.knowledge:
+                    if "entity" in info:
+                        food = info["entity"]
+                        return [{"command": "eat", "parameters": [food]}]
+
+class SPicker(RandomBehavior):
+    def decide_action(self, perceptions, day, time=10):
+        food = None
+        for action in self.actions:
+            if action["name"] == "pick":
+                self.physical_properties["hunger"] -= action["cost"]
+                for info in self.knowledge:
+                    if "entity" in info:
+                        food = info["entity"]
+                        return [{"command":"pick", "parameters":[food]}]
+
+class SAtaker(RandomBehavior):
+    def decide_action(self, perceptions, day, time=10):
+        for action in self.actions:
+            if action["name"] == "attack":
+                self.physical_properties["hunger"] -= action["cost"]
+                for info in self.knowledge:
+                    if "entity" in info:
+                        food = info["entity"]
+                        return [{"command":"attack", "parameters":[food, self.physical_properties["arms_attack"]]}]
+
+class Defender(RandomBehavior):
+    def decide_action(self, perceptions, day, time=10):
+        self.defending = True
+        return []
