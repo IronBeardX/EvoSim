@@ -132,15 +132,30 @@ class EvoWorld(
             self.world_actions[command](entity_id)
 
     def __str__(self) -> str:
+        #This methods returns a string representation of the world
         terrain_copy = self.world_map.copy()
         for entity in self.entities.keys():
             entity_position = self.entities[entity].position
             terrain_copy[entity_position[0], entity_position[1]
                          ] = self.entities[entity].representation
-        return str(terrain_copy)
+        string_rep = ""
+        for i in range(terrain_copy.shape[0]):
+            for j in range(terrain_copy.shape[1]):
+                string_rep += terrain_copy[i, j] + " "
+            string_rep += "\n"
+        return string_rep + "\n \n"
+
+    def world_rep(self):
+        terrain_copy = self.world_map.copy()
+        for entity in self.entities.keys():
+            entity_position = self.entities[entity].position
+            terrain_copy[entity_position[0], entity_position[1]
+                         ] = self.entities[entity].representation
+        return terrain_copy
+
+                
 
     def place_entity(self, id, position, representation, coexistence=False):
-        # TODO: check which parameters are needed
         entity_information = MapEntityInfo(
             position, coexistence, representation)
 

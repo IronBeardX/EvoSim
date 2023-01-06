@@ -1,6 +1,9 @@
 from .evo_world import *
 from .evo_entity import *
 from .utils import *
+from colorama import init as colorama_init
+from colorama import Fore
+from colorama import Style
 
 
 class EvoSim:
@@ -10,12 +13,16 @@ class EvoSim:
                  terrain_types,
                  terrain_dist,
                  finite=False,
-                 episodes_total=10,
-                 max_rounds_per_episode=1000,
+                 episodes_total=1,
+                 max_rounds_per_episode=10,
                  stop_condition=None,
-                 available_commands={}
+                 available_commands={},
+                 visualization=False,
+                 actions_time=10
                  ):
         self.init_world(height, width, terrain_types, terrain_dist, finite)
+        self.actions_time = actions_time
+        self.visualization = visualization
         self.entities_gen = []
         self.entities = {}
         self.banished_entities = {}
@@ -55,16 +62,11 @@ class EvoSim:
             if self.stop_condition is not None:
                 if self.stop_condition(self):
                     return
-            
+
             # Time comes for us all ...
-            # TODO: Fix sim flow for int entities, it should be, percept, pass time, act ...
-            # for entity_id in self.intelligent_entities:
-            #     entity = self.intelligent_entities[entity_id]
-            #     entity.pass_time()
             for entity_id in self.entities:
                 entity = self.entities[entity_id]
                 entity.pass_time()
-
 
             # Executing entities actions
             for entity_id in list(self.intelligent_entities.keys()):
@@ -87,24 +89,48 @@ class EvoSim:
                             self.update_perception(info, perception_list)
                 self.intelligent_entities[entity_id].update_knowledge(
                     perception_list)
-                
+
                 if not entity.pass_time():
-                    self.banished_entities[entity_id] = self.intelligent_entities.pop(entity_id)
+                    self.banished_entities[entity_id] = self.intelligent_entities.pop(
+                        entity_id)
                     self.world.remove_entity(entity_id)
                     # print : entity_id, "was banished"
-                    print(f"{entity_id} was banished")
-                    print("\n")
-                    print(self.world)
+                    if self.visualization:
+                        self.visualization_fun(banished = entity_id)
                     continue
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
-                actions = entity.decide_action(perception_list, day)
+                actions = entity.decide_action(
+                    perception_list, day, time=self.actions_time)
                 for action in actions:
                     action["entity"] = entity_id
                     self.execute_action(action)
-                    print(action["command"])
-                    print("\n")
-                    print(self.world)
+                    if self.visualization:
+                        self.visualization_fun(action)
+
+    def visualization_fun(self, action = None, banished = None):
+        if action:
+            print(action["command"])
+        if banished:
+            print(f"{banished} was banished")
+        print("\n")
+        for i in range(self.world.world_rep().shape[0]):
+            for j in range(self.world.world_rep().shape[1]):
+                if self.world.world_rep()[i, j] == "R":
+                    print(
+                        f"{Fore.YELLOW}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
+                elif self.world.world_rep()[i, j] == "W":
+                    print(
+                        f"{Fore.BLUE}{self.world.world_rep()[i, j]}{Style.RESET_ALL}", end=" ")
+                elif self.world.world_rep()[i, j] == "F":
+                    print(
+                        f"{Fore.RED}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
+                elif self.world.world_rep()[i, j] == "P":
+                    print(
+                        f"{Fore.RED}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
+                else:
+                    print(self.world.world_rep()[i, j], end=" ")
+        print("\n \n")
 
     def update_perception(self, new_info, current_info):
         if "entity" in list(new_info.keys()):
@@ -126,27 +152,26 @@ class EvoSim:
         return (position, self.world.get_pos_terrain(position))
 
     def smell(self, ent_id, day, r):
-        # FIXME: should not be only intelligent
-        entities_list = [(self.intelligent_entities[other_id], pos)
-                         for other_id, pos in self.world.see_r(ent_id, r)]
+        entities_list = self.__entities_in_radius(ent_id, r)
         perception_list = []
-        for entity, pos in entities_list:
+        for entity, pos, distance in entities_list:
             if "smell" in entity.physical_properties:
                 perception_list.append({
                     "entity": entity.get_entity_id(),
                     "smell": entity.physical_properties["smell"],
                     "position": pos,
-                    "day": day
+                    "day": day,
+                    "distance": distance
                 })
         return perception_list
 
     def see(self, ent_id, day, r):
         entities_list = self.__entities_in_radius(ent_id, r)
         perception_list = []
-        for entity, pos in entities_list:
+        for entity, pos, distance in entities_list:
             # TODO: add color and shape
             entity_info = {"entity": entity.get_entity_id(),
-                           "day": day, "position": pos}
+                           "day": day, "position": pos, "distance": distance}
             if "legs" in entity.physical_properties:
                 entity_info["legs"] = entity.physical_properties["legs"]
             if "arms" in entity.physical_properties:
@@ -163,14 +188,15 @@ class EvoSim:
         return perception_list
 
     def __entities_in_radius(self, ent_id, r):
-        entities_id_list = [(other_id, pos)
-                            for other_id, pos in self.world.see_r(ent_id, r)]
+        entities_id_list = [(other_id, pos, distance)
+                            for other_id, pos, distance in self.world.see_r(ent_id, r)]
         entities = []
-        for ent_id, pos in entities_id_list:
+        for ent_id, pos, distance in entities_id_list:
             if ent_id in self.entities:
-                entities.append((self.entities[ent_id], pos))
+                entities.append((self.entities[ent_id], pos, distance))
             elif ent_id in self.intelligent_entities:
-                entities.append((self.intelligent_entities[ent_id], pos))
+                entities.append(
+                    (self.intelligent_entities[ent_id], pos, distance))
         return entities
 
     def attack(self, ent_id, other_id, value):
@@ -183,7 +209,7 @@ class EvoSim:
 
         other_entity = self.intelligent_entities[other_id]
         # influencing other entity
-        other_entity.receive_influences([{"name":"damage","value": value}])
+        other_entity.receive_influences([{"name": "damage", "value": value}])
 
     def pick(self, ent_id, item_id):
         # check if the ids are correct
@@ -204,7 +230,7 @@ class EvoSim:
             return
 
         # store the item and remove it from the world:
-        entity.receive_influences([{"name":"storage", "value":item_id}])
+        entity.receive_influences([{"name": "storage", "value": item_id}])
         self.banished_entities[item_id] = self.entities.pop(item_id)
         self.world.remove_entity(item_id)
 

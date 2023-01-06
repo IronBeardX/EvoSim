@@ -30,13 +30,13 @@ class Entity:
 class Organism(
     Entity
 ):
-    def __init__(self, dna_chain):
+    def __init__(self, dna_chain, representation="O"):
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
         genetic potential is an integer that represents the maximum length of the dna chain.
         '''
-        super().__init__(intelligence=True, coexistence=False)
+        super().__init__(intelligence=True, coexistence=False, representation=representation)
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
@@ -94,19 +94,6 @@ class PackableFood(Entity):
         super().__init__(representation=rep)
         self.physical_properties = {"edible": Nutrition, "storable": True}
 
-
-class SEOrg(Organism, SEater):
-    def __init__(self, dna_chain):
-        super().__init__(dna_chain)
-
-class SPOrg(Organism, SPicker):
-    def __init__(self, dna_chain):
-        super().__init__(dna_chain)
-
-class SAOrg(Organism, SAtaker):
-    def __init__(self, dna_chain):
-        super().__init__(dna_chain)
-
-class DOrg(Organism, Defender):
-    def __init__(self, dna_chain):
-        super().__init__(dna_chain)
+class RandomOrg(Organism, RandomBehavior):
+    def __init__(self, dna_chain, representation="R"):
+        super().__init__(dna_chain, representation=representation)

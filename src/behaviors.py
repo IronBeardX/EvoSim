@@ -64,9 +64,12 @@ class RandomBehavior(Behavior):
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move west"})
                 case "eat":
-                    self.physical_properties["hunger"] -= action["cost"]
-                    action_time += self.physical_properties["mouth"]
-                    actions.append({"command": "eat"})
+                    random_ent = self.rand_ent()
+                    if random_ent != "none":
+                        self.physical_properties["hunger"] -= action["cost"]
+                        action_time += self.physical_properties["mouth"]
+                        actions.append(
+                            {"command": "eat", "parameters": [random_ent]})
                 case "reproduce":
                     self.physical_properties["hunger"] -= action["cost"]
                     action_time += 5
@@ -89,7 +92,6 @@ class RandomBehavior(Behavior):
                     actions.append(
                         {"command": "attack", "parameters": [objective, attack]})
                 case "defend":
-                    # TODO: Finish this
                     defense = 0
                     body_part = None
                     for defense_dealer in self.physical_properties.keys():
@@ -99,10 +101,14 @@ class RandomBehavior(Behavior):
                                 body_part = defense_dealer
                     self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties[body_part]
+                    self.physical_properties["defending"] = True
                 case "pick":
-                    self.physical_properties["hunger"] -= action["cost"]
-                    action_time += self.physical_properties["arms"]
-                    actions.append({"command": "pick"})
+                    random_ent = self.rand_ent()
+                    if random_ent != "none":
+                        self.physical_properties["hunger"] -= action["cost"]
+                        action_time += self.physical_properties["arms"]
+                        actions.append(
+                            {"command": "eat", "parameters": [random_ent]})
                 case "swim north":
                     self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
@@ -131,12 +137,7 @@ class RandomBehavior(Behavior):
                 entity_list.append(info["entity"])
         return random.choice(entity_list) if len(entity_list) > 0 else "none"
 
-    def get_prop_by_name(self, name):
-        for action in self.actions:
-            if action["name"] == self.name:
-                return action
-
-        # TODO: get the floor from the knowledge
+    def pass_time(self, name):
         floor = "grass"
         for info in self.knowledge:
             if "floor" in info.keys():
@@ -148,7 +149,8 @@ class RandomBehavior(Behavior):
                 if "fins" not in self.physical_properties.keys():
                     self.physical_properties["health"] -= 10
             case _:
-                pass
+                if "legs" not in self.physical_properties.keys():
+                    self.physical_properties["health"] -= 10
 
         self.physical_properties["health"] -= 1
         self.physical_properties["hunger"] -= 1
@@ -188,53 +190,21 @@ class RandomBehavior(Behavior):
                     raise Exception("Influence not found")
 
 
-class WatcherBehavior(RandomBehavior):
+class RobberBehavior(RandomBehavior):
     def decide_action(self, perceptions, day, time=10):
-        return super().decide_action(perceptions, day, time)
+        pass
 
 
-class Smeller(RandomBehavior):
+class GluttonyBehavior(Behavior):
     def decide_action(self, perceptions, day, time=10):
-        return super().decide_action(perceptions, day, time)
+        pass
 
 
-class SEater(RandomBehavior):
+class FighterBehavior(Behavior):
     def decide_action(self, perceptions, day, time=10):
-        # get the entty in the south
-        food = None
-        for action in self.actions:
-            if action["name"] == "eat":
-                self.physical_properties["hunger"] -= action["cost"]
-                for info in self.knowledge:
-                    if "entity" in info:
-                        food = info["entity"]
-                        return [{"command": "eat", "parameters": [food]}]
+        pass
 
 
-class SPicker(RandomBehavior):
+class LoverBehavior(Behavior):
     def decide_action(self, perceptions, day, time=10):
-        food = None
-        for action in self.actions:
-            if action["name"] == "pick":
-                self.physical_properties["hunger"] -= action["cost"]
-                for info in self.knowledge:
-                    if "entity" in info:
-                        food = info["entity"]
-                        return [{"command": "pick", "parameters": [food]}]
-
-
-class SAtaker(RandomBehavior):
-    def decide_action(self, perceptions, day, time=10):
-        for action in self.actions:
-            if action["name"] == "attack":
-                self.physical_properties["hunger"] -= action["cost"]
-                for info in self.knowledge:
-                    if "entity" in info:
-                        food = info["entity"]
-                        return [{"command": "attack", "parameters": [food, self.physical_properties["arms_attack"]]}]
-
-
-class Defender(RandomBehavior):
-    def decide_action(self, perceptions, day, time=10):
-        self.physical_properties["defending"] = True
-        return []
+        pass

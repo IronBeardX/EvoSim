@@ -3,6 +3,7 @@ from src.evo_sim import *
 from src.evo_world import *
 from src.genetics import *
 from src.utils import *
+from random import randint
 
 
 def gen_basic_dna_chain():
@@ -41,30 +42,31 @@ def pick_ext(dna):
 
 def main():
     initial_dist = {}
-    sim = EvoSim(150,
-                 150,
+    sim = EvoSim(20,
+                 20,
                  {"G": "grass", "D": "dirt", "W": "water"},
                  initial_dist,
                  False,
                  1,
-                 10
+                 5,
+                 visualization=True
                  )
-    sim.add_entity_gen(food_gen)
+    sim.add_entity_gen(random_gen)
     sim.add_entity_gen(pickable_gen)
-    sim.add_entity_gen(eater_gen)
-    sim.add_entity_gen(picker_gen)
-    sim.add_entity_gen(atacker_gen)
-    sim.add_entity_gen(defender_gen)
+    sim.add_entity_gen(food_gen)
+    #generate entities generation list in random positions
+    positions_ent = gen_random_position_tuple_list(19, 19, 3)
+    positions_food = gen_random_position_tuple_list(19, 19, 20)
+    positions_pick = gen_random_position_tuple_list(19, 19, 20)
+    # create the (generator_position, position) list
+    gen_pos_ent = [(0, pos) for pos in positions_ent]
+    gen_pos_ent.extend([(2, pos) for pos in positions_food])
+    gen_pos_ent.extend([(1, pos) for pos in positions_pick])
+
+
     # clean terminal
     print(chr(27) + "[2J")
-    sim.run([
-        (0, (1, 0)),
-        (1, (1, 1)),
-        (5, (1, 2)),
-        (2, (0, 0)),
-        (3, (0, 1)),
-        (4, (0, 2)),
-    ])
+    sim.run(gen_pos_ent)
     return
 
 
@@ -82,7 +84,7 @@ def walker_gen():
 
 def random_gen():
     dna = gen_basic_dna_chain()
-    # adding all genes:
+    #extending dna with all genes:
     dna.extend(smeller_ext(dna))
     dna.extend(watcher_ext(dna))
     dna.extend(walker_ext(dna))
@@ -90,7 +92,15 @@ def random_gen():
     dna.extend(arms_ext(dna))
     dna.extend(eater_ext(dna))
     dna.extend(pick_ext(dna))
-    return Organism(dna)
+    return RandomOrg(dna)
+
+
+def gen_random_position_tuple_list(x, y, n):
+    #positions should be unique
+    positions = set()
+    while len(positions) < n:
+        positions.add((randint(0, x), randint(0, y)))
+    return list(positions)
 
 
 def food_gen():
@@ -99,32 +109,6 @@ def food_gen():
 
 def pickable_gen():
     return PackableFood()
-
-
-def eater_gen():
-    dna = gen_basic_dna_chain()
-    dna.extend(watcher_ext(dna))
-    return SEOrg(dna)
-
-
-def picker_gen():
-    dna = gen_basic_dna_chain()
-    dna.extend(pick_ext(dna))
-    dna.extend(watcher_ext(dna))
-    return SPOrg(dna)
-
-
-def atacker_gen():
-    dna = gen_basic_dna_chain()
-    dna.extend(arms_ext(dna))
-    dna.extend(watcher_ext(dna))
-    return SAOrg(dna)
-
-
-def defender_gen():
-    dna = gen_basic_dna_chain()
-    dna.extend(arms_ext(dna))
-    return DOrg(dna)
 
 
 if __name__ == "__main__":
