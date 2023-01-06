@@ -1,12 +1,12 @@
 [lexer]
 
 literals:
-    + - * / % ( ) ^ @ < > { } =
+    + - * / % ( ) ^ @ < > { } = ,
 
 reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
     SIMULATION EPISODES STOP MAX_ROUNDS IF ELSE GENE HEALTH HUNGER LEGS EYES ARMS 
-    HORNS SMELL FINS NOSE MOUTH VALUE IN MUTATION CHANCE STEP
+    HORNS SMELL FINS NOSE MOUTH VALUE IN MUTATION CHANCE STEP LOOP CONTINUE BREAK
 
 tokens:
     INTDIV EQ NEQ GE LE NUMBER ID
@@ -21,10 +21,29 @@ stmt_list =>
 stmt =>
     if_stmt
     var_stmt
+    loop_stmt
+    CONTINUE
+    BREAK
 
 
 var_stmt =>
     ID = disjunction
+
+
+loop_stmt =>
+    LOOP loop_init loop_condition loop_set { maybe_nl stmt_list }
+
+loop_condition =>
+    disjunction
+    epsilon
+
+loop_init =>
+    var_stmt ,
+    epsilon
+
+loop_set =>
+    , var_stmt
+    epsilon
 
 
 if_stmt =>

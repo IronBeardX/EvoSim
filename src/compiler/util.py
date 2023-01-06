@@ -1,6 +1,11 @@
 from math import sqrt, pow
 
 
+class Signal(Exception):
+    pass
+
+BREAK = Signal()
+
 def parse_number(number_string, int_fisrt=True):
     first, second = (int, float) if int_fisrt else (float, int)
 

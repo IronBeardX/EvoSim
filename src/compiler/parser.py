@@ -7,7 +7,8 @@ from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
     WorldNode, SimulationNode, PhyGeneNode,
     IfNode, ElseNode,
-    VariableSettingNode
+    VariableSettingNode,
+    LoopNode, ContinueNode, BreakNode
 )
 
 
@@ -42,8 +43,17 @@ def get_parser(*args, **kwargs):
     
     def p_stmt(p):
         '''stmt : if_stmt
-                | var_stmt'''
+                | var_stmt
+                | loop_stmt'''
         p[0] = p[1]
+    
+    def p_stmt_continue(p):
+        "stmt : CONTINUE"
+        p[0] = ContinueNode()
+    
+    def p_stmt_break(p):
+        "stmt : BREAK"
+        p[0] = BreakNode()
 
     # gene stmt productions
     def p_gene(p):
@@ -170,6 +180,35 @@ def get_parser(*args, **kwargs):
 
     def p_else_epsilon(p):
         "else_stmt : epsilon"
+        p[0] = None
+    
+    # loop stmt productions
+    def p_loop(p):
+        "loop_stmt : LOOP loop_init loop_condition loop_set '{' maybe_newline stmt_list '}'"
+        p[0] = LoopNode(p[2], p[3], p[4], p[7])
+
+    def p_loop_init(p):
+        "loop_init : var_stmt ','"
+        p[0] = p[1]
+    
+    def p_loop_init_epsilon(p):
+        "loop_init : epsilon"
+        p[0] = None
+    
+    def p_loop_set(p):
+        "loop_set : ',' var_stmt"
+        p[0] = p[2]
+    
+    def p_loop_set_epsilon(p):
+        "loop_set : epsilon"
+        p[0] = None
+    
+    def p_loop_cond(p):
+        "loop_condition : disjunction"
+        p[0] = p[1]
+    
+    def p_loop_cond_epsilon(p):
+        "loop_condition : epsilon"
         p[0] = None
 
     # boolean expr productions

@@ -1,4 +1,5 @@
 from src.compiler.context import Context
+from src.compiler.util import Signal, BREAK
 
 
 class Node:
@@ -84,3 +85,37 @@ class VariableSettingNode(Node):
     def evaluate(self, context: Context):
         value = self.node.evaluate(context)
         context.set_var(self.name, value)
+
+class LoopNode(Node):
+    def __init__(self, init_node, condition_node, final_node, body_nodes):
+        self.init = init_node
+        self.condition = condition_node or ValueNode(True)
+        self.final = final_node
+        self.body = body_nodes or []
+    
+    def evaluate(self, context: Context):
+        child_context = context.new_child()
+
+        if self.init:
+            self.init.evaluate(child_context)
+        
+        while self.condition.evaluate(child_context):
+            try:
+                for node in self.body:
+                    node.evaluate(child_context)
+            # catches a CONTINUE or BREAK signal
+            # from any level of child scope
+            except Signal as s:
+                if s == BREAK:
+                    break
+            
+            if self.final:
+                self.final.evaluate(child_context)
+
+class BreakNode(Node):
+    def evaluate(self, context: Context):
+        raise BREAK
+
+class ContinueNode(Node):
+    def evaluate(self, context: Context):
+        raise Signal()

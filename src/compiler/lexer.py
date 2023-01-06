@@ -1,7 +1,7 @@
 import src.compiler.ply.lex as lex
 
 
-literals = '+-*/%()^@<{>}='
+literals = '+-*/%()^@<{>}=,'
 
 reserved = {
     'or'        : 'OR',
@@ -21,6 +21,9 @@ reserved = {
     'stop'      : 'STOP',
     'if'        : 'IF',
     'else'      : 'ELSE',
+    'loop'      : 'LOOP',
+    'continue'  : 'CONTINUE',
+    'break'     : 'BREAK',
     'true'      : 'TRUE',
     'false'     : 'FALSE',
     'gene'      : 'GENE',
