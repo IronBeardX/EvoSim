@@ -31,3 +31,7 @@ class BinaryOpNode(Node):
         left = self.leftnode.evaluate(context)
         right = self.rightnode.evaluate(context)
         return self.apply(left, right)
+
+class WorldNode(Node):
+    def __init__(self, props):
+        pass

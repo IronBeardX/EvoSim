@@ -3,20 +3,81 @@ from math import pow
 import src.compiler.ply.yacc as yacc
 from src.compiler.lexer import tokens
 from src.compiler.util import parse_number, nth_root
-from src.compiler.ast import ValueNode, UnaryOpNode, BinaryOpNode
+from src.compiler.ast import ValueNode, UnaryOpNode, BinaryOpNode, WorldNode
 
 
 
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : disjunction"
+        "program : world_stmt"
         p[0] = p[1]
     
-    # epsilon production
+    # handy productions
     def p_epsilon(p):
         "epsilon :"
         pass
+
+    def p_maybe_newline(p):
+        "maybe_newline : newline"
+        p[0] = p[1]
+    
+    def p_maybe_epsilon(p):
+        "maybe_newline : epsilon"
+        pass
+
+    # world stmt productions
+    def p_world(p):
+        "world_stmt : WORLD '{' maybe_newline worldprop maybe_newline worldprop maybe_newline '}'"
+        p[0] = WorldNode({**p[4], **p[6]})
+    
+    def p_worldprop_size(p):
+        "worldprop : SIZE worldsize"
+        p[0] = p[2]
+    
+    def p_worldprop_terrain(p):
+        "worldprop : TERRAIN worldterrain"
+        p[0] = p[2]
+    
+    def p_worldsize_infinite(p):
+        "worldsize : INFINITE"
+        p[0] = {"size": (True, -1, -1)}
+    
+    def p_worldsize(p):
+        "worldsize : '{' maybe_newline WIDTH NUMBER maybe_newline HEIGHT NUMBER maybe_newline '}'"
+        p[0] = {"size": (False, parse_number(p[4]), parse_number(p[7]))}
+    
+    def p_worldterrain(p):
+        "worldterrain : '{' maybe_newline terrainprop_list '}'"
+        p[0] = {"terrain": p[3]}
+
+    def p_terrainprop_list(p):
+        "terrainprop_list : terrainprop maybe_newline terrainprop_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_terrainprop_list_epsilon(p):
+        "terrainprop_list : epsilon"
+        p[0] = []
+    
+    def p_terrainprop(p):
+        "terrainprop : ID"
+        p[0] = (p[1], False, [])
+    
+    def p_terrainprop_default(p):
+        "terrainprop : DEFAULT ID"
+        p[0] = (p[2], True, [])
+    
+    def p_terrainprop_at(p):
+        "terrainprop : ID AT '{' maybe_newline NUMBER maybe_newline terrainposn_list '}'"
+        p[0] = (p[1], False, [p[5], *p[7]])
+    
+    def p_terrainposn_list(p):
+        "terrainposn_list : NUMBER maybe_newline terrainposn_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_terrainposn_list_epsilon(p):
+        "terrainposn_list : epsilon"
+        p[0] = []
 
     # boolean expr productions
     def p_disjunction(p):

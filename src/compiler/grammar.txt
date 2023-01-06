@@ -1,16 +1,50 @@
 [lexer]
 
 literals:
-    + - * / % ( ) ^ @ < >
+    + - * / % ( ) ^ @ < > { }
 
 reserved:
-    OR AND NOT TRUE FALSE
+    OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
 
 tokens:
-    INTDIV EQ NEQ GE LE NUMBER
+    INTDIV EQ NEQ GE LE NUMBER ID
 
 
 [parser]
+
+
+maybe_newline =>
+    newline
+    epsilon
+
+
+world_stmt =>
+    WORLD { maybe_newline worldprop maybe_newline worldprop maybe_newline }
+
+worldprop =>
+    SIZE worldsize
+    TERRAIN worldterrain
+
+worldsize =>
+    INFINITE
+    { maybe_newline WIDTH NUMBER maybe_newline HEIGHT NUMBER maybe_newline } 
+
+worldterrain =>
+    { maybe_newline terrainprop_list }
+
+terrainprop_list =>
+    terrainprop maybe_newline terrainprop_list
+    epsilon
+
+terrainprop =>
+    DEFAULT ID
+    ID AT { maybe_newline NUMBER maybe_newline terrainposn_list }
+    ID
+
+terrainposn_list =>
+    NUMBER maybe_newline terrainposn_list
+    epsilon
+
 
 disjunction =>
     conjunction OR conjunction
@@ -24,6 +58,7 @@ negation =>
     NOT comparison
     comparison
 
+
 comparison =>
     expr EQ expr
     expr NEQ expr
@@ -32,6 +67,7 @@ comparison =>
     expr < expr
     expr > expr
     expr
+
 
 expr =>
     expr + term

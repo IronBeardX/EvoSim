@@ -1,14 +1,22 @@
 import src.compiler.ply.lex as lex
 
 
-literals = '+-*/%()^@<>'
+literals = '+-*/%()^@<{>}'
 
 reserved = {
-    'or'   : 'OR',
-    'and'  : 'AND',
-    'not'  : 'NOT',
-    'TRUE' : 'TRUE',
-    'FALSE': 'FALSE'
+    'or'      : 'OR',
+    'and'     : 'AND',
+    'not'     : 'NOT',
+    'world'   : 'WORLD',
+    'width'   : 'WIDTH',
+    'height'  : 'HEIGHT',
+    'infinite': 'INFINITE',
+    'default' : 'DEFAULT',
+    'at'      : 'AT',
+    'size'    : 'SIZE',
+    'terrain' : 'TERRAIN',
+    'true'    : 'TRUE',
+    'false'   : 'FALSE'
 }
 
 tokens = (
@@ -18,6 +26,7 @@ tokens = (
     'GE',
     'LE',
     'NUMBER',
+    'ID',
     *reserved.values(),
     'newline'
 )
@@ -35,6 +44,11 @@ def get_lexer(*args, **kwargs):
     # valid IDs start with letter, followed by letters, digits and underscore chars
     def t_ID(t):
         r'[a-zA-Z][a-zA-Z0-9_]*'
+        
+        # fix lexer ignoring 't' as first letter
+        if t.value in ['errain', 'rue']:
+            t.value = f't{t.value}'
+        
         t.type = reserved.get(t.value, 'ID')
         return t
 
