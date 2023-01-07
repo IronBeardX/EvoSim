@@ -49,7 +49,7 @@ def main():
                  True,
                  2,
                  10,
-                 visualization=False
+                 visualization=True
                  )
     sim.add_entity_gen(fully_capable_opportunistic_gen)
     sim.add_entity_gen(pickable_gen)
