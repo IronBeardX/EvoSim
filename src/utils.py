@@ -122,7 +122,6 @@ class DirectedGraph:
 
         self._nodes[node_id].data = data
 
-    # FIXME
     def get_available_nodes(self, already_selected: list) -> list:
         '''
         Returns nodes that are targeted by the nodes in the given list or aren't

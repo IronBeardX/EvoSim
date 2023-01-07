@@ -51,7 +51,7 @@ class Hunger(PhysicalGene):
         return [{
             "hunger": self.value,
             "max hunger": self.value
-            }]
+        }]
 
 
 class Legs(PhysicalGene):
@@ -213,16 +213,6 @@ class Reproduce(ActionGene):
     def get_property(self):
         return [
             {"name": "reproduce", "cost": 10}
-        ]
-
-
-class Duplicate(ActionGene):
-    def __init__(self):
-        super().__init__("duplicate")
-
-    def get_property(self):
-        return [
-            {"name": "duplicate", "cost": 10}
         ]
 
 
