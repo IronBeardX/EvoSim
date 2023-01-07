@@ -265,12 +265,19 @@ class EvoSim:
         if "edible" not in food.physical_properties:
             return
 
-        # Check if the entity is adjacent to the food:
-        if self.world.distance(ent_id, food_id) > 1:
-            return
+        
 
+        # Check if the entity has the food in its storage:
+        if ("storage" in entity.physical_properties) and (food_id in entity.physical_properties["storage"]):
+            # Remove the food from the storage:
+            entity.physical_properties["storage"].remove(food_id)
+        # Check if the entity is adjacent to the food:
+        elif self.world.distance(ent_id, food_id) > 1:
+            return
+        
         entity.receive_influences(
             [{"name": "nutrients", "value": food.physical_properties["edible"]}])
+            
         self.banished_entities[food_id] = self.entities.pop(food_id)
         self.world.remove_entity(food_id)
 
