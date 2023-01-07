@@ -340,18 +340,20 @@ class OpportunisticBehavior(RandomBehavior):
         initial_state = []
         match current_goal["goal"]:
             case "reproduction":
-                surroundings = None
-                for info in self.knowledge:
-                    if "surroundings" in info.keys():
-                        surroundings = info["surroundings"]
-                        break
-                if surroundings:
-                    return []
-                    initial_state = self._get_state_food(
-                        any_food, food_in_sight, any_entity, entities_in_sight, self.knowledge["surroundings"])
+                if "eye" in self.physical_properties.keys():
+                    surroundings = None
+                    for info in self.knowledge:
+                        if "surroundings" in info.keys():
+                            surroundings = info["surroundings"]
+                            break
+                    actions, value, new_pos = self._get_state_reproduction(
+                        time, any_entity, entities_in_sight, surroundings, reproductive_entity)
+                    return actions
                 else:
+                    # TODO:
                     initial_state = self._get_state_reproduction(
-                        any_food, food_in_sight, any_entity, entities_in_sight, reproductive_entity)
+                        time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight)
+
             case "food":
                 if "eye" in self.physical_properties.keys():
                     # getting the surroundings
@@ -364,11 +366,9 @@ class OpportunisticBehavior(RandomBehavior):
                         time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings)
                     return actions
                 else:
+                    # TODO:
                     initial_state = self._get_state_food(
                         time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight)
-
-        # Next we generate variations of this state and change it depending on the temperature and
-        # the values of both states
 
     def _get_state_food(self, time, ent_w_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings=None, previous_state=None):
         # This method will return a list of actions to get food
@@ -476,6 +476,53 @@ class OpportunisticBehavior(RandomBehavior):
                     entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
                 return actions, state_value, action_time
 
+    def _get_state_reproduction(self, time, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None):
+        entities_in_sight_pos = self._curate_entities_positions(
+            entities_in_sight)
+        # getting position from the knowledge
+        current_pos = None
+        for info in self.knowledge:
+            if "floor" in info.keys():
+                current_pos = info["position"]
+                break
+
+        if previous_state:
+            pass
+        else:
+            if any_entity and reproductive_entity:
+                # If there is an entity in sight we will try to get to it
+                # We will get the closest reproductive entity
+                closest_ent = {"distance": math.inf, "reproductive": False}
+                for ent in entities_in_sight:
+                    if ent["distance"] < closest_ent["distance"] and ent["reproductive"]:
+                        closest_ent = ent
+                # Now we will get the actions to get to the entity
+                action_time, current_pos, actions = self._get_actions_to_position(
+                    current_pos, 0, time, closest_ent["position"], entities_in_sight_pos, surroundings)
+
+                # Next we will reproduce with this entity
+                if action_time < time:
+                    # getting the body part with highest attack
+                    actions.append(
+                        {"command": "reproduce", "parameters": [closest_ent["entity"]]})
+                    action_time += self.physical_properties["reproduction"]
+
+                # Now we will try to move to a position where the amount of entities is minimal
+                if action_time < time:
+                    action_time, current_pos, new_actions = self._get_actions_to_minimal_entities(
+                        current_pos, action_time, time, entities_in_sight, entities_in_sight_pos, surroundings)
+                    actions.extend(new_actions)
+
+                state_value = self._get_ents_in_pos_radius(
+                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+
+            else:
+                # If there is no entity in sight we will try to explore the surroundings
+                action_time, current_pos, actions = self._get_actions_to_minimal_entities(
+                    current_pos, 0, time, entities_in_sight, entities_in_sight_pos, surroundings)
+                state_value = self._get_ents_in_pos_radius(
+                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+
     def _get_actions_to_minimal_entities(self, position, action_time, time, entities_in_sight, entities_in_sight_pos, surroundings):
         # This method will return a list of actions to move to a position where the amount of entities is minimal
         # First we will get the position with the minimal amount of entities
@@ -551,9 +598,6 @@ class OpportunisticBehavior(RandomBehavior):
                 # If we can't move from any direction we wont move
                 break
         return actions_time, current_pos, actions
-
-    def _get_state_reproduction(self, any_food, food_in_sight, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None):
-        pass
 
     def _curate_entities_positions(self, entities):
         # This method will return a list of positions of the entities in sight

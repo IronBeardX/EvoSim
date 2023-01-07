@@ -277,15 +277,11 @@ class EvoSim:
         
         entity.receive_influences(
             [{"name": "nutrients", "value": food.physical_properties["edible"]}])
-            
+
         self.banished_entities[food_id] = self.entities.pop(food_id)
         self.world.remove_entity(food_id)
 
     def reproduce(self, ent_id, other_id):
-        # TODO:
-        pass
-
-    def duplicate(self, ent_id):
         # TODO:
         pass
 
