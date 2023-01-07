@@ -8,7 +8,8 @@ from src.compiler.ast import (
     WorldNode, SimulationNode, PhyGeneNode,
     IfNode, ElseNode,
     VariableSettingNode,
-    LoopNode, ContinueNode, BreakNode
+    LoopNode, ContinueNode, BreakNode,
+    FunctionNode, FunctionCallNode, ReturnNode
 )
 
 
@@ -54,6 +55,14 @@ def get_parser(*args, **kwargs):
     def p_stmt_break(p):
         "stmt : BREAK"
         p[0] = BreakNode()
+    
+    def p_stmt_return(p):
+        "stmt : RETURN disjunction"
+        p[0] = ReturnNode(p[2])
+    
+    def p_stmt_return_epsilon(p):
+        "stmt : RETURN epsilon"
+        p[0] = ReturnNode(None)
 
     # gene stmt productions
     def p_gene(p):
@@ -210,6 +219,19 @@ def get_parser(*args, **kwargs):
     def p_loop_cond_epsilon(p):
         "loop_condition : epsilon"
         p[0] = None
+    
+    # function declaration stmt productions
+    def p_func(p):
+        "func_stmt : FUNC ID '=' param_list '{' maybe_newline stmt_list '}'"
+        p[0] = FunctionNode(p[2], p[4], p[7])
+    
+    def p_param_list(p):
+        "param_list : ID param_list"
+        p[0] = [p[1], *p[2]]
+    
+    def p_param_list_epsilon(p):
+        "param_list : epsilon"
+        p[0] = []
 
     # boolean expr productions
     def p_disjunction(p):
@@ -334,8 +356,28 @@ def get_parser(*args, **kwargs):
         "atom : ID"
         p[0] = VariableNode(p[1])
     
+    def p_atom_function(p):
+        "atom : ID '(' arg_list ')'"
+        p[0] = FunctionCallNode(p[1], p[3])
+    
     def p_atom_group(p):
         "atom : '(' expr ')'"
         p[0] = p[2]
+    
+    def p_arg_list(p):
+        "arg_list : disjunction rest_args"
+        p[0] = [p[1], *p[2]]
+    
+    def p_arg_list_epsilon(p):
+        "arg_list : epsilon"
+        p[0] = []
+    
+    def p_rest_args(p):
+        "rest_args : ',' disjunction rest_args"
+        p[0] = [p[2], *p[3]]
+    
+    def p_rest_args_epsilon(p):
+        "rest_args : epsilon"
+        p[0] = []
 
     return yacc.yacc(*args, **kwargs)

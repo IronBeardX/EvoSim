@@ -7,6 +7,7 @@ reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
     SIMULATION EPISODES STOP MAX_ROUNDS IF ELSE GENE HEALTH HUNGER LEGS EYES ARMS 
     HORNS SMELL FINS NOSE MOUTH VALUE IN MUTATION CHANCE STEP LOOP CONTINUE BREAK
+    FUNC RETURN
 
 tokens:
     INTDIV EQ NEQ GE LE NUMBER ID
@@ -24,10 +25,23 @@ stmt =>
     loop_stmt
     CONTINUE
     BREAK
+    ret_stmt
 
 
 var_stmt =>
     ID = disjunction
+
+
+func_stmt =>
+    FUNC ID = param_list { maybe_nl stmt_list }
+
+param_list =>
+    ID param_list
+    epsilon
+
+ret_stmt =>
+    RETURN disjunction
+    RETURN epsilon
 
 
 loop_stmt =>
@@ -177,4 +191,13 @@ atom =>
     TRUE
     FALSE
     ID
+    ID ( arg_list )
     ( expr )
+
+arg_list =>
+    disjunction rest_args
+    epsilon
+
+rest_args =>
+    , disjunction rest_args
+    epsilon

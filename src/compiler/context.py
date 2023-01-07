@@ -3,25 +3,25 @@ class Context:
         self.parent = parent
         self.variables = {}
     
-    def _search(self, name, recursive):
+    def search(self, name, recursive):
         if name in self.variables:
             return self
         if recursive and self.parent:
-            return self.parent._search(name, recursive)
+            return self.parent.search(name, recursive)
         return None
     
     def new_child(self):
         return Context(self)
     
     def get_var(self, name, recursive=True):
-        context = self._search(name, recursive)
+        context = self.search(name, recursive)
         if context:
             return context.variables[name]
         
         raise Exception(f"context error: variable '{name}' not found")
     
     def set_var(self, name, value, recursive=True):
-        context = self._search(name, recursive)
+        context = self.search(name, recursive)
 
         # if the variable exists:
         if context:

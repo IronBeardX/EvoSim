@@ -1,5 +1,5 @@
 from src.compiler.context import Context
-from src.compiler.util import Signal, BREAK
+from src.compiler.util import Signal, BREAK, ValueSignal
 
 
 class Node:
@@ -119,3 +119,59 @@ class BreakNode(Node):
 class ContinueNode(Node):
     def evaluate(self, context: Context):
         raise Signal()
+
+class FunctionNode(Node):
+    def __init__(self, name, params, body_nodes):
+        self.name = name
+        self.params = params
+        self.body = body_nodes
+    
+    def evaluate(self, context: Context):
+        context.set_var(self.name, self)
+    
+    def call(self, context: Context, args):
+        # create child context because function
+        # represents a new block
+        child_context = context.new_child()
+
+        if len(self.params) != len(args):
+            raise Exception()
+
+        # set param values NOT RECURSIVELY
+        for param, arg in zip(self.params, args):
+            child_context.set_var(param, arg, recursive=False)
+        
+        # catch ValueSignal in case the function
+        # returns a value
+        try:
+            for node in self.body:
+                node.evaluate(child_context)
+        except ValueSignal as s:
+            return s.value
+
+
+class FunctionCallNode(Node):
+    def __init__(self, name, arg_nodes):
+        self.name = name
+        self.args = arg_nodes
+    
+    def evaluate(self, context: Context):
+        # search context where 'name' func was declared
+        func_context = context.search(self.name)
+
+        # check if it exists and is an actual func
+        if func_context:
+            f = func_context.get_var(self.name)
+            if isinstance(f, FunctionNode):
+                args = [arg.evaluate(context) for arg in self.args]
+                return f.call(func_context, args)
+        
+        raise Exception()
+
+class ReturnNode(Node):
+    def __init__(self, node):
+        self.node = node
+    
+    def evaluate(self, context: Context):
+        value = self.node and self.node.evaluate(context)
+        raise ValueSignal(value)

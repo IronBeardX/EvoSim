@@ -6,6 +6,12 @@ class Signal(Exception):
 
 BREAK = Signal()
 
+class ValueSignal(Exception):
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
+
+
 def parse_number(number_string, int_fisrt=True):
     first, second = (int, float) if int_fisrt else (float, int)
 

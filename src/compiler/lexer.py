@@ -24,6 +24,8 @@ reserved = {
     'loop'      : 'LOOP',
     'continue'  : 'CONTINUE',
     'break'     : 'BREAK',
+    'func'      : 'FUNC',
+    'return'    : 'RETURN',
     'true'      : 'TRUE',
     'false'     : 'FALSE',
     'gene'      : 'GENE',
