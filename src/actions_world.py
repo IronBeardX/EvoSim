@@ -252,16 +252,17 @@ class SeeRadius:
 class TerrainRadius:
     def terrain_r(self, entity_id, radius):
         entity_position = self.entities[entity_id].position
-        positions_in_radius = self.__get_positions_in_radius(entity_position, radius)
+        positions_in_radius = self.__get_positions_in_radius(
+            entity_position, radius)
         terrain_in_radius = {}
         for pos in positions_in_radius:
             rep = self.world_map[pos]
             terrain_in_radius[pos] = self.terrain_types[rep]
-        
+
         # terrain_in_radius = [self.world_map[pos] for pos in terrain_in_radius]
         #  # self.world_map["position"]
         # terrain_in_radius = [self.terrain_types[rep] for rep in terrain_in_radius]
-        # # self.terrain_types["rep"]    
+        # # self.terrain_types["rep"]
         return terrain_in_radius
 
     def __get_positions_in_radius(self, entity_position, radius):
@@ -282,8 +283,9 @@ class TerrainRadius:
                     positions.append((i, j))
         return positions
 
+
 class ManhatanDistance:
-    
+
     def distance(self, entity_id, other_entity_id):
         # This should return a correct value if the world is not finite
         entity_position = self.entities[entity_id].position
@@ -295,13 +297,16 @@ class ManhatanDistance:
             # Check if the distance is shorter if we go through the other side of the world
             if abs(entity_position[0] - other_entity_position[0]) > self.world_map.shape[0] / 2:
                 if entity_position[0] > other_entity_position[0]:
-                    entity_position = (entity_position[0] - self.world_map.shape[0], entity_position[1])
+                    entity_position = (
+                        entity_position[0] - self.world_map.shape[0], entity_position[1])
                 else:
-                    other_entity_position = (other_entity_position[0] - self.world_map.shape[0], other_entity_position[1])
+                    other_entity_position = (
+                        other_entity_position[0] - self.world_map.shape[0], other_entity_position[1])
             if abs(entity_position[1] - other_entity_position[1]) > self.world_map.shape[1] / 2:
                 if entity_position[1] > other_entity_position[1]:
-                    entity_position = (entity_position[0], entity_position[1] - self.world_map.shape[1])
+                    entity_position = (
+                        entity_position[0], entity_position[1] - self.world_map.shape[1])
                 else:
-                    other_entity_position = (other_entity_position[0], other_entity_position[1] - self.world_map.shape[1])
+                    other_entity_position = (
+                        other_entity_position[0], other_entity_position[1] - self.world_map.shape[1])
             return abs(entity_position[0] - other_entity_position[0]) + abs(entity_position[1] - other_entity_position[1])
-

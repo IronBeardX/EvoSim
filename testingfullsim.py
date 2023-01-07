@@ -46,20 +46,21 @@ def main():
                  20,
                  {"G": "grass", "D": "dirt", "W": "water"},
                  initial_dist,
-                 False,
-                 1,
-                 5,
-                 visualization=True
+                 True,
+                 2,
+                 10,
+                 visualization=False
                  )
     sim.add_entity_gen(fully_capable_opportunistic_gen)
     sim.add_entity_gen(pickable_gen)
     sim.add_entity_gen(food_gen)
+    sim.add_entity_gen(random_gen)
     #generate entities generation list in random positions
     positions_ent = gen_random_position_tuple_list(19, 19, 10)
     positions_food = gen_random_position_tuple_list(19, 19, 20)
     positions_pick = gen_random_position_tuple_list(19, 19, 20)
     # create the (generator_position, position) list
-    gen_pos_ent = [(0, pos) for pos in positions_ent]
+    gen_pos_ent = [(random.choice([1, 3]), pos) for pos in positions_ent]
     gen_pos_ent.extend([(2, pos) for pos in positions_food])
     gen_pos_ent.extend([(1, pos) for pos in positions_pick])
 
@@ -103,7 +104,8 @@ def fully_capable_opportunistic_gen():
     dna.extend(arms_ext(dna))
     dna.extend(eater_ext(dna))
     dna.extend(pick_ext(dna))
-    return OpportunisticOrg(dna)
+    dna.append(Reproduce())
+    return OpportunisticOrg(dna, species = OpportunisticOrg)
 
 
 def gen_random_position_tuple_list(x, y, n):

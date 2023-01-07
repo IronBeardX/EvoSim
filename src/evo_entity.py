@@ -27,10 +27,11 @@ class Entity:
     def pass_time(self):
         pass
 
+
 class Organism(
     Entity
 ):
-    def __init__(self, dna_chain, representation="O"):
+    def __init__(self, dna_chain, representation="O", species="default"):
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
@@ -41,6 +42,8 @@ class Organism(
         self.perceptions = []
         self.actions = []
         self.knowledge = []
+        self.species = species
+        self.age = 0
         self._parse_dna()
 
     def _parse_dna(self):
@@ -54,13 +57,14 @@ class Organism(
                 self.actions.extend(gene.get_property())
 
     def pass_time(self):
-        #TODO: if the organism dies, it must drop its inventory
+        # TODO: if the organism dies, it must drop its inventory
+        self.age += 1
         floor = "grass"
         for info in self.knowledge:
             if "floor" in info.keys():
                 floor = info["floor"]
                 break
-        #Check if the entity can stand in that floor
+        # Check if the entity can stand in that floor
         match floor:
             case "water":
                 if "fins" not in self.physical_properties.keys():
@@ -77,6 +81,7 @@ class Organism(
         if "defending" in list(self.physical_properties.keys()):
             self.physical_properties["defending"] = False
         return True
+
 
 class Food(Entity):
     def __init__(self, Nutrition=10, intelligence=False, coexistence=True, rep="F"):
@@ -95,10 +100,12 @@ class PackableFood(Entity):
         super().__init__(representation=rep)
         self.physical_properties = {"edible": Nutrition, "storable": True}
 
+
 class RandomOrg(Organism, RandomBehavior):
     def __init__(self, dna_chain, representation="R"):
         super().__init__(dna_chain, representation=representation)
 
+
 class OpportunisticOrg(Organism, OpportunisticBehavior):
-    def __init__(self, dna_chain, representation="O"):
-        super().__init__(dna_chain, representation=representation)
+    def __init__(self, dna_chain, representation="O", species="robber"):
+        super().__init__(dna_chain, representation=representation, species = species)

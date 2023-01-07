@@ -174,16 +174,16 @@ class RandomBehavior(Behavior):
         for influence in influences_list:
             match influence["name"]:
                 case "damage":
+                    defense = 0
                     if "defending" in self.physical_properties.keys() and self.physical_properties["defending"]:
                         # find max defense in body
-                        defense = 0
                         body_part = None
                         for defense_dealer in self.physical_properties.keys():
                             if "defense" in defense_dealer:
                                 if defense < self.physical_properties[defense_dealer]:
                                     defense = self.physical_properties[defense_dealer]
                                     body_part = defense_dealer
-                        self.physical_properties["health"] -= influence["value"] - defense
+                    self.physical_properties["health"] -= influence["value"] - defense
                     if self.physical_properties["health"] <= 0:
                         self.physical_properties["health"] = 0
                 case "storage":
@@ -334,7 +334,7 @@ class OpportunisticBehavior(RandomBehavior):
         # The "state" refereed earlier is a list of actions
 
         # First we will determine the temperature
-        temperature = current_goal["priority"]
+        temperature = current_goal["priority"] / 10
 
         # First we generate an initial state
         initial_state = []
@@ -347,13 +347,12 @@ class OpportunisticBehavior(RandomBehavior):
                             surroundings = info["surroundings"]
                             break
                     actions, value, new_pos = self._get_state_reproduction(
-                        time, any_entity, entities_in_sight, surroundings, reproductive_entity)
-                    return actions
+                        time, any_entity, entities_in_sight, reproductive_entity, surroundings)
+                    initial_state = (value, new_pos)
                 else:
-                    # TODO:
-                    initial_state = self._get_state_reproduction(
+                    actions, value, new_pos = self._get_state_reproduction(
                         time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight)
-
+                    initial_state = (value, new_pos)
             case "food":
                 if "eye" in self.physical_properties.keys():
                     # getting the surroundings
@@ -364,13 +363,66 @@ class OpportunisticBehavior(RandomBehavior):
                             break
                     actions, value, new_pos = self._get_state_food(
                         time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings)
-                    return actions
+                    initial_state = (value, new_pos)
                 else:
-                    # TODO:
-                    initial_state = self._get_state_food(
+                    actions, value, new_pos = self._get_state_food(
                         time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight)
+                    initial_state = (value, new_pos)
 
-    def _get_state_food(self, time, ent_w_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings=None, previous_state=None):
+            # Now we will generate a new state and actions list:
+            # If the new state is better than the initial state we will accept it
+            # If the new state is worse than the initial state we will accept it with a probability depending on the temperature
+            # If the new state is the same as the initial state we will accept it
+            # We will repeat this process until we reach the maximum number of iterations or the temperature is 0
+            # The temperature will decrease by 1 every iteration
+            # The temperature will be the priority of the goal
+            # We will return the actions list of the best state
+
+        for i in range(max_iterations):
+            if temperature <= 0:
+                break
+            # Generating a new state
+            new_state = initial_state
+            match current_goal["goal"]:
+                case "reproduction":
+                    if "eye" in self.physical_properties.keys():
+                        actions, value, new_pos = self._get_state_reproduction(
+                            time, any_entity, entities_in_sight, reproductive_entity, surroundings, previous_state= new_state, iteration = i)
+                        new_state = (value, new_pos)
+                    else:
+                        actions, value, new_pos = self._get_state_reproduction(
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state= new_state, iteration = i)
+                        new_state = (value, new_pos)
+                case "food":
+                    if "eye" in self.physical_properties.keys():
+                        actions, value, new_pos = self._get_state_food(
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings, previous_state= new_state, iteration = i)
+                        new_state = (value, new_pos)
+                    else:
+                        actions, value, new_pos = self._get_state_food(
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state= new_state, iteration = i)
+                        new_state = (value, new_pos)
+            
+            # if the new state value is -1 it means that the state is not valid
+            if new_state[0] == -1:
+                continue
+            # If the new state is better than the initial state we will accept it
+            if new_state[0] > initial_state[0]:
+                initial_state = new_state
+            # If the new state is worse than the initial state we will accept it with a probability depending on the temperature
+            elif new_state[0] < initial_state[0]:
+                if random.random() < math.exp((new_state[0] - initial_state[0]) / temperature):
+                    initial_state = new_state
+            # If the new state is the same as the initial state we will accept it
+            else:
+                initial_state = new_state
+
+            # Decreasing the temperature
+            temperature -= 1
+        return actions
+
+
+    def _get_state_food(self, time, ent_w_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings=None, previous_state=None, iteration = 0):
         # This method will return a list of actions to get food
         # If there is food in sight it will return a list of actions to get to the food
         # If there is no food in sight it will return a list of actions to explore the surroundings
@@ -386,15 +438,14 @@ class OpportunisticBehavior(RandomBehavior):
                 break
 
         if previous_state:
-            pass
-        else:
             if any_food and len(self.physical_properties["storage"]) == 0:
                 # If there is food in sight we will try to get to it
-                # We will get the closest food
-                closest_food = food_in_sight[0]
-                for food in food_in_sight:
-                    if food["distance"] < closest_food["distance"]:
-                        closest_food = food
+                # We will get the i-st closest food
+                closest_food = self._order_by_proximity(food_in_sight)
+                if len(closest_food) <= iteration:
+                    closest_food = closest_food[len(closest_food) - 1]
+                else:
+                    closest_food = closest_food[iteration]
                 # Now we will get the actions to get to the food
                 action_time, current_pos, actions = self._get_actions_to_position(
                     current_pos, 0, time, closest_food["position"], entities_in_sight_pos, surroundings)
@@ -435,11 +486,8 @@ class OpportunisticBehavior(RandomBehavior):
 
             if ent_w_food:
                 # If there is an entity with food we will try to get to it
-                # We will get the closest entity with food
-                closest_ent = entities_in_sight[0]
-                for ent in entities_in_sight:
-                    if ent["distance"] < closest_ent["distance"]:
-                        closest_ent = ent
+                # We will get the i-st closest entity with food
+                closest_ent = self._order_by_proximity(ent_w_food)[iteration]
                 # Now we will get the actions to get to the entity
                 action_time, current_pos, actions = self._get_actions_to_position(
                     current_pos, 0, time, closest_ent["position"], entities_in_sight_pos, surroundings)
@@ -450,10 +498,97 @@ class OpportunisticBehavior(RandomBehavior):
                     body_part = "none"
                     current_attack = 0
                     for part in self.physical_properties:
-                        if "attack" in self.physical_properties[part]:
-                            body_part = part
-                            if self.physical_properties[part+"_attack"] > current_attack:
-                                current_attack = self.physical_properties[part+"_attack"]
+                        if "attack" in part:
+                            body_part = part.split("_")[0]
+                            if self.physical_properties[part] > current_attack:
+                                current_attack = self.physical_properties[part]
+                    actions.append(
+                        {"command": "attack", "parameters": [closest_ent["entity"], current_attack]})
+                    action_time += self.physical_properties[body_part]
+
+                # Now we will try to move to a position where the amount of entities is minimal
+                if action_time < time:
+                    action_time, current_pos, new_actions = self._get_actions_to_minimal_entities(
+                        current_pos, action_time, time, entities_in_sight, entities_in_sight_pos, surroundings)
+                    actions.extend(new_actions)
+
+                state_value = self._get_ents_in_pos_radius(
+                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+                return actions, state_value, action_time
+
+            else:
+                # If there is no food in sight we will try to explore the surroundings
+                action_time, current_pos, actions = self._get_actions_to_minimal_entities(
+                    current_pos, 0, time, entities_in_sight, entities_in_sight_pos, surroundings)
+                state_value = self._get_ents_in_pos_radius(
+                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+                return actions, state_value, action_time
+        else:
+            if any_food and len(self.physical_properties["storage"]) == 0:
+                # If there is food in sight we will try to get to it
+                # We will get the i-st closest food
+                closest_food = self._order_by_proximity(food_in_sight)[iteration]
+
+                # Now we will get the actions to get to the food
+                action_time, current_pos, actions = self._get_actions_to_position(
+                    current_pos, 0, time, closest_food["position"], entities_in_sight_pos, surroundings)
+
+                # Next we will try to pick up the food or eat it
+                if action_time < time:
+                    if "storable" in closest_food and closest_food["storable"]:
+                        actions.append(
+                            {"command": "pick", "parameters": [closest_food["entity"]]})
+                        action_time += self.physical_properties["arms"]
+                    else:
+                        actions.append(
+                            {"command": "eat", "parameters": [closest_food["entity"]]})
+                        action_time += self.physical_properties["mouth"]
+
+                # Now we will try to move to a position where the amount of entities is minimal
+                if action_time < time:
+                    action_time, current_pos, new_actions = self._get_actions_to_minimal_entities(
+                        current_pos, action_time, time, entities_in_sight, entities_in_sight_pos, surroundings)
+                    actions.extend(new_actions)
+
+                state_value = self._get_ents_in_pos_radius(
+                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+                return actions, state_value, action_time
+
+            if len(self.physical_properties["storage"]) > 0:
+                # If we have food we will try to get to a position where the amount of entities is minimal
+                actions_time, current_pos, actions = self._get_actions_to_minimal_entities(
+                    current_pos, 0, time, entities_in_sight, entities_in_sight_pos, surroundings)
+
+                if actions_time < time:
+                    actions.append({"command": "eat", "parameters": [
+                                   self.physical_properties["storage"][0]]})
+                    actions_time += self.physical_properties["mouth"]
+                state_value = self._get_ents_in_pos_radius(
+                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+                return actions, state_value, actions_time
+
+            if ent_w_food:
+                # If there is an entity with food we will try to get to it
+                # We will get the i-st closest entity with food
+                closest_ent = self._order_by_proximity(entities_in_sight)
+                if len(closest_ent) <= iteration:
+                    closest_ent = closest_ent[-1]
+                else:
+                    closest_ent = closest_ent[iteration]
+                # Now we will get the actions to get to the entity
+                action_time, current_pos, actions = self._get_actions_to_position(
+                    current_pos, 0, time, closest_ent["position"], entities_in_sight_pos, surroundings)
+
+                # Next we will attack this entity
+                if action_time < time:
+                    # getting the body part with highest attack
+                    body_part = "none"
+                    current_attack = 0
+                    for part in self.physical_properties:
+                        if "attack" in part:
+                            body_part = part.split("_")[0]
+                            if self.physical_properties[part] > current_attack:
+                                current_attack = self.physical_properties[part]
                     actions.append(
                         {"command": "attack", "parameters": [closest_ent["entity"], current_attack]})
                     action_time += self.physical_properties[body_part]
@@ -476,7 +611,7 @@ class OpportunisticBehavior(RandomBehavior):
                     entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
                 return actions, state_value, action_time
 
-    def _get_state_reproduction(self, time, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None):
+    def _get_state_reproduction(self, time, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None, iteration = 0):
         entities_in_sight_pos = self._curate_entities_positions(
             entities_in_sight)
         # getting position from the knowledge
@@ -486,42 +621,65 @@ class OpportunisticBehavior(RandomBehavior):
                 current_pos = info["position"]
                 break
 
-        if previous_state:
-            pass
-        else:
-            if any_entity and reproductive_entity:
-                # If there is an entity in sight we will try to get to it
-                # We will get the closest reproductive entity
-                closest_ent = {"distance": math.inf, "reproductive": False}
-                for ent in entities_in_sight:
-                    if ent["distance"] < closest_ent["distance"] and ent["reproductive"]:
+        
+        if any_entity and reproductive_entity:
+            # If there is an entity in sight we will try to get to it
+            # We will get the closest reproductive entity
+            ordered_entities = self._order_by_proximity(entities_in_sight) 
+            i = 0
+            closest_ent = None
+            for ent in ordered_entities:
+                if "reproductive" in ent and ent["reproductive"]:
+                    i += 1
+                    if i == iteration:
                         closest_ent = ent
-                # Now we will get the actions to get to the entity
-                action_time, current_pos, actions = self._get_actions_to_position(
-                    current_pos, 0, time, closest_ent["position"], entities_in_sight_pos, surroundings)
+                        break
+                    #TODO check how we are comparing the values
+            if not closest_ent:
+                return [], -1, 0
+            # Now we will get the actions to get to the entity
+            action_time, current_pos, actions = self._get_actions_to_position(
+                current_pos, 0, time, closest_ent["position"], entities_in_sight_pos, surroundings)
+            # Next we will reproduce with this entity
+            if action_time < time:
+                # getting the body part with highest attack
+                actions.append(
+                    {"command": "reproduce", "parameters": [closest_ent["entity"]]})
+                for p in self.actions:
+                    if p["name"] == "reproduce":
+                        action_time += p["cost"]
+                        break
+            # Now we will try to move to a position where the amount of entities is minimal
+            if action_time < time:
+                action_time, current_pos, new_actions = self._get_actions_to_minimal_entities(
+                    current_pos, action_time, time, entities_in_sight, entities_in_sight_pos, surroundings)
+                actions.extend(new_actions)
+            state_value = self._get_ents_in_pos_radius(
+                entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+            return actions, state_value, action_time
+        else:
+            # If there is no entity in sight we will try to explore the surroundings
+            action_time, current_pos, actions = self._get_actions_to_minimal_entities(
+                current_pos, 0, time, entities_in_sight, entities_in_sight_pos, surroundings)
+            state_value = self._get_ents_in_pos_radius(
+                entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+            return actions, state_value, action_time
 
-                # Next we will reproduce with this entity
-                if action_time < time:
-                    # getting the body part with highest attack
-                    actions.append(
-                        {"command": "reproduce", "parameters": [closest_ent["entity"]]})
-                    action_time += self.physical_properties["reproduction"]
-
-                # Now we will try to move to a position where the amount of entities is minimal
-                if action_time < time:
-                    action_time, current_pos, new_actions = self._get_actions_to_minimal_entities(
-                        current_pos, action_time, time, entities_in_sight, entities_in_sight_pos, surroundings)
-                    actions.extend(new_actions)
-
-                state_value = self._get_ents_in_pos_radius(
-                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
-
+    def _order_by_proximity(self, entities):
+        # We will order the entities by proximity
+        ordered_entities = []
+        for ent in entities:
+            if len(ordered_entities) == 0:
+                ordered_entities.append(ent)
             else:
-                # If there is no entity in sight we will try to explore the surroundings
-                action_time, current_pos, actions = self._get_actions_to_minimal_entities(
-                    current_pos, 0, time, entities_in_sight, entities_in_sight_pos, surroundings)
-                state_value = self._get_ents_in_pos_radius(
-                    entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
+                for i in range(len(ordered_entities)):
+                    if ent["distance"] < ordered_entities[i]["distance"]:
+                        ordered_entities.insert(i, ent)
+                        break
+                    if i == len(ordered_entities) - 1:
+                        ordered_entities.append(ent)
+                        break
+        return ordered_entities
 
     def _get_actions_to_minimal_entities(self, position, action_time, time, entities_in_sight, entities_in_sight_pos, surroundings):
         # This method will return a list of actions to move to a position where the amount of entities is minimal
