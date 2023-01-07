@@ -26,7 +26,7 @@ class Context:
         # if the variable exists:
         if context:
             # asign the new value to it
-            context[name] = value
+            context.variables[name] = value
         # if it doesn't:
         else:
             # create it

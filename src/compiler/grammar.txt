@@ -45,18 +45,18 @@ ret_stmt =>
 
 
 loop_stmt =>
-    LOOP loop_init loop_condition loop_set { maybe_nl stmt_list }
+    LOOP loop_init , loop_condition , loop_set { maybe_nl stmt_list }
 
 loop_condition =>
     disjunction
     epsilon
 
 loop_init =>
-    var_stmt ,
+    var_stmt
     epsilon
 
 loop_set =>
-    , var_stmt
+    var_stmt
     epsilon
 
 

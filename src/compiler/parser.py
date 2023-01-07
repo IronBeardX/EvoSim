@@ -17,7 +17,7 @@ from src.compiler.ast import (
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : gene_stmt"
+        "program : stmt_list"
         p[0] = p[1]
     
     # handy productions
@@ -193,11 +193,11 @@ def get_parser(*args, **kwargs):
     
     # loop stmt productions
     def p_loop(p):
-        "loop_stmt : LOOP loop_init loop_condition loop_set '{' maybe_newline stmt_list '}'"
-        p[0] = LoopNode(p[2], p[3], p[4], p[7])
+        "loop_stmt : LOOP loop_init ',' loop_condition ',' loop_set '{' maybe_newline stmt_list '}'"
+        p[0] = LoopNode(p[2], p[4], p[6], p[9])
 
     def p_loop_init(p):
-        "loop_init : var_stmt ','"
+        "loop_init : var_stmt"
         p[0] = p[1]
     
     def p_loop_init_epsilon(p):
@@ -205,8 +205,8 @@ def get_parser(*args, **kwargs):
         p[0] = None
     
     def p_loop_set(p):
-        "loop_set : ',' var_stmt"
-        p[0] = p[2]
+        "loop_set : var_stmt"
+        p[0] = p[1]
     
     def p_loop_set_epsilon(p):
         "loop_set : epsilon"
