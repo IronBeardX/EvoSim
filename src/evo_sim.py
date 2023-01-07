@@ -38,8 +38,7 @@ class EvoSim:
                             "pick": self.pick,
                             "attack": self.attack,
                             "eat": self.eat,
-                            "reproduce": self.reproduce,
-                            "duplicate": self.duplicate
+                            "reproduce": self.reproduce
                             }
         self.available_commands = default_commands if not available_commands else default_commands.update(
             available_commands)
@@ -159,8 +158,14 @@ class EvoSim:
 
     def smell(self, ent_id, day, r):
         entities_list = self.__entities_in_radius(ent_id, r)
+        ent = self.intelligent_entities[ent_id]
+        species = ent.species
         perception_list = []
         for entity, pos, distance in entities_list:
+            other_species = "None"
+            if entity.get_entity_id() in self.intelligent_entities:
+                other_ent = entity
+                other_species = other_ent.species
             if "smell" in entity.physical_properties:
                 perception_list.append({
                     "entity": entity.get_entity_id(),
@@ -168,22 +173,26 @@ class EvoSim:
                     "position": pos,
                     "day": day,
                     "distance": distance,
-                    "reproductive": True
+                    "reproductive": species == other_species
                 })
         return perception_list
 
     def see(self, ent_id, day, r):
-        # TODO: nearby tarrain should be seen
         entities_list = self.__entities_in_radius(ent_id, r)
+        ent = self.intelligent_entities[ent_id]
+        species = ent.species
         perception_list = []
         for entity, pos, distance in entities_list:
-            # TODO: add color and shape
+            other_species = "None"
+            if entity.get_entity_id() in self.intelligent_entities:
+                other_ent = entity
+                other_species = other_ent.species
             entity_info = {
                 "entity": entity.get_entity_id(),
                 "day": day,
                 "position": pos,
                 "distance": distance,
-                "reproductive": True,
+                "reproductive": species == other_species
             }
             if "legs" in entity.physical_properties:
                 entity_info["legs"] = entity.physical_properties["legs"]
@@ -265,8 +274,6 @@ class EvoSim:
         if "edible" not in food.physical_properties:
             return
 
-        
-
         # Check if the entity has the food in its storage:
         if ("storage" in entity.physical_properties) and (food_id in entity.physical_properties["storage"]):
             # Remove the food from the storage:
@@ -274,7 +281,7 @@ class EvoSim:
         # Check if the entity is adjacent to the food:
         elif self.world.distance(ent_id, food_id) > 1:
             return
-        
+
         entity.receive_influences(
             [{"name": "nutrients", "value": food.physical_properties["edible"]}])
 
@@ -282,8 +289,65 @@ class EvoSim:
         self.world.remove_entity(food_id)
 
     def reproduce(self, ent_id, other_id):
-        # TODO:
-        pass
+        actor_entity = self.intelligent_entities[ent_id]
+        try:
+            other_entity = self.intelligent_entities[other_id]
+        except:
+            return
+
+        # Check if the entities are adjacent:
+        if self.world.distance(ent_id, other_id) > 1:
+            return
+
+        # Check if the entities are of the same species:
+        if actor_entity.species != other_entity.species:
+            return
+
+        # getting the new position for the new entity
+        new_pos = self.new_empty_pos(ent_id, other_id)
+
+        if new_pos is None:
+            return
+
+        if len(self.intelligent_entities) >= 10:
+            return
+        # creating the new entity
+        # getting the dna's and age
+        actor_dna = actor_entity.dna_chain
+        other_dna = other_entity.dna_chain
+        actor_age = actor_entity.age
+        other_age = other_entity.age
+        species = actor_entity.species
+
+        def generator():
+            # selecting the value for each gene from the parents using fuzzy logic and the age of the parents
+            # creating a normalized vector with the ages
+            ages = np.array([actor_age, other_age])
+            ages = ages / np.linalg.norm(ages)
+            # creating the fuzzy logic system
+            selection_space = [(ages[0], "actor"),
+                               (ages[1] + ages[0], "other")]
+
+            new_dna_chain = []
+            for i in range(len(actor_dna)):
+                new_dna_chain.append(
+                    actor_dna[i] if random.random() < ages[0] else other_dna[i])
+            return species(new_dna_chain, species = species)
+
+        self.instantiate_entity(-1, new_pos, generator)
+
+    def new_empty_pos(self, ent_id, other_id):
+        # Generate the a new position adjacent to ent_id or other_id:
+        pos = self.world.entities[ent_id].position
+        other_pos = self.world.entities[ent_id].position
+        posible_options = [(pos[0] + 1, pos[1]), (pos[0] - 1, pos[1]),
+                           (pos[0], pos[1] + 1), (pos[0], pos[1] - 1)]
+        posible_options += [(other_pos[0] + 1, other_pos[1]), (other_pos[0] - 1, other_pos[1]),
+                            (other_pos[0], other_pos[1] + 1), (other_pos[0], other_pos[1] - 1)]
+        for option in posible_options:
+            if self.world.valid_position(option) and len(self.world.get_entity_by_position(option)):
+                return option
+        return None
 
     def execute_action(self, action):
         if action["command"] in list(self.available_commands.keys()):
@@ -299,7 +363,14 @@ class EvoSim:
     def add_entity_gen(self, entity_instance_gen):
         self.entities_gen.append(entity_instance_gen)
 
-    def instantiate_entity(self, entity_gen_position, world_position):
+    def instantiate_entity(self, entity_gen_position, world_position, generator=None):
+        if generator != None:
+            entity = generator()
+            self.intelligent_entities[entity.get_entity_id()] = entity
+            self.world.place_entity(entity.get_entity_id(), world_position,
+                                    entity.rep, entity.coexistence)
+            return
+
         entity = self.entities_gen[entity_gen_position]()
         if entity.is_intelligent:
             self.intelligent_entities[entity.get_entity_id()] = entity

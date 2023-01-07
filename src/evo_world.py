@@ -34,6 +34,16 @@ class World():
         '''
         return self.entities[entity_id]
 
+    def valid_position(self, position):
+        '''
+        This method returns True if the given position is valid, False otherwise.
+        '''
+        try:
+            self.world_map[position[0], position[1]]
+            return True
+        except:
+            return False
+
     def get_entity_by_position(self, position):
         '''
         This method returns the entity that occupies the given position.
@@ -48,6 +58,8 @@ class World():
         '''
         This method returns the terrain type of the given position.
         '''
+        if not self.valid_position(position):
+            return "unknown"
         return self.terrain_types[self.world_map[position[0], position[1]]]
 
 
