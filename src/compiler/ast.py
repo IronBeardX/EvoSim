@@ -42,14 +42,35 @@ class BinaryOpNode(Node):
 
 class WorldNode(Node):
     def __init__(self, props):
+        DELETE_THIS_VAR = '''
+            props looks like: {'size': Tuple, 'terrain': List}
+
+            'size' is (True, {'width': -1, 'height': -1}) if infinite
+            else is (False, {'width': number, 'height': number})
+
+            'terrain' is a list of Tuple (string, boolean, list)
+            the string is the name of the terrain
+            the boolean represents if it's default or not
+            the list of numbers are the positions (empty if terrain is default)
+        '''
         pass
 
 class SimulationNode(Node):
     def __init__(self, props):
+        DELETE_THIS_VAR = '''
+            props looks like: {'episodes': number, 'max_rounds': number, 'stop': Node}
+        '''
         pass
 
 class PhyGeneNode(Node):
     def __init__(self, props):
+        DELETE_THIS_VAR = '''
+            props looks like: {
+                'value': (number, {'min': number, 'max': number}),
+                'mutation': {'step': number, 'chance': number},
+                'class': string (for example: 'health' or 'legs')
+            }
+        '''
         pass
 
 class IfNode(Node):
