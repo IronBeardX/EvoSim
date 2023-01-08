@@ -1,5 +1,9 @@
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
+from src.genetics import (
+    Smelling, VisionRadial, Move, Eat, Reproduce,
+    Attack, Defend, Pick, Swimming
+)
 
 
 class Node:
@@ -72,6 +76,34 @@ class PhyGeneNode(Node):
             }
         '''
         pass
+
+class PerceptionGeneNode(Node):
+    TYPES = {
+        'smelling': Smelling,
+        'vision'  : VisionRadial
+    }
+
+    def __init__(self, name):
+        self.name = name
+    
+    def evaluate(self, context: Context):
+        return super().evaluate(context)
+
+class ActionGeneNode(Node):
+    TYPES = {
+        'move'     : Move,
+        'eat'      : Eat,
+        'reproduce': Reproduce,
+        'attack'   : Attack,
+        'defend'   : Defend,
+        'pick'     : Pick,
+        'swim'     : Swimming
+    }
+    def __init__(self, name):
+        self.name = name
+
+    def evaluate(self, context: Context):
+        return super().evaluate(context) 
 
 class IfNode(Node):
     def __init__(self, condition_node, body_nodes, else_node):

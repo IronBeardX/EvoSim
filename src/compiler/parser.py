@@ -5,7 +5,8 @@ from src.compiler.lexer import tokens
 from src.compiler.util import parse_number, nth_root
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
-    WorldNode, SimulationNode, PhyGeneNode,
+    WorldNode, SimulationNode,
+    PhyGeneNode, PerceptionGeneNode, ActionGeneNode,
     IfNode, ElseNode,
     VariableSettingNode,
     LoopNode, ContinueNode, BreakNode,
@@ -66,8 +67,25 @@ def get_parser(*args, **kwargs):
 
     # gene stmt productions
     def p_gene(p):
-        "gene_stmt : GENE phygene_stmt"
+        '''gene_stmt : GENE phygene_stmt
+                     | GENE percpgene
+                     | GENE actgene'''
         p[0] = p[2]
+    
+    def p_percpgene(p):
+        '''percpgene : SMELLING
+                     | VISION'''
+        p[0] = PerceptionGeneNode(p[1])
+    
+    def p_actgene(p):
+        '''actgene : MOVE
+                   | EAT
+                   | REPRODUCE
+                   | ATTACK
+                   | DEFEND
+                   | PICK
+                   | SWIM'''
+        p[0] = ActionGeneNode(p[1])
 
     def p_phygene_stmt(p):
         "phygene_stmt : phygene '{' maybe_newline phygeneprop maybe_newline phygeneprop maybe_newline '}'"
