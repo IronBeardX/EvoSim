@@ -88,8 +88,8 @@ def get_parser(*args, **kwargs):
         p[0] = ActionGeneNode(p[1])
 
     def p_phygene_stmt(p):
-        "phygene_stmt : phygene '{' maybe_newline phygeneprop maybe_newline phygeneprop maybe_newline '}'"
-        p[0] = PhyGeneNode({**p[1], **p[4], **p[6]})
+        "phygene_stmt : phygene ID '{' maybe_newline phygeneprop maybe_newline phygeneprop maybe_newline '}'"
+        p[0] = PhyGeneNode({**p[1], 'name': p[2] , **p[5], **p[7]})
     
     def p_phygene(p):
         '''phygene : HEALTH

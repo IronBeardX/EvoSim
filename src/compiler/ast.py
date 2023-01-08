@@ -70,6 +70,7 @@ class PhyGeneNode(Node):
     def __init__(self, props):
         DELETE_THIS_VAR = '''
             props looks like: {
+                'name': string,
                 'value': (number, {'min': number, 'max': number}),
                 'mutation': {'step': number, 'chance': number},
                 'class': string (for example: 'health' or 'legs')
@@ -83,8 +84,8 @@ class PerceptionGeneNode(Node):
         'vision'  : VisionRadial
     }
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, classname):
+        self.classname = classname
     
     def evaluate(self, context: Context):
         return super().evaluate(context)
@@ -99,8 +100,8 @@ class ActionGeneNode(Node):
         'pick'     : Pick,
         'swim'     : Swimming
     }
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, classname):
+        self.classname = classname
 
     def evaluate(self, context: Context):
         return super().evaluate(context) 

@@ -94,7 +94,7 @@ actgene =>
     SWIM
 
 phygene_stmt =>
-    phygene { maybe_nl phygeneprop_list }
+    phygene ID { maybe_nl phygeneprop_list }
 
 phygene =>
     HEALTH
