@@ -387,22 +387,22 @@ class OpportunisticBehavior(RandomBehavior):
                 case "reproduction":
                     if "eye" in self.physical_properties.keys():
                         actions, value, new_pos = self._get_state_reproduction(
-                            time, any_entity, entities_in_sight, reproductive_entity, surroundings, previous_state= new_state, iteration = i)
+                            time, any_entity, entities_in_sight, reproductive_entity, surroundings, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
                     else:
                         actions, value, new_pos = self._get_state_reproduction(
-                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state= new_state, iteration = i)
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
                 case "food":
                     if "eye" in self.physical_properties.keys():
                         actions, value, new_pos = self._get_state_food(
-                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings, previous_state= new_state, iteration = i)
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
                     else:
                         actions, value, new_pos = self._get_state_food(
-                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state= new_state, iteration = i)
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
-            
+
             # if the new state value is -1 it means that the state is not valid
             if new_state[0] == -1:
                 continue
@@ -421,8 +421,7 @@ class OpportunisticBehavior(RandomBehavior):
             temperature -= 1
         return actions
 
-
-    def _get_state_food(self, time, ent_w_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings=None, previous_state=None, iteration = 0):
+    def _get_state_food(self, time, ent_w_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings=None, previous_state=None, iteration=0):
         # This method will return a list of actions to get food
         # If there is food in sight it will return a list of actions to get to the food
         # If there is no food in sight it will return a list of actions to explore the surroundings
@@ -527,7 +526,8 @@ class OpportunisticBehavior(RandomBehavior):
             if any_food and len(self.physical_properties["storage"]) == 0:
                 # If there is food in sight we will try to get to it
                 # We will get the i-st closest food
-                closest_food = self._order_by_proximity(food_in_sight)[iteration]
+                closest_food = self._order_by_proximity(food_in_sight)[
+                    iteration]
 
                 # Now we will get the actions to get to the food
                 action_time, current_pos, actions = self._get_actions_to_position(
@@ -611,7 +611,7 @@ class OpportunisticBehavior(RandomBehavior):
                     entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
                 return actions, state_value, action_time
 
-    def _get_state_reproduction(self, time, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None, iteration = 0):
+    def _get_state_reproduction(self, time, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None, iteration=0):
         entities_in_sight_pos = self._curate_entities_positions(
             entities_in_sight)
         # getting position from the knowledge
@@ -621,11 +621,10 @@ class OpportunisticBehavior(RandomBehavior):
                 current_pos = info["position"]
                 break
 
-        
         if any_entity and reproductive_entity:
             # If there is an entity in sight we will try to get to it
             # We will get the closest reproductive entity
-            ordered_entities = self._order_by_proximity(entities_in_sight) 
+            ordered_entities = self._order_by_proximity(entities_in_sight)
             i = 0
             closest_ent = None
             for ent in ordered_entities:
@@ -634,7 +633,7 @@ class OpportunisticBehavior(RandomBehavior):
                     if i == iteration:
                         closest_ent = ent
                         break
-                    #TODO check how we are comparing the values
+                    # TODO check how we are comparing the values
             if not closest_ent:
                 return [], -1, 0
             # Now we will get the actions to get to the entity

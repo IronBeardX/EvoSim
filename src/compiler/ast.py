@@ -1,8 +1,11 @@
+from pydoc import classname
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
+from src.evo_sim import EvoSim
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
-    Attack, Defend, Pick, Swimming
+    Attack, Defend, Pick, Swimming, Health, Hunger, Legs,
+    Eye, Arms, Horns, Smell, Fins, Nose, Mouth
 )
 
 
@@ -10,39 +13,44 @@ class Node:
     def evaluate(self, context: Context):
         raise NotImplementedError()
 
+
 class ValueNode(Node):
     def __init__(self, value):
         self.value = value
-    
+
     def evaluate(self, context: Context):
         return self.value
+
 
 class VariableNode(Node):
     def __init__(self, name):
         self.name = name
-    
+
     def evaluate(self, context: Context):
         return context.get_var(self.name)
+
 
 class UnaryOpNode(Node):
     def __init__(self, node, apply):
         self.node = node
         self.apply = apply
-    
+
     def evaluate(self, context):
         value = self.node.evaluate(context)
         return self.apply(value)
+
 
 class BinaryOpNode(Node):
     def __init__(self, leftnode, rightnode, apply):
         self.leftnode = leftnode
         self.rightnode = rightnode
         self.apply = apply
-    
+
     def evaluate(self, context):
         left = self.leftnode.evaluate(context)
         right = self.rightnode.evaluate(context)
         return self.apply(left, right)
+
 
 class WorldNode(Node):
     def __init__(self, props):
@@ -57,16 +65,40 @@ class WorldNode(Node):
             the boolean represents if it's default or not
             the list of numbers are the positions (empty if terrain is default)
         '''
-        pass
+        # TODO: Make validations on the entries
+        self.world_props = props
+
+    def evaluate(self, context: Context):
+        return self.world_props
+
 
 class SimulationNode(Node):
     def __init__(self, props):
         DELETE_THIS_VAR = '''
             props looks like: {'episodes': number, 'max_rounds': number, 'stop': Node}
         '''
-        pass
+        # TODO Check values
+        # raise Exception("TODO: Implement Exceptions")
+        self.evo_props = props
+
+    def evaluate(self, context: Context):
+        return self.evo_props
+
 
 class PhyGeneNode(Node):
+    TYPES = {
+        'health': Health,
+        'hunger': Hunger,
+        'legs': Legs,
+        'eye': Eye,
+        'arms': Arms,
+        'horns': Horns,
+        'smell': Smell,
+        'fins': Fins,
+        'nose': Nose,
+        'mouth': Mouth
+    }
+
     def __init__(self, props):
         DELETE_THIS_VAR = '''
             props looks like: {
@@ -76,42 +108,50 @@ class PhyGeneNode(Node):
                 'class': string (for example: 'health' or 'legs')
             }
         '''
-        pass
+        # TODO: make validations and input transformations
+        self.classname = classname
+
+    def evaluate(self, context: Context):
+        return super().evaluate(Context)
+
 
 class PerceptionGeneNode(Node):
     TYPES = {
         'smelling': Smelling,
-        'vision'  : VisionRadial
+        'vision': VisionRadial
     }
 
     def __init__(self, classname):
         self.classname = classname
-    
+
     def evaluate(self, context: Context):
         return super().evaluate(context)
+
 
 class ActionGeneNode(Node):
     TYPES = {
-        'move'     : Move,
-        'eat'      : Eat,
+        'move': Move,
+        'eat': Eat,
         'reproduce': Reproduce,
-        'attack'   : Attack,
-        'defend'   : Defend,
-        'pick'     : Pick,
-        'swim'     : Swimming
+        'attack': Attack,
+        'defend': Defend,
+        'pick': Pick,
+        'swim': Swimming
     }
+
     def __init__(self, classname):
         self.classname = classname
 
     def evaluate(self, context: Context):
-        return super().evaluate(context) 
+        return super().evaluate(context)
+
 
 class IfNode(Node):
     def __init__(self, condition_node, body_nodes, else_node):
         self.condition = condition_node
         self.body = body_nodes
         self.else_node = else_node
-    
+
     def evaluate(self, context: Context):
         child_context = context.new_child()
 
@@ -121,24 +161,27 @@ class IfNode(Node):
         elif self.else_node:
             self.else_node.evaluate(context)
 
+
 class ElseNode(Node):
     def __init__(self, body_nodes):
         self.body = body_nodes or []
-    
+
     def evaluate(self, context: Context):
         child_context = context.new_child()
 
         for node in self.body:
             node.evaluate(child_context)
 
+
 class VariableSettingNode(Node):
     def __init__(self, name, node):
         self.name = name
         self.node = node
-    
+
     def evaluate(self, context: Context):
         value = self.node.evaluate(context)
         context.set_var(self.name, value)
+
 
 class LoopNode(Node):
     def __init__(self, init_node, condition_node, final_node, body_nodes):
@@ -146,13 +189,13 @@ class LoopNode(Node):
         self.condition = condition_node or ValueNode(True)
         self.final = final_node
         self.body = body_nodes or []
-    
+
     def evaluate(self, context: Context):
         child_context = context.new_child()
 
         if self.init:
             self.init.evaluate(child_context)
-        
+
         while self.condition.evaluate(child_context):
             try:
                 for node in self.body:
@@ -162,27 +205,30 @@ class LoopNode(Node):
             except Signal as s:
                 if s == BREAK:
                     break
-            
+
             if self.final:
                 self.final.evaluate(child_context)
+
 
 class BreakNode(Node):
     def evaluate(self, context: Context):
         raise BREAK
 
+
 class ContinueNode(Node):
     def evaluate(self, context: Context):
         raise Signal()
+
 
 class FunctionNode(Node):
     def __init__(self, name, params, body_nodes):
         self.name = name
         self.params = params
         self.body = body_nodes
-    
+
     def evaluate(self, context: Context):
         context.set_var(self.name, self)
-    
+
     def call(self, context: Context, args):
         # create child context because function
         # represents a new block
@@ -194,7 +240,7 @@ class FunctionNode(Node):
         # set param values NOT RECURSIVELY
         for param, arg in zip(self.params, args):
             child_context.set_var(param, arg, recursive=False)
-        
+
         # catch ValueSignal in case the function
         # returns a value
         try:
@@ -208,7 +254,7 @@ class FunctionCallNode(Node):
     def __init__(self, name, arg_nodes):
         self.name = name
         self.args = arg_nodes
-    
+
     def evaluate(self, context: Context):
         # search context where 'name' func was declared
         func_context = context.search(self.name)
@@ -219,13 +265,14 @@ class FunctionCallNode(Node):
             if isinstance(f, FunctionNode):
                 args = [arg.evaluate(context) for arg in self.args]
                 return f.call(func_context, args)
-        
+
         raise Exception()
+
 
 class ReturnNode(Node):
     def __init__(self, node):
         self.node = node
-    
+
     def evaluate(self, context: Context):
         value = self.node and self.node.evaluate(context)
         raise ValueSignal(value)
