@@ -108,11 +108,29 @@ class PhyGeneNode(Node):
                 'class': string (for example: 'health' or 'legs')
             }
         '''
-        # TODO: make validations and input transformations
-        self.classname = classname
+        props_names = {'name', 'value', 'mutation', 'class'}
+
+        if not props_names.issubset(props):
+            # TODO: throw Except
+            pass
+        
+        value = props['value'][0]
+        value_extras = props['value'][1]
+        mutation = props['mutation']
+
+        self.TYPES['name'](
+            mutation_chance = mutation['chance'], 
+            min_val = value_extras['min'],
+            max_val = value_extras['max'],
+            mutation_step = mutation['step'],
+            value = value
+            )
+        
+        #TODO: finish this
+        
 
     def evaluate(self, context: Context):
-        return super().evaluate(Context)
+        return super().evaluate(context)
 
 
 class PerceptionGeneNode(Node):
