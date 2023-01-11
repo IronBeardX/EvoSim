@@ -175,17 +175,30 @@ def get_parser(*args, **kwargs):
     
     # simulation stmt productions
     def p_sim(p):
-        "sim_stmt : SIMULATION '{' maybe_newline simprop maybe_newline simprop maybe_newline simprop maybe_newline '}'"
-        p[0] = SimulationNode({**p[4], **p[6], **p[8]})
+        "sim_stmt : SIMULATION '{' maybe_newline simprop maybe_newline simprop maybe_newline simprop maybe_newline simprop maybe_newline simprop maybe_newline '}'"
+        p[0] = SimulationNode({**p[4], **p[6], **p[8], **p[10], **p[12]})
     
     def p_simprop(p):
         '''simprop : EPISODES NUMBER
-                   | MAX_ROUNDS NUMBER'''
+                   | MAX_ROUNDS NUMBER
+                   | ACTIONS_TIME NUMBER'''
         p[0] = {p[1]: parse_number(p[2])}
     
     def p_simprop_stop(p):
         "simprop : STOP IF disjunction"
         p[0] = {'stop': p[3]}
+    
+    def p_simprop_commands(p):
+        "simprop : AVAILABLE_COMMANDS '{' maybe_newline command_list '}'"
+        p[0] = {p[1]: p[4]}
+    
+    def p_command_list(p):
+        "command_list : ID maybe_newline command_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_command_list_epsilon(p):
+        "command_list : epsilon"
+        p[0] = []
     
     # var setting stmt
     def p_var(p):
