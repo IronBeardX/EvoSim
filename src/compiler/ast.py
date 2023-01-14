@@ -164,6 +164,11 @@ class ActionGeneNode(Node):
         return super().evaluate(context)
 
 
+class DNAChainNode(Node):
+    def __init__(self, name, props):
+        pass
+
+
 class IfNode(Node):
     def __init__(self, condition_node, body_nodes, else_node):
         self.condition = condition_node

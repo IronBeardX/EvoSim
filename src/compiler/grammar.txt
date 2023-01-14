@@ -8,7 +8,7 @@ reserved:
     SIMULATION EPISODES STOP MAX_ROUNDS IF ELSE GENE HEALTH HUNGER LEGS EYES ARMS 
     HORNS SMELL FINS NOSE MOUTH SMELLING VISION MOVE EAT REPRODUCE ATTACK DEFEND
     PICK SWIM VALUE IN MUTATION CHANCE STEP LOOP CONTINUE BREAK ACTIONS_TIME AVAILABLE_COMMANDS
-    FUNC RETURN
+    FUNC RETURN DNA
 
 tokens:
     INTDIV EQ NEQ GE LE NUMBER ID
@@ -119,6 +119,20 @@ phygeneprop =>
 mutationprop =>
     CHANCE NUMBER
     STEP NUMBER
+
+
+dna_stmt =>
+    DNA ID { maybe_nl dna_elem_list }
+
+dna_elem_list =>
+    dna_elem maybe_nl dna_elem_list
+    epsilon
+
+dna_elem =>
+    percpgene
+    actgene
+    ID
+    DNA ID
 
 
 sim_stmt =>

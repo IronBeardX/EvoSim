@@ -6,7 +6,7 @@ from src.compiler.util import parse_number, nth_root
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
     WorldNode, SimulationNode,
-    PhyGeneNode, PerceptionGeneNode, ActionGeneNode,
+    PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
     VariableSettingNode,
     LoopNode, ContinueNode, BreakNode,
@@ -117,6 +117,35 @@ def get_parser(*args, **kwargs):
         '''mutationprop : CHANCE NUMBER
                         | STEP NUMBER'''
         p[0] = {p[1]: parse_number(p[2])}
+    
+    # dna chain stmt productions
+    def p_dna_stmt(p):
+        "dna_stmt : DNA ID '{' maybe_newline dna_elem_list '}'"
+        p[0] = DNAChainNode(p[2], p[5])
+    
+    def p_dna_elem_list(p):
+        "dna_elem_list : dna_elem maybe_newline dna_elem_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_dna_elem_list_epsilon(p):
+        "dna_elem_list : epsilon"
+        p[0] = []
+    
+    def p_dna_elem_act(p):
+        "dna_elem : actgene"
+        p[0] = {"type": "gene", "class": "action", "name": p[1]}
+    
+    def p_dna_elem_perp(p):
+        "dna_elem : percpgene"
+        p[0] = {"type": "gene", "class": "perception", "name": p[1]}
+    
+    def p_dna_elem_phy(p):
+        "dna_elem : ID"
+        p[0] = {"type": "gene", "class": "physical", "name": p[1]}
+    
+    def p_dna_elem_dna(p):
+        "dna_elem : DNA ID"
+        p[0] = {"type": "dna", "name": p[2]}
 
     # world stmt productions
     def p_world(p):
