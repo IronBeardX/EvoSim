@@ -36,6 +36,10 @@ def get_parser(*args, **kwargs):
         "maybe_newline : epsilon"
         pass
 
+    def p_test(p):
+        "test : arg_list"
+        p[0] = p[1]
+
     # handle errors
     def p_error(t):
         if t:
@@ -463,19 +467,15 @@ def get_parser(*args, **kwargs):
         p[0] = p[1]
     
     def p_arg_list(p):
-        "arg_list : disjunction rest_args"
-        p[0] = [p[1], *p[2]]
+        "arg_list : disjunction"
+        p[0] = [p[1]]
+    
+    def p_arg_list_comma(p):
+        "arg_list : disjunction ',' arg_list"
+        p[0] = [p[1], *p[3]]
     
     def p_arg_list_epsilon(p):
         "arg_list : epsilon"
-        p[0] = []
-    
-    def p_rest_args(p):
-        "rest_args : ',' disjunction rest_args"
-        p[0] = [p[2], *p[3]]
-    
-    def p_rest_args_epsilon(p):
-        "rest_args : epsilon"
         p[0] = []
 
     return yacc.yacc(*args, **kwargs)

@@ -250,9 +250,6 @@ word =>
     ID
 
 arg_list =>
-    disjunction rest_args
-    epsilon
-
-rest_args =>
-    , disjunction rest_args
+    disjunction
+    disjunction , arg_list
     epsilon
