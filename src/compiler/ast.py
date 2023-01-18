@@ -1,7 +1,5 @@
-from pydoc import classname
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
-from src.evo_sim import EvoSim
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
     Attack, Defend, Pick, Swimming, Health, Hunger, Legs,
