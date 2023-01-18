@@ -3,7 +3,7 @@ class Context:
         self.parent = parent
         self.variables = {}
     
-    def search(self, name, recursive):
+    def search(self, name, recursive=True):
         if name in self.variables:
             return self
         if recursive and self.parent:
