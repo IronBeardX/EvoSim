@@ -176,8 +176,8 @@ def get_parser(*args, **kwargs):
         p[0] = p[2]
     
     def p_worldsize_infinite(p):
-        "worldsize : INFINITE"
-        p[0] = {"size": (True, {"width": -1, "height": -1})}
+        "worldsize : INFINITE '{' maybe_newline worldsizeprop maybe_newline worldsizeprop maybe_newline '}'"
+        p[0] = {"size": (True, {**p[4], **p[6]})}
     
     def p_worldsize(p):
         "worldsize : '{' maybe_newline worldsizeprop maybe_newline worldsizeprop maybe_newline '}'"

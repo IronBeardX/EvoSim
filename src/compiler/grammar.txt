@@ -170,7 +170,7 @@ worldprop =>
     TERRAIN worldterrain
 
 worldsize =>
-    INFINITE
+    INFINITE { maybe_nl WIDTH NUMBER maybe_nl HEIGHT NUMBER maybe_nl }
     { maybe_nl WIDTH NUMBER maybe_nl HEIGHT NUMBER maybe_nl } 
 
 worldterrain =>
