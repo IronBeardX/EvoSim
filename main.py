@@ -42,23 +42,23 @@ def pick_ext(dna):
 
 def main():
     initial_dist = {}
-    sim = EvoSim(20,
-                 20,
+    sim = EvoSim(50,
+                 50,
                  {"G": "grass", "D": "dirt", "W": "water"},
                  initial_dist,
-                 True,
-                 2,
+                 False,
                  10,
-                 visualization=True
+                 100,
+                 visualization=False
                  )
     sim.add_entity_gen(fully_capable_opportunistic_gen)
     sim.add_entity_gen(pickable_gen)
     sim.add_entity_gen(food_gen)
     sim.add_entity_gen(random_gen)
     #generate entities generation list in random positions
-    positions_ent = gen_random_position_tuple_list(19, 19, 10)
-    positions_food = gen_random_position_tuple_list(19, 19, 20)
-    positions_pick = gen_random_position_tuple_list(19, 19, 20)
+    positions_ent = gen_random_position_tuple_list(49, 49, 70)
+    positions_food = gen_random_position_tuple_list(49, 49, 20)
+    positions_pick = gen_random_position_tuple_list(49, 49, 20)
     # create the (generator_position, position) list
     gen_pos_ent = [(random.choice([1, 3]), pos) for pos in positions_ent]
     gen_pos_ent.extend([(2, pos) for pos in positions_food])
@@ -68,7 +68,7 @@ def main():
     # clean terminal
     print(chr(27) + "[2J")
     sim.run(gen_pos_ent)
-    return
+    print("Simulation Finished")
 
 
 def smeller_gen():
@@ -91,8 +91,6 @@ def random_gen():
     dna.extend(walker_ext(dna))
     dna.extend(swimmer_ext(dna))
     dna.extend(arms_ext(dna))
-    dna.extend(eater_ext(dna))
-    dna.extend(pick_ext(dna))
     return RandomOrg(dna)
 
 def fully_capable_opportunistic_gen():
@@ -103,7 +101,6 @@ def fully_capable_opportunistic_gen():
     dna.extend(swimmer_ext(dna))
     dna.extend(arms_ext(dna))
     dna.extend(eater_ext(dna))
-    dna.extend(pick_ext(dna))
     dna.append(Reproduce())
     return OpportunisticOrg(dna, species = OpportunisticOrg)
 
@@ -125,4 +122,4 @@ def pickable_gen():
 
 
 if __name__ == "__main__":
-    print(main())
+    main()

@@ -57,7 +57,6 @@ class Organism(
                 self.actions.extend(gene.get_property())
 
     def pass_time(self):
-        # TODO: if the organism dies, it must drop its inventory
         self.age += 1
         floor = "grass"
         for info in self.knowledge:

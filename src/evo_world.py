@@ -7,26 +7,16 @@ import random
 
 class World():
     '''
-    Basic class of the world, it contains information about the terrain and the entities that inhabit it. It's responsible
-    for updating its state according to the actions of entities and events  that occur in the world. 
+    Basic class of the world, it contains information about the entities and the world map relevant to the positioning
+    and movements of things
     '''
 
     def __init__(self, world_map, terrain_types, finite=False):
-        '''
-        Here basic information about the world is settled, such as the available terrain types, and the world map itself.
-        Information about basic laws of the world should also be settled with this method, such as if the world map is an 
-        array, a Cartesian plane, or if it is finite or infinite. Updating entities should be relegated to the simulation 
-        class.
-        '''
         self.world_map = world_map
         self.finite = finite
         self.terrain_types = terrain_types
         self.event_list = []
-        self.entities: dict[str, MapEntityInfo] = {}
-        '''
-        The entities dictionary contains information about the entities relevant to the world. The key is the entity id and
-        the value is a MapEntityInfo object that contains information about the entity.
-        '''
+        self.entities = {}
 
     def get_entity_info(self, entity_id):
         '''
@@ -46,7 +36,7 @@ class World():
 
     def get_entity_by_position(self, position):
         '''
-        This method returns the entity that occupies the given position.
+        This method returns the entities that occupies the given position.
         '''
         entities = []
         for i in self.entities.keys():
@@ -69,16 +59,6 @@ class MapEntityInfo:
     '''
 
     def __init__(self, position, can_coexist, string_rep):
-        '''
-        This method initializes the entity properties.
-
-        @param position: The position of the entity in the world
-        @param orientation: The orientation of the entity in the world
-        @param representation_priority: The priority of the entity representation in the world
-        @param can_coexist: If the entity can coexist with other entities
-        @param positioning_rules: The positioning rules of the entity in the world. Describes, for example, in which terrains the entity
-        can be positioned.
-        '''
         self.position = position
         self.can_coexist = can_coexist
         self.representation = string_rep
@@ -98,7 +78,7 @@ class EvoWorld(
     ManhatanDistance,
     TerrainRadius
 ):
-    def __init__(self, height, width, terrain_types, terrain_dist, finite):
+    def __init__(self, height, width, terrain_types, terrain_dist, finite, world_actions = None):
 
         # Initialize the world map
         world_map = np.empty((height, width), dtype=str)
@@ -111,8 +91,7 @@ class EvoWorld(
                 else:
                     world_map[i, j] = random.choice(list(terrain_types.keys()))
 
-        # Initialize world actions
-        self.world_actions = {
+        default_world_actions = {
             "move north": self.move_n,
             "move south": self.move_s,
             "move east": self.move_e,
@@ -123,6 +102,9 @@ class EvoWorld(
             "swim west": self.swim_w,
             "see radius": self.see_r
         }
+
+        # This dictionary contains the commands that the world can interpret and the corresponding functions
+        self.world_actions = default_world_actions if world_actions is None else default_world_actions.extend(world_actions)
 
         super().__init__(world_map, terrain_types, finite)
 

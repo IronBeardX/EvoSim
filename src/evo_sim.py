@@ -31,7 +31,6 @@ class EvoSim:
         self.episodes_total = episodes_total
         self.max_rounds = max_rounds_per_episode
         self.stop_condition = stop_condition
-        # TODO: this should be imported
         default_commands = {"floor": self.floor,
                             "smell": self.smell,
                             "see": self.see,
@@ -69,7 +68,6 @@ class EvoSim:
             # Executing entities actions
             for entity_id in list(self.intelligent_entities.keys()):
                 entity = self.intelligent_entities[entity_id]
-                # TODO: perceptions should be before pass time in intelligent entities
                 # Executing perception actions:
                 perception_list = []
                 if "floor" in self.available_commands:

@@ -54,7 +54,6 @@ class RandomBehavior(Behavior):
         while action_time < time:
             action = random.choice(self.actions)
             match action["name"]:
-                # TODO: the actions in each case should be in methods for easier usage
                 case "move north":
                     self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
@@ -214,7 +213,6 @@ class RandomBehavior(Behavior):
         return non_edible_ents
 
     def _fuzzy_goal_selector(self, goal):
-        # TODO: return the priority with the new normalized valor
         current_goal = "none"
         normalized_goal_vector = []
         total = 0
@@ -247,7 +245,7 @@ class OpportunisticBehavior(RandomBehavior):
 
         actions = []
 
-        # First we will determine our current goal from reproduction, food, fighting or exploring
+        # First we will determine our current goal from reproduction or food.
 
         # Checking how hungry are we
         hungry_level = None
@@ -281,7 +279,6 @@ class OpportunisticBehavior(RandomBehavior):
         for entity in self._non_edible_ent_in_knowledge():
             any_entity = True
             entities_in_sight.append(entity)
-            # TODO: check if "reproductive" is the correct key
             if entity["reproductive"] == True:
                 reproductive_entity = True
             if "storage" in entity:
@@ -309,20 +306,18 @@ class OpportunisticBehavior(RandomBehavior):
             goal.append({"goal": "food", "priority": 20 - stored_food * 20})
         elif hungry_level == "full":
             goal.append({"goal": "food", "priority": 1 - stored_food})
-        # TODO: think about time between reproductions
         # reproduction urgency will depend on how much time has passed since the simulation started (day)
         # the more time it passes, the more the urgency will increase
 
         # If we are not hungry we will try to reproduce
         if hungry_level != "famished" and hungry_level != "very hungry":
-            goal.append({"goal": "reproduction", "priority": 1 + day})
+            goal.append({"goal": "reproduction", "priority": day})
 
         # With the goal list we will determine the most urgent goal using fuzzy logic
         current_goal = "none" if len(
             goal) <= 0 else self._fuzzy_goal_selector(goal)
         # Now we will determine the best action to achieve our current goal using simulated annealing with the priority of the goal as the temperature
         # and the reward of each action as the energy
-        # TODO: remove after finished
         actions.extend(self._simulated_annealing(entities_with_food, current_goal, day, any_food,
                        food_in_sight, any_entity, entities_in_sight, reproductive_entity, time, 10))
         return actions
@@ -368,7 +363,8 @@ class OpportunisticBehavior(RandomBehavior):
                     actions, value, new_pos = self._get_state_food(
                         time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight)
                     initial_state = (value, new_pos)
-
+            case _:
+                return []
             # Now we will generate a new state and actions list:
             # If the new state is better than the initial state we will accept it
             # If the new state is worse than the initial state we will accept it with a probability depending on the temperature
@@ -634,7 +630,6 @@ class OpportunisticBehavior(RandomBehavior):
                     if i == iteration:
                         closest_ent = ent
                         break
-                    #TODO check how we are comparing the values
             if not closest_ent:
                 return [], -1, 0
             # Now we will get the actions to get to the entity
@@ -781,22 +776,3 @@ class OpportunisticBehavior(RandomBehavior):
         else:
             return pos
 
-
-class GluttonyBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
-
-
-class FighterBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
-
-
-class LoverBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
-
-
-class ExplorerBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
