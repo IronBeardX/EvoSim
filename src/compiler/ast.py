@@ -85,7 +85,9 @@ class WorldNode(Node):
             the boolean represents if it's default or not
             the list of numbers are the positions (empty if terrain is default)
         '''
-        # TODO: Make validations on the entries
+        if props['size'][1]['width'] <= 0 or props['size'][1]['height'] <= 0:
+            raise ValueError('Invalid size for world')
+            
         self.world_props = props
 
     def evaluate(self, context: Context):
@@ -97,8 +99,11 @@ class SimulationNode(Node):
         DELETE_THIS_VAR = '''
             props looks like: {'episodes': number, 'max_rounds': number, 'stop': Node}
         '''
-        # TODO Check values
-        # raise Exception("TODO: Implement Exceptions")
+        if props['episodes'] <= 0:
+            raise ValueError('Invalid number of episodes')
+        if props['max_rounds'] <= 0:
+            raise ValueError('Invalid number of rounds')
+
         self.evo_props = props
 
     def evaluate(self, context: Context):
@@ -120,6 +125,7 @@ class PhyGeneNode(Node):
     }
 
     def __init__(self, props):
+        # TODO: Think this more carefully
         DELETE_THIS_VAR = '''
             props looks like: {
                 'name': string,
@@ -130,31 +136,22 @@ class PhyGeneNode(Node):
         '''
         props_names = {'name', 'value', 'mutation', 'class'}
 
-        if not props_names.issubset(props):
-            # TODO: throw Except
-            pass
+        if props['value'][0] < props['value'][1]['min'] or props['value'][0] > props['value'][1]['max']:
+            raise ValueError('Invalid value for gene')
+        if props['mutation']['step'] <= 0:
+            raise ValueError('Gene step should be grater than 0')
+        if props['mutation']['chance'] < 0 or props['mutation']['chance'] > 1:
+            raise ValueError('Mutation chance should be between 0 and 1')
         
         value = props['value'][0]
         value_extras = props['value'][1]
         mutation = props['mutation']
-
-        #TODO: salvar 'name' en self para usarlo en 'evaluate'
-        #FIXME: salvar la instancia de PhysicalGene en self
-
-        self.TYPES['name'](
-            mutation_chance = mutation['chance'], 
-            min_val = value_extras['min'],
-            max_val = value_extras['max'],
-            mutation_step = mutation['step'],
-            value = value
-            )
-        
-        #TODO: finish this
+        self.name = props['name']
         
 
     def evaluate(self, context: Context):
         gene_dict = context.get_var('gene')
-        gene_dict[self.name] = self.gene_instance # o el nombre q le pusiste
+        gene_dict[self.name] = self.gene_instance
 
 
 class PerceptionGeneNode(Node):
