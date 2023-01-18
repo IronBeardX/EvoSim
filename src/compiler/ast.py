@@ -138,6 +138,9 @@ class PhyGeneNode(Node):
         value_extras = props['value'][1]
         mutation = props['mutation']
 
+        #TODO: salvar 'name' en self para usarlo en 'evaluate'
+        #FIXME: salvar la instancia de PhysicalGene en self
+
         self.TYPES['name'](
             mutation_chance = mutation['chance'], 
             min_val = value_extras['min'],
@@ -150,7 +153,8 @@ class PhyGeneNode(Node):
         
 
     def evaluate(self, context: Context):
-        return super().evaluate(context)
+        gene_dict = context.get_var('gene')
+        gene_dict[self.name] = self.gene_instance # o el nombre q le pusiste
 
 
 class PerceptionGeneNode(Node):
@@ -163,7 +167,9 @@ class PerceptionGeneNode(Node):
         self.classname = classname
 
     def evaluate(self, context: Context):
-        return super().evaluate(context)
+        #TODO: lo mismo q en el evaluate de PhyGeneNode
+        # pero usando self.classname para indexar gene_dict
+        pass
 
 
 class ActionGeneNode(Node):
@@ -181,7 +187,9 @@ class ActionGeneNode(Node):
         self.classname = classname
 
     def evaluate(self, context: Context):
-        return super().evaluate(context)
+        #TODO: lo mismo q en el evaluate de PhyGeneNode
+        # pero usando self.classname para indexar gene_dict
+        pass
 
 
 class DNAChainNode(Node):
