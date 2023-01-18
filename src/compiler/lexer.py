@@ -1,4 +1,6 @@
 import src.compiler.ply.lex as lex
+from src.compiler.util import token_column
+from src.compiler.error import EvoSimLexerError
 
 
 literals = '+-*/%()^@<{>}=,'
@@ -99,5 +101,10 @@ def get_lexer(*args, **kwargs):
 
     # ignore tabs and spaces
     t_ignore = r' \t'
+
+    # handle errors
+    def t_error(t):
+        column = token_column(t.lexer.lexdata, t)
+        raise EvoSimLexerError(t.value[0], t.lexer.lineno, column)
 
     return lex.lex(*args, **kwargs)
