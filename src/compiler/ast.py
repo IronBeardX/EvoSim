@@ -76,6 +76,10 @@ class ProgramNode(Node):
         self.sim_node = sim_node
 
     def evaluate(self, context: Context):
+        # create gene and dna dicts
+        context.set_var("gene", {})
+        context.set_var("dna", {})
+        
         # store genes
         for node in self.gene_nodes:
             node.evaluate(context)
