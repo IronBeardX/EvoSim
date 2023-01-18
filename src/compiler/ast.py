@@ -34,7 +34,7 @@ class VariableNode(Node):
         v = context.get_var(self.name)
         if v is None:
             raise VAR_NOT_FOUND_ERROR(self.name)
-        
+
         current_name = self.name
         for name in self.rest:
             try:
@@ -42,7 +42,7 @@ class VariableNode(Node):
                 current_name = f'{current_name}.{name}'
             except:
                 raise PROP_NOT_IN_VAR_ERROR(current_name, name)
-        
+
         return v
 
 
@@ -79,13 +79,13 @@ class ProgramNode(Node):
         # store genes
         for node in self.gene_nodes:
             node.evaluate(context)
-        
+
         # store dna chains
         for node in self.dna_nodes:
             node.evaluate(context)
-        
+
         # handle world & sim nodes
-        
+
         # lastly: run simulation
         pass
 
@@ -105,7 +105,7 @@ class WorldNode(Node):
         '''
         if props['size'][1]['width'] <= 0 or props['size'][1]['height'] <= 0:
             raise ValueError('Invalid size for world')
-            
+
         self.world_props = props
 
     def evaluate(self, context: Context):
@@ -143,7 +143,6 @@ class PhyGeneNode(Node):
     }
 
     def __init__(self, props):
-        # TODO: Think this more carefully
         DELETE_THIS_VAR = '''
             props looks like: {
                 'name': string,
@@ -160,12 +159,18 @@ class PhyGeneNode(Node):
             raise ValueError('Gene step should be grater than 0')
         if props['mutation']['chance'] < 0 or props['mutation']['chance'] > 1:
             raise ValueError('Mutation chance should be between 0 and 1')
-        
+
         value = props['value'][0]
         value_extras = props['value'][1]
         mutation = props['mutation']
         self.name = props['name']
-        
+        self.gene_instance = self.TYPES[props['class']](
+            mutation_chance=mutation['chance'],
+            mutation_step=mutation['step'],
+            value=value,
+            min_val=value_extras['min'],
+            max_val=value_extras['max']
+        )
 
     def evaluate(self, context: Context):
         gene_dict = context.get_var('gene')
@@ -179,12 +184,12 @@ class PerceptionGeneNode(Node):
     }
 
     def __init__(self, classname):
+        self.gene_instance = self.TYPES[classname]()
         self.classname = classname
 
     def evaluate(self, context: Context):
-        #TODO: lo mismo q en el evaluate de PhyGeneNode
-        # pero usando self.classname para indexar gene_dict
-        pass
+        gene_dict = context.get_var('gene')
+        gene_dict[self.classname] = self.gene_instance
 
 
 class ActionGeneNode(Node):
@@ -198,13 +203,21 @@ class ActionGeneNode(Node):
         'swim': Swimming
     }
 
-    def __init__(self, classname):
-        self.classname = classname
+    def __init__(self, props):
+        # TODO: When cost is added to props this should be reworked
+        DELETE_THIS_VAR = '''
+            props looks like: {
+                'name': string,
+                'cost': (number)
+            }
+        '''
+        self.name = props['name']
+        cost = props['cost']
+        self.gene_instance = self.TYPES[self.name](cost)
 
     def evaluate(self, context: Context):
-        #TODO: lo mismo q en el evaluate de PhyGeneNode
-        # pero usando self.classname para indexar gene_dict
-        pass
+        gene_dict = context.get_var('gene')
+        gene_dict[self.name] = self.gene_instance
 
 
 class DNAChainNode(Node):
@@ -213,21 +226,26 @@ class DNAChainNode(Node):
             props looks like: list of dna_element
             
             dna_element looks like:
-                {"type": "gene", "class": string, "name": string} |
+            {   
+                TODO: Remove class from props
+                {"type": "gene", "name": string} |
                 {"type": "dna", "name": string}
         '''
         self.name = name
         self.props = props
-    
+
     def evaluate(self, context: Context):
         gene_dict = context.get_var("gene")
         dna_dict = context.get_var("dna")
-
-        #TODO: armar dna chain (lista, tal vez, no se, tu sabe jaja)
-        # con los genes y dna chains de gene_dict y dna_dict respectivamente
-
-        #TODO: guardar la dna chain en dna_dict
-        pass
+        new_chain = []
+        for dna_element in self.props:
+            if dna_element['type'] == 'gene':
+                new_chain.append(gene_dict[dna_element['name']])
+            elif dna_element['type'] == 'dna':
+                new_chain.extend(dna_dict[dna_element['name']])
+            else:
+                raise ValueError('Invalid dna element')
+        dna_dict[self.name] = new_chain
 
 
 class IfNode(Node):
@@ -349,7 +367,7 @@ class FunctionCallNode(Node):
             if isinstance(f, FunctionNode):
                 args = [arg.evaluate(context) for arg in self.args]
                 return f.call(func_context, args)
-            
+
             raise NOT_A_FUNCTION_ERROR(self.name)
 
         raise FUNCTION_NOT_FOUND_ERROR(self.name)

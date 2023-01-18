@@ -159,9 +159,6 @@ class VisionRadial(PerceptionGene):
     def __init__(self):
         super().__init__("vision")
 
-    def perceive(self):
-        pass
-
     def get_property(self):
         return [
             "vision"
