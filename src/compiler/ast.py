@@ -194,6 +194,24 @@ class ActionGeneNode(Node):
 
 class DNAChainNode(Node):
     def __init__(self, name, props):
+        DELETE_THIS_VAR = '''
+            props looks like: list of dna_element
+            
+            dna_element looks like:
+                {"type": "gene", "class": string, "name": string} |
+                {"type": "dna", "name": string}
+        '''
+        self.name = name
+        self.props = props
+    
+    def evaluate(self, context: Context):
+        gene_dict = context.get_var("gene")
+        dna_dict = context.get_var("dna")
+
+        #TODO: armar dna chain (lista, tal vez, no se, tu sabe jaja)
+        # con los genes y dna chains de gene_dict y dna_dict respectivamente
+
+        #TODO: guardar la dna chain en dna_dict
         pass
 
 
