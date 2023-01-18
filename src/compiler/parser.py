@@ -2,7 +2,8 @@ from math import pow
 
 import src.compiler.ply.yacc as yacc
 from src.compiler.lexer import tokens
-from src.compiler.util import parse_number, nth_root
+from src.compiler.util import parse_number, nth_root, token_column
+from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
     WorldNode, SimulationNode,
@@ -34,6 +35,13 @@ def get_parser(*args, **kwargs):
     def p_maybe_epsilon(p):
         "maybe_newline : epsilon"
         pass
+
+    # handle errors
+    def p_error(t):
+        if t:
+            column = token_column(t.lexer.lexdata, t)
+            raise EvoSimSyntaxError(t, t.lexer.lineno, column)
+
 
     # generic stmt productions
     def p_stmt_list(p):
