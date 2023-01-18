@@ -107,6 +107,9 @@ class WorldNode(Node):
             the boolean represents if it's default or not
             the list of numbers are the positions (empty if terrain is default)
         '''
+        if not (isinstance(props['size'][1]['width'], int) and isinstance(props['size'][1]['height'], int)):
+            raise ValueError('World size must be integers')
+
         if props['size'][1]['width'] <= 0 or props['size'][1]['height'] <= 0:
             raise ValueError('Invalid size for world')
 
@@ -121,6 +124,10 @@ class SimulationNode(Node):
         DELETE_THIS_VAR = '''
             props looks like: {'episodes': number, 'max_rounds': number, 'stop': Node}
         '''
+        if not isinstance(props['episodes'], int):
+            raise ValueError('Number of episodes must be an integer')
+        if not isinstance(props['max_rounds'], int):
+            raise ValueError('The number of rounds must be an integer')
         if props['episodes'] <= 0:
             raise ValueError('Invalid number of episodes')
         if props['max_rounds'] <= 0:
