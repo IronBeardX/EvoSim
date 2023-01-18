@@ -215,16 +215,18 @@ class ActionGeneNode(Node):
     }
 
     def __init__(self, props):
-        # TODO: When cost is added to props this should be reworked
         DELETE_THIS_VAR = '''
             props looks like: {
                 'name': string,
-                'cost': (number)
+                'cost': number,
+                'class': string (for example: 'health' or 'legs')
+            }
             }
         '''
         self.name = props['name']
         cost = props['cost']
-        self.gene_instance = self.TYPES[self.name](cost)
+        gene_class = props['class']
+        self.gene_instance = self.TYPES[gene_class](cost)
 
     def evaluate(self, context: Context):
         gene_dict = context.get_var('gene')
