@@ -1,5 +1,6 @@
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
+from src.compiler.error import PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
     Attack, Defend, Pick, Swimming, Health, Hunger, Legs,
@@ -301,7 +302,7 @@ class FunctionNode(Node):
         child_context = context.new_child()
 
         if len(self.params) != len(args):
-            raise Exception()
+            raise PARAMS_ERROR(self.name, len(self.params), len(args))
 
         # set param values NOT RECURSIVELY
         for param, arg in zip(self.params, args):
@@ -331,8 +332,10 @@ class FunctionCallNode(Node):
             if isinstance(f, FunctionNode):
                 args = [arg.evaluate(context) for arg in self.args]
                 return f.call(func_context, args)
+            
+            raise NOT_A_FUNCTION_ERROR(self.name)
 
-        raise Exception()
+        raise FUNCTION_NOT_FOUND_ERROR(self.name)
 
 
 class ReturnNode(Node):
