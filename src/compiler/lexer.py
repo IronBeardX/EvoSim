@@ -96,8 +96,8 @@ def get_lexer(*args, **kwargs):
 
     # match newline chars and record line count
     def t_newline(t):
-        r'(\n( |\t)*)+'
-        t.lexer.lineno += t.value.count('\n')
+        r'\n+'
+        t.lexer.lineno += len(t.value)
         return t
 
     # ignore tabs and spaces
