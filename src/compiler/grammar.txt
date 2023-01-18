@@ -75,6 +75,18 @@ maybe_nl =>
     epsilon
 
 
+program =>
+    gene_stmt_list dna_stmt_list world_stmt newline sim_stmt maybe_nl
+
+gene_stmt_list =>
+    gene_stmt newline gene_stmt_list
+    epsilon
+
+dna_stmt_list =>
+    dna_stmt newline dna_stmt_list
+    epsilon
+
+
 gene_stmt =>
     GENE phygene_stmt
     GENE percpgene

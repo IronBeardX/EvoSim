@@ -52,6 +52,28 @@ class BinaryOpNode(Node):
         return self.apply(left, right)
 
 
+class ProgramNode(Node):
+    def __init__(self, gene_nodes, dna_nodes, world_node, sim_node):
+        self.gene_nodes = gene_nodes
+        self.dna_nodes = dna_nodes
+        self.world_node = world_node
+        self.sim_node = sim_node
+
+    def evaluate(self, context: Context):
+        # store genes
+        for node in self.gene_nodes:
+            node.evaluate(context)
+        
+        # store dna chains
+        for node in self.dna_nodes:
+            node.evaluate(context)
+        
+        # handle world & sim nodes
+        
+        # lastly: run simulation
+        pass
+
+
 class WorldNode(Node):
     def __init__(self, props):
         DELETE_THIS_VAR = '''

@@ -10,7 +10,8 @@ from src.compiler.ast import (
     IfNode, ElseNode,
     VariableSettingNode,
     LoopNode, ContinueNode, BreakNode,
-    FunctionNode, FunctionCallNode, ReturnNode
+    FunctionNode, FunctionCallNode, ReturnNode,
+    ProgramNode
 )
 
 
@@ -18,8 +19,8 @@ from src.compiler.ast import (
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : stmt_list"
-        p[0] = p[1]
+        "program : gene_stmt_list dna_stmt_list world_stmt newline sim_stmt maybe_newline"
+        p[0] = ProgramNode(p[1], p[2], p[3], p[5])
     
     # handy productions
     def p_epsilon(p):
@@ -64,6 +65,23 @@ def get_parser(*args, **kwargs):
     def p_stmt_return_epsilon(p):
         "stmt : RETURN epsilon"
         p[0] = ReturnNode(None)
+    
+    # program-related stmt productions
+    def p_gene_stmt_list(p):
+        "gene_stmt_list : gene_stmt newline gene_stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_gene_stmt_list_epsilon(p):
+        "gene_stmt_list : epsilon"
+        p[0] = []
+    
+    def p_dna_stmt_list(p):
+        "dna_stmt_list : dna_stmt newline dna_stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_dna_stmt_list_epsilon(p):
+        "dna_stmt_list : epsilon"
+        p[0] = []
 
     # gene stmt productions
     def p_gene(p):
