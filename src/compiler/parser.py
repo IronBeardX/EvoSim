@@ -37,8 +37,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : arg_list"
-        p[0] = p[1]
+        "test : maybe_newline NUMBER maybe_newline NUMBER maybe_newline NUMBER maybe_newline"
+        p[0] = [p[2], p[4], p[6]]
 
     # handle errors
     def p_error(t):
