@@ -1,6 +1,9 @@
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
-from src.compiler.error import PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR
+from src.compiler.error import (
+    PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR,
+    EvoSimVariableError
+)
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
     Attack, Defend, Pick, Swimming, Health, Hunger, Legs,
@@ -26,7 +29,10 @@ class VariableNode(Node):
         self.name = name
 
     def evaluate(self, context: Context):
-        return context.get_var(self.name)
+        v = context.get_var(self.name)
+        if v is not None:
+            return v
+        raise EvoSimVariableError(self.name)
 
 
 class UnaryOpNode(Node):

@@ -13,6 +13,11 @@ class EvoSimSyntaxError(EvoSimError):
         )
 
 
+class EvoSimVariableError(EvoSimError):
+    def __init__(self, name):
+        super().__init__(f"variable '{name}' doesn't exist")
+
+
 class EvoSimFunctionError(EvoSimError):
     def __init__(self, message):
         super().__init__(message)

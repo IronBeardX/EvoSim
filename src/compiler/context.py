@@ -17,8 +17,6 @@ class Context:
         context = self.search(name, recursive)
         if context:
             return context.variables[name]
-        
-        raise Exception(f"context error: variable '{name}' not found")
     
     def set_var(self, name, value, recursive=True):
         context = self.search(name, recursive)
