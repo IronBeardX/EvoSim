@@ -14,8 +14,16 @@ class EvoSimSyntaxError(EvoSimError):
 
 
 class EvoSimVariableError(EvoSimError):
-    def __init__(self, name):
-        super().__init__(f"variable '{name}' doesn't exist")
+    def __init__(self, message):
+        super().__init__(message)
+
+VAR_NOT_FOUND_ERROR = lambda name: EvoSimVariableError(
+    f"'{name}' variable doesn't exist"
+)
+
+PROP_NOT_IN_VAR_ERROR = lambda var_name, name: EvoSimVariableError(
+    f"'{name}' property not found in '{var_name}' variable"
+)
 
 
 class EvoSimFunctionError(EvoSimError):

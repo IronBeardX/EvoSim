@@ -3,7 +3,7 @@ from src.compiler.util import token_column
 from src.compiler.error import EvoSimLexerError
 
 
-literals = '+-*/%()^@<{>}=,'
+literals = '+-*/%()^@<{>}=,.'
 
 reserved = {
     'or'                : 'OR',

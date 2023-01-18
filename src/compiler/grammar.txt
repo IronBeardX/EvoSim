@@ -1,7 +1,7 @@
 [lexer]
 
 literals:
-    + - * / % ( ) ^ @ < > { } = ,
+    + - * / % ( ) ^ @ < > { } = , .
 
 reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
@@ -238,9 +238,16 @@ atom =>
     NUMBER
     TRUE
     FALSE
-    ID
+    accessing
     ID ( arg_list )
     ( expr )
+
+accessing =>
+    word
+    word . accessing
+
+word =>
+    ID
 
 arg_list =>
     disjunction rest_args

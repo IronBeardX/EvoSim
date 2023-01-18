@@ -439,7 +439,7 @@ def get_parser(*args, **kwargs):
         p[0] = ValueNode(True)
     
     def p_atom_var(p):
-        "atom : ID"
+        "atom : accessing"
         p[0] = VariableNode(p[1])
     
     def p_atom_function(p):
@@ -449,6 +449,18 @@ def get_parser(*args, **kwargs):
     def p_atom_group(p):
         "atom : '(' expr ')'"
         p[0] = p[2]
+    
+    def p_accessing(p):
+        "accessing : word"
+        p[0] = [p[1]]
+    
+    def p_accessing_dot(p):
+        "accessing : word '.' accessing"
+        p[0] = [p[1], *p[3]]
+    
+    def p_word(p):
+        "word : ID"
+        p[0] = p[1]
     
     def p_arg_list(p):
         "arg_list : disjunction rest_args"
