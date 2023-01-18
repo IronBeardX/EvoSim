@@ -37,8 +37,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : maybe_newline NUMBER maybe_newline NUMBER maybe_newline NUMBER maybe_newline"
-        p[0] = [p[2], p[4], p[6]]
+        "test : gene_stmt"
+        p[0] = p[1]
 
     # handle errors
     def p_error(t):
@@ -99,13 +99,17 @@ def get_parser(*args, **kwargs):
     def p_gene(p):
         '''gene_stmt : GENE phygene_stmt
                      | GENE percpgene
-                     | GENE actgene'''
+                     | GENE actgene_stmt'''
         p[0] = p[2]
     
     def p_percpgene(p):
         '''percpgene : SMELLING
                      | VISION'''
         p[0] = PerceptionGeneNode(p[1])
+    
+    def p_actgene_stmt(p):
+        "actgene_stmt : actgene ID '{' maybe_newline COST NUMBER maybe_newline '}'"
+        p[0] = ActionGeneNode({**p[1], "name": p[2], p[5]: p[6]})
     
     def p_actgene(p):
         '''actgene : MOVE
@@ -115,7 +119,7 @@ def get_parser(*args, **kwargs):
                    | DEFEND
                    | PICK
                    | SWIM'''
-        p[0] = ActionGeneNode(p[1])
+        p[0] = {"class": p[1]}
 
     def p_phygene_stmt(p):
         "phygene_stmt : phygene ID '{' maybe_newline phygeneprop maybe_newline phygeneprop maybe_newline '}'"
