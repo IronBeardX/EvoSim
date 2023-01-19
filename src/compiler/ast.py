@@ -170,7 +170,8 @@ class ProgramNode(Node):
         # create gene and dna dicts
         context.set_var("gene", {})
         context.set_var("dna", {})
-        context.set_var("gene_facts", [])
+        context.set_var("behaviors", {})
+        context.set_var("ent_facts", [])
 
         # store genes
         for node in self.gene_nodes:
@@ -258,17 +259,39 @@ class EntityNode(Node):
         
 
     def evaluate(self, context: Context):
-        fac_list = context.get_var('gene_facts')
+        fac_list = context.get_var('ent_facts')
         fac_list.append(self.factory)
 
 
 class OrganismNode(Node):
     def __init__(self, props):
-        pass
+        DELETE_THIS = '''
+        'representation':str
+        'dna_chain':str
+        'behavior':str
+        '''
+        if not('representation' in props or 'dna_chain' in props or 'behavior' in props):
+            raise ValueError('Organism must have representation and dna_chain')
+        
+        self.representation = props['representation']
+        self.dna_chain = props['dna_chain']
+        self.behavior = props['behavior']
+
 
     def evaluate(self, context: Context):
-        return super().evaluate(context)
+        fac_list = context.get_var('ent_facts')
+        dna_chain = context.get_var('dna')[self.dna_chain]
+        behavior_class = context.get_var('behaviors')[self.behavior]
+        representation = self.representation
 
+        #create a new class that inherits from Organism and the behavior class
+        class NewOrganism(Organism, behavior_class):
+            def __init__(self):
+                super().__init__(dna_chain, representation)
+            
+        fac_list.append(lambda: NewOrganism())
+
+        
 
 class BehaviorNode(Node):
     def __init__(self, name, func_nodes, decide_node):
@@ -277,7 +300,16 @@ class BehaviorNode(Node):
         self.decide_node = decide_node
     
     def evaluate(self, context: Context):
-        return super().evaluate(context)
+        child_context = context.create_child()
+        behavior_dict = context.get_var('behaviors')
+        for node in self.func_nodes:
+            node.evaluate(child_context)
+
+        class NewBehavior(Behavior):
+            def decide_action(self, time = 1):
+                return self.decide_node.call(child_context, [self, time])
+        
+        behavior_dict[self.name] = NewBehavior
 
 
 class PhyGeneNode(Node):
