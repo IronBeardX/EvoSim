@@ -60,7 +60,7 @@ reserved = {
     'dna'               : 'DNA',
     'cost'              : 'COST',
     'repr'              : 'REPR',
-    'coexistance'       : 'COEXISTANCE',
+    'coexistence'       : 'COEXISTENCE',
     'entity'            : 'ENTITY'
 }
 

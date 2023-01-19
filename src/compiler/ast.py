@@ -249,6 +249,14 @@ class EntityNode(Node):
         return super().evaluate(context)
 
 
+class OrganismNode(Node):
+    def __init__(self, props):
+        pass
+
+    def evaluate(self, context: Context):
+        return super().evaluate(context)
+
+
 class PhyGeneNode(Node):
     TYPES = {
         'health': Health,

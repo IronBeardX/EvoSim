@@ -7,7 +7,7 @@ from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
     ListNode, ListAccessNode, DictNode, DictAccessNode,
-    WorldNode, SimulationNode, EntityNode,
+    WorldNode, SimulationNode, EntityNode, OrganismNode,
     PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
     VariableSettingNode,
@@ -190,11 +190,24 @@ def get_parser(*args, **kwargs):
         p[0] = EntityNode({**p[4], **p[6]})
 
     def p_entityprop_coex(p):
-        "entityprop : COEXISTANCE bool"
+        "entityprop : COEXISTENCE bool"
         p[0] = {p[1]: p[2] == 'true'}
     
     def p_entityprop_repr(p):
         "entityprop : REPR ID"
+        p[0] = {'representation': p[2]}
+    
+    # organism stmt productions
+    def p_organism_stmt(p):
+        "organism_stmt : ORGANISM '{' maybe_newline orgprop maybe_newline orgprop maybe_newline '}'"
+        p[0] = OrganismNode({**p[4], **p[6]})
+
+    def p_orgprop_dna(p):
+        "orgprop : DNA ID"
+        p[0] = {p[1]: p[2]}
+    
+    def p_orgprop_repr(p):
+        "orgprop : REPR ID"
         p[0] = {'representation': p[2]}
 
     # world stmt productions
