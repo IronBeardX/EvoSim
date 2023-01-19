@@ -268,8 +268,8 @@ def get_parser(*args, **kwargs):
         p[0] = {p[1]: parse_number(p[2])}
     
     def p_simprop_stop(p):
-        "simprop : STOP IF disjunction"
-        p[0] = {'stop': p[3]}
+        "simprop : STOP IF SIMULATION '{' newline stmt_list '}'"
+        p[0] = {'stop': FunctionNode('stop_sim', [p[3]], p[6])}
     
     def p_simprop_commands(p):
         "simprop : AVAILABLE_COMMANDS '{' maybe_newline command_list '}'"
@@ -559,7 +559,8 @@ def get_parser(*args, **kwargs):
     
     def p_word(p):
         '''word : ID
-                | ORGANISM'''
+                | ORGANISM
+                | SIMULATION'''
         p[0] = p[1]
     
     def p_bool(p):

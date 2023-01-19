@@ -162,7 +162,7 @@ sim_stmt =>
 simprop =>
     EPISODES NUMBER
     MAX_ROUNDS NUMBER
-    STOP IF disjunction
+    STOP IF SIMULATION { newline stmt_list }
     ACTIONS_TIME NUMBER
     AVAILABLE_COMMANDS { maybe_nl command_list }
 
@@ -295,6 +295,7 @@ accessing =>
     word . accessing
 
 word =>
+    SIMULATION
     ORGANISM
     ID
 

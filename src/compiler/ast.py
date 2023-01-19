@@ -282,9 +282,11 @@ class WorldNode(Node):
 class SimulationNode(Node):
     def __init__(self, props):
         DELETE_THIS_VAR = '''
-            props looks like: {'episodes': number, 'max_rounds': number, 'stop': Node, 'actions_time': number, 'available_commands': dict{string, callable}}
+            props looks like: {'episodes': number, 'max_rounds': number, 'stop': FunctionNode, 'actions_time': number, 'available_commands': dict{string, callable}}
         '''
 
+        #en 'stop' hay un FunctionNode q recibe a la propia simulacion, so:
+        #TODO: hacer cambios pertinentes
 
         if not isinstance(props['episodes'], int):
             raise ValueError('Number of episodes must be an integer')
