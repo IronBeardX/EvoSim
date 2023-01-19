@@ -203,7 +203,8 @@ def get_parser(*args, **kwargs):
         p[0] = OrganismNode({**p[4], **p[6]})
 
     def p_orgprop_dna(p):
-        "orgprop : DNA ID"
+        '''orgprop : DNA ID
+                   | BEHAVIOR ID'''
         p[0] = {p[1]: p[2]}
     
     def p_orgprop_repr(p):

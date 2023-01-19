@@ -61,7 +61,8 @@ reserved = {
     'cost'              : 'COST',
     'repr'              : 'REPR',
     'coexistence'       : 'COEXISTENCE',
-    'entity'            : 'ENTITY'
+    'entity'            : 'ENTITY',
+    'behavior'          : 'BEHAVIOR'
 }
 
 tokens = (
