@@ -248,7 +248,7 @@ class EntityNode(Node):
     def __init__(self, props):
         DELETE_THIS = '''
         'representation':str
-        'coeaxistence':bool
+        'coexistence':bool
         '''
 
         #checking if all props are in props
@@ -267,14 +267,14 @@ class OrganismNode(Node):
     def __init__(self, props):
         DELETE_THIS = '''
         'representation':str
-        'dna_chain':str
+        'dna':str
         'behavior':str
         '''
-        if not('representation' in props or 'dna_chain' in props or 'behavior' in props):
+        if not('representation' in props or 'dna' in props or 'behavior' in props):
             raise ValueError('Organism must have representation and dna_chain')
         
         self.representation = props['representation']
-        self.dna_chain = props['dna_chain']
+        self.dna_chain = props['dna']
         self.behavior = props['behavior']
 
 
@@ -290,7 +290,6 @@ class OrganismNode(Node):
                 super().__init__(dna_chain, representation)
             
         fac_list.append(lambda: NewOrganism())
-
         
 
 class BehaviorNode(Node):
