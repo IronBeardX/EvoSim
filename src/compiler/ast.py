@@ -259,11 +259,26 @@ class WorldNode(Node):
             the boolean represents if it's default or not
             the list of numbers are the positions (empty if terrain is default)
         '''
+
+        #TODO: averiguar q pasa y arreglar
+        #Traceback (most recent call last):
+        #    File "/home/yeyon/Uni/EvoSim/compiler_play.py", line 17, in <module>
+        #      expr = parser.parse(text, lexer=lexer)
+        #             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #    File "/home/yeyon/Uni/EvoSim/src/compiler/ply/yacc.py", line 409, in parse
+        #      p.callable(pslice)
+        #    File "/home/yeyon/Uni/EvoSim/src/compiler/parser.py", line 194, in p_world
+        #      p[0] = WorldNode({**p[3], **p[4]})
+        #             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #    File "/home/yeyon/Uni/EvoSim/src/compiler/ast.py", line 270, in __init__
+        #      raise PARAMS_ERROR('World', 'size', 'width or height')
+        #src.compiler.error.EvoSimFunctionError: function 'World' expects size parameters and received width or height arguments when called
+
         # Checking if all properties are in the dictionary:
         if not 'size' in props or not 'terrain' in props:
             raise PARAMS_ERROR('world', 'size or terrain')
         
-        if not isinstance(props['size'], bool):
+        if not isinstance(props['size'][0], bool):
             raise PARAMS_ERROR('world', 'finite must be a boolean')
 
         if not 'width' in props['size'] or not 'height' in props['size']:

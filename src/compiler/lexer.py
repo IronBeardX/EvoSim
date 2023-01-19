@@ -3,7 +3,7 @@ from src.compiler.util import token_column
 from src.compiler.error import EvoSimLexerError
 
 
-literals = '+-*/%()^@<{>}=,.[]'
+literals = '+-*/%()^@<{>}=,.[];'
 
 reserved = {
     'or'                : 'OR',
@@ -107,7 +107,7 @@ def get_lexer(*args, **kwargs):
     def t_newline(t):
         r'\n+'
         t.lexer.lineno += len(t.value)
-        return t
+        pass
 
     # ignore tabs and spaces
     t_ignore = r' \t'

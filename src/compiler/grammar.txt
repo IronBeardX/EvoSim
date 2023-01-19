@@ -20,26 +20,21 @@ program =>
     gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list world_stmt newline sim_stmt maybe_nl
 
 
-maybe_nl =>
-    newline
-    epsilon
-
-
 gene_stmt_list =>
-    gene_stmt newline gene_stmt_list
+    gene_stmt gene_stmt_list
     epsilon
 
 gene_stmt =>
     GENE phygene_stmt
     GENE percpgene
-    GENE actgene
+    GENE actgene_stmt
 
 percpgene =>
     SMELLING
     VISION
 
 actgene_stmt =>
-    actgene ID { maybe_nl COST NUMBER maybe_nl }
+    actgene ID { COST NUMBER }
 
 actgene =>
     MOVE
@@ -51,7 +46,7 @@ actgene =>
     SWIM
 
 phygene_stmt =>
-    phygene ID { maybe_nl phygeneprop_list }
+    phygene ID { phygeneprop phygeneprop }
 
 phygene =>
     HEALTH
@@ -65,13 +60,9 @@ phygene =>
     NOSE
     MOUTH
 
-phygeneprop_list =>
-    phygeneprop maybe_nl phygeneprop_list
-    epsilon
-
 phygeneprop =>
     VALUE NUMBER IN { NUMBER NUMBER }
-    MUTATION { maybe_nl mutationprop maybe_nl mutationprop maybe_nl }
+    MUTATION { mutationprop mutationprop }
 
 mutationprop =>
     CHANCE NUMBER
@@ -79,48 +70,47 @@ mutationprop =>
 
 
 dna_stmt_list =>
-    dna_stmt newline dna_stmt_list
+    dna_stmt dna_stmt_list
     epsilon
 
 dna_stmt =>
-    DNA ID { maybe_nl dna_elem_list }
+    DNA ID { dna_elem_list }
 
 dna_elem_list =>
-    dna_elem maybe_nl dna_elem_list
+    dna_elem dna_elem_list
     epsilon
 
 dna_elem =>
     percpgene
-    actgene
     ID
     DNA ID
 
 
 behavior_stmt_list =>
-    behavior_stmt newline behavior_stmt_list
+    behavior_stmt behavior_stmt_list
     epsilon
 
 behavior_stmt =>
-    BEHAVIOR ID { newline func_stmt_list decide_stmt newline }
+    BEHAVIOR ID { func_stmt_list decide_stmt }
 
 decide_stmt =>
-    DECIDE ORGANISM TIME { maybe_nl stmt_list }
+    DECIDE ORGANISM TIME { stmt_list }
 
 
 entity_org_stmt_list =>
-    entity_stmt newline entity_org_stmt_list
-    organism_stmt newline entity_org_stmt_list
+    entity_stmt entity_org_stmt_list
+    organism_stmt entity_org_stmt_list
     epsilon
 
 entity_stmt =>
-    ENTITY { maybe_nl entityprop bool maybe_nl entityprop maybe_nl }
+    ENTITY { entityprop entityprop }
 
 entityprop =>
     COEXISTENCE bool
     REPR ID
 
 organism_stmt =>
-    ORGANISM { maybe_nl orgprop maybe_nl orgprop maybe_nl }
+    ORGANISM { orgprop orgprop }
 
 orgprop =>
     REPR ID
@@ -129,54 +119,58 @@ orgprop =>
 
 
 world_stmt =>
-    WORLD { maybe_nl worldprop maybe_nl worldprop maybe_nl }
+    WORLD { worldprop worldprop }
 
 worldprop =>
     SIZE worldsize
     TERRAIN worldterrain
 
 worldsize =>
-    INFINITE { maybe_nl WIDTH NUMBER maybe_nl HEIGHT NUMBER maybe_nl }
-    { maybe_nl WIDTH NUMBER maybe_nl HEIGHT NUMBER maybe_nl } 
+    INFINITE { worldsizeprop worldsizeprop }
+    { worldsizeprop worldsizeprop } 
+
+worldsizeprop =>
+    HEIGHT NUMBER
+    WIDTH NUMBER
 
 worldterrain =>
-    { maybe_nl terrainprop_list }
+    { terrainprop_list }
 
 terrainprop_list =>
-    terrainprop maybe_nl terrainprop_list
+    terrainprop terrainprop_list
     epsilon
 
 terrainprop =>
     DEFAULT ID
-    ID AT { maybe_nl NUMBER maybe_nl terrainposn_list }
+    ID AT { NUMBER terrainposn_list }
     ID
 
 terrainposn_list =>
-    NUMBER maybe_nl terrainposn_list
+    NUMBER terrainposn_list
     epsilon
 
 
 sim_stmt =>
-    SIMULATION => { maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl }
+    SIMULATION => { simprop simprop simprop simprop simprop }
 
 simprop =>
     EPISODES NUMBER
     MAX_ROUNDS NUMBER
-    STOP SIMULATION { newline stmt_list }
+    STOP SIMULATION { stmt_list }
     ACTIONS_TIME NUMBER
-    AVAILABLE_COMMANDS { maybe_nl command_list }
+    AVAILABLE_COMMANDS { command_list }
 
 command_list =>
-    ID maybe_nl command_list
+    ID command_list
     epsilon
 
 
 func_stmt_list =>
-    func_stmt newline func_stmt_list
+    func_stmt func_stmt_list
     epsilon
 
 func_stmt =>
-    FUNC ID = param_list { maybe_nl stmt_list }
+    FUNC ID = param_list { stmt_list }
 
 param_list =>
     ID param_list
@@ -188,34 +182,29 @@ ret_stmt =>
 
 
 stmt_list =>
-    stmt newline stmt_list
+    stmt stmt_list
     epsilon
 
 stmt =>
     if_stmt
-    var_stmt
-    list_stmt
-    dict_stmt
-    loop_stmt
-    CONTINUE
-    BREAK
-    ret_stmt
+    var_stmt ;
+    index_stmt ;
+    loop_stmt ;
+    CONTINUE ;
+    BREAK ;
+    ret_stmt ;
 
 
 var_stmt =>
     accessing = disjunction
 
 
-list_stmt =>
-    naming [ expr ] = disjunction
-
-
-dict_stmt =>
-    naming { disjunction } = disjunction
+index_stmt =>
+    naming [ disjunction ] = disjunction
 
 
 loop_stmt =>
-    LOOP loop_init , loop_condition , loop_set { maybe_nl stmt_list }
+    LOOP loop_init , loop_condition , loop_set { stmt_list }
 
 loop_condition =>
     disjunction
@@ -231,11 +220,11 @@ loop_set =>
 
 
 if_stmt =>
-    IF disjunction { maybe_nl stmt_list } else_stmt
+    IF disjunction { stmt_list } else_stmt
 
 else_stmt =>
     ELSE if_stmt
-    ELSE { maybe_nl stmt_list }
+    ELSE { stmt_list }
     epsilon
 
 
@@ -284,8 +273,7 @@ power =>
     naming
 
 naming =>
-    naming [ expr ]
-    naming { disjunction }
+    naming [ disjunction ]
     accessing
     ID ( arg_list )
     atom
