@@ -64,7 +64,8 @@ reserved = {
     'entity'            : 'ENTITY',
     'behavior'          : 'BEHAVIOR',
     'decide'            : 'DECIDE',
-    'time'              : 'TIME'
+    'time'              : 'TIME',
+    'organism'          : 'ORGANISM'
 }
 
 tokens = (
