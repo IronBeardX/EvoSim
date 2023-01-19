@@ -169,7 +169,7 @@ class ProgramNode(Node):
         # create gene and dna dicts
         context.set_var("gene", {})
         context.set_var("dna", {})
-        
+
         # store genes
         for node in self.gene_nodes:
             node.evaluate(context)
@@ -197,6 +197,16 @@ class WorldNode(Node):
             the boolean represents if it's default or not
             the list of numbers are the positions (empty if terrain is default)
         '''
+        # Checking if all properties are in the dictionary:
+        if not 'size' in props or not 'terrain' in props:
+            raise PARAMS_ERROR('world', 'size or terrain')
+        
+        if not isinstance(props['size'], bool):
+            raise PARAMS_ERROR('world', 'finite must be a boolean')
+
+        if not 'width' in props['size'] or not 'height' in props['size']:
+            raise PARAMS_ERROR('World', 'size', 'width or height')
+
         if not (isinstance(props['size'][1]['width'], int) and isinstance(props['size'][1]['height'], int)):
             raise ValueError('World size must be integers')
 
@@ -212,8 +222,10 @@ class WorldNode(Node):
 class SimulationNode(Node):
     def __init__(self, props):
         DELETE_THIS_VAR = '''
-            props looks like: {'episodes': number, 'max_rounds': number, 'stop': Node}
+            props looks like: {'episodes': number, 'max_rounds': number, 'stop': Node, 'actions_time': number, 'available_commands': dict{string, callable}}
         '''
+
+
         if not isinstance(props['episodes'], int):
             raise ValueError('Number of episodes must be an integer')
         if not isinstance(props['max_rounds'], int):

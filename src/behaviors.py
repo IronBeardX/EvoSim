@@ -4,7 +4,7 @@ import math
 
 class Behavior:
     def decide_action(self, day, time):
-        pass
+        raise NotImplementedError()
 
 
 class RandomBehavior(Behavior):
