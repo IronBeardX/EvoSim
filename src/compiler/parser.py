@@ -46,42 +46,8 @@ def get_parser(*args, **kwargs):
         if t:
             column = token_column(t.lexer.lexdata, t)
             raise EvoSimSyntaxError(t, t.lexer.lineno, column)
-
-
-    # generic stmt productions
-    def p_stmt_list(p):
-        "stmt_list : stmt newline stmt_list"
-        p[0] = [p[1], *p[3]]
     
-    def p_stmt_list_epsilon(p):
-        "stmt_list : epsilon"
-        p[0] = []
-    
-    def p_stmt(p):
-        '''stmt : if_stmt
-                | var_stmt
-                | list_stmt
-                | dict_stmt
-                | loop_stmt'''
-        p[0] = p[1]
-    
-    def p_stmt_continue(p):
-        "stmt : CONTINUE"
-        p[0] = ContinueNode()
-    
-    def p_stmt_break(p):
-        "stmt : BREAK"
-        p[0] = BreakNode()
-    
-    def p_stmt_return(p):
-        "stmt : RETURN disjunction"
-        p[0] = ReturnNode(p[2])
-    
-    def p_stmt_return_epsilon(p):
-        "stmt : RETURN epsilon"
-        p[0] = ReturnNode(None)
-    
-    # program-related stmt productions
+    # gene stmt productions
     def p_gene_stmt_list(p):
         "gene_stmt_list : gene_stmt newline gene_stmt_list"
         p[0] = [p[1], *p[3]]
@@ -89,16 +55,7 @@ def get_parser(*args, **kwargs):
     def p_gene_stmt_list_epsilon(p):
         "gene_stmt_list : epsilon"
         p[0] = []
-    
-    def p_dna_stmt_list(p):
-        "dna_stmt_list : dna_stmt newline dna_stmt_list"
-        p[0] = [p[1], *p[3]]
-    
-    def p_dna_stmt_list_epsilon(p):
-        "dna_stmt_list : epsilon"
-        p[0] = []
 
-    # gene stmt productions
     def p_gene(p):
         '''gene_stmt : GENE phygene_stmt
                      | GENE percpgene
@@ -156,6 +113,14 @@ def get_parser(*args, **kwargs):
         p[0] = {p[1]: parse_number(p[2])}
     
     # dna chain stmt productions
+    def p_dna_stmt_list(p):
+        "dna_stmt_list : dna_stmt newline dna_stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_dna_stmt_list_epsilon(p):
+        "dna_stmt_list : epsilon"
+        p[0] = []
+    
     def p_dna_stmt(p):
         "dna_stmt : DNA ID '{' maybe_newline dna_elem_list '}'"
         p[0] = DNAChainNode(p[2], p[5])
@@ -184,7 +149,24 @@ def get_parser(*args, **kwargs):
         "dna_elem : DNA ID"
         p[0] = {"type": "dna", "name": p[2]}
     
-    # entity stmt productions
+    # behavior stmt productions
+    def p_behavior_stmt_list(p):
+        "behavior_stmt_list : behavior_stmt newline behavior_stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_behavior_stmt_list_epsilon(p):
+        "behavior_stmt_list : epsilon"
+        p[0] = []
+
+    def p_behavior_stmt(p):
+        "behavior_stmt : BEHAVIOR ID '{' maybe_newline func_stmt_list decide_stmt newline '}'"
+        p[0] = BehaviorNode(p[2], p[5], p[6])
+
+    def p_decide_stmt(p):
+        "decide_stmt : FUNC DECIDE '=' ORG TIME '{' newline stmt_list '}'"
+        p[0] = FunctionNode(p[2], [p[4], p[5]], p[8])
+    
+    # entity and organism stmt productions
     def p_entity_org_stmt_list(p):
         '''entity_org_stmt_list : entity_stmt newline entity_org_stmt_list
                                 | organism_stmt newline entity_org_stmt_list'''
@@ -206,7 +188,6 @@ def get_parser(*args, **kwargs):
         "entityprop : REPR ID"
         p[0] = {'representation': p[2]}
     
-    # organism stmt productions
     def p_organism_stmt(p):
         "organism_stmt : ORGANISM '{' maybe_newline orgprop maybe_newline orgprop maybe_newline '}'"
         p[0] = OrganismNode({**p[4], **p[6]})
@@ -220,23 +201,6 @@ def get_parser(*args, **kwargs):
         "orgprop : REPR ID"
         p[0] = {'representation': p[2]}
     
-    # behavior stmt productions
-    def p_behavior_stmt_list(p):
-        "behavior_stmt_list : behavior_stmt newline behavior_stmt_list"
-        p[0] = [p[1], *p[3]]
-    
-    def p_behavior_stmt_list_epsilon(p):
-        "behavior_stmt_list : epsilon"
-        p[0] = []
-
-    def p_behavior_stmt(p):
-        "behavior_stmt : BEHAVIOR ID '{' maybe_newline func_stmt_list decide_stmt newline '}'"
-        p[0] = BehaviorNode(p[2], p[5], p[6])
-
-    def p_decide_stmt(p):
-        "decide_stmt : FUNC DECIDE '=' ORG TIME '{' newline stmt_list '}'"
-        p[0] = FunctionNode(p[2], [p[4], p[5]], p[8])
-
     # world stmt productions
     def p_world(p):
         "world_stmt : WORLD '{' maybe_newline worldprop maybe_newline worldprop maybe_newline '}'"
@@ -319,6 +283,60 @@ def get_parser(*args, **kwargs):
         "command_list : epsilon"
         p[0] = []
     
+    # function declaration stmt productions
+    def p_func_list(p):
+        "func_stmt_list : func_stmt newline func_stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_func_list_epsilon(p):
+        "func_stmt_list : epsilon"
+        p[0] = []
+
+    def p_func(p):
+        "func_stmt : FUNC ID '=' param_list '{' maybe_newline stmt_list '}'"
+        p[0] = FunctionNode(p[2], p[4], p[7])
+    
+    def p_param_list(p):
+        "param_list : ID param_list"
+        p[0] = [p[1], *p[2]]
+    
+    def p_param_list_epsilon(p):
+        "param_list : epsilon"
+        p[0] = []
+
+    # generic stmt productions
+    def p_stmt_list(p):
+        "stmt_list : stmt newline stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_stmt_list_epsilon(p):
+        "stmt_list : epsilon"
+        p[0] = []
+    
+    def p_stmt(p):
+        '''stmt : if_stmt
+                | var_stmt
+                | list_stmt
+                | dict_stmt
+                | loop_stmt'''
+        p[0] = p[1]
+    
+    def p_stmt_continue(p):
+        "stmt : CONTINUE"
+        p[0] = ContinueNode()
+    
+    def p_stmt_break(p):
+        "stmt : BREAK"
+        p[0] = BreakNode()
+    
+    def p_stmt_return(p):
+        "stmt : RETURN disjunction"
+        p[0] = ReturnNode(p[2])
+    
+    def p_stmt_return_epsilon(p):
+        "stmt : RETURN epsilon"
+        p[0] = ReturnNode(None)
+    
     # var setting stmt production
     def p_var_stmt(p):
         "var_stmt : accessing '=' disjunction"
@@ -380,27 +398,6 @@ def get_parser(*args, **kwargs):
         "loop_condition : epsilon"
         p[0] = None
     
-    # function declaration stmt productions
-    def p_func_list(p):
-        "func_stmt_list : func_stmt newline func_stmt_list"
-        p[0] = [p[1], *p[3]]
-    
-    def p_func_list_epsilon(p):
-        "func_stmt_list : epsilon"
-        p[0] = []
-
-    def p_func(p):
-        "func_stmt : FUNC ID '=' param_list '{' maybe_newline stmt_list '}'"
-        p[0] = FunctionNode(p[2], p[4], p[7])
-    
-    def p_param_list(p):
-        "param_list : ID param_list"
-        p[0] = [p[1], *p[2]]
-    
-    def p_param_list_epsilon(p):
-        "param_list : epsilon"
-        p[0] = []
-
     # boolean expr productions
     def p_disjunction(p):
         "disjunction : conjunction OR conjunction"

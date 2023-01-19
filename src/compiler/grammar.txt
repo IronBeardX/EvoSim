@@ -16,79 +16,13 @@ tokens:
 
 [parser]
 
-stmt_list =>
-    stmt newline stmt_list
-    epsilon
-
-stmt =>
-    if_stmt
-    var_stmt
-    list_stmt
-    dict_stmt
-    loop_stmt
-    CONTINUE
-    BREAK
-    ret_stmt
-
-
-var_stmt =>
-    accessing = disjunction
-
-list_stmt =>
-    naming [ expr ] = disjunction
-
-dict_stmt =>
-    naming { disjunction } = disjunction
-
-
-func_stmt_list =>
-    func_stmt newline func_stmt_list
-    epsilon
-
-func_stmt =>
-    FUNC ID = param_list { maybe_nl stmt_list }
-
-param_list =>
-    ID param_list
-    epsilon
-
-ret_stmt =>
-    RETURN disjunction
-    RETURN epsilon
-
-
-loop_stmt =>
-    LOOP loop_init , loop_condition , loop_set { maybe_nl stmt_list }
-
-loop_condition =>
-    disjunction
-    epsilon
-
-loop_init =>
-    var_stmt
-    epsilon
-
-loop_set =>
-    var_stmt
-    epsilon
-
-
-if_stmt =>
-    IF disjunction { maybe_nl stmt_list } else_stmt
-
-else_stmt =>
-    ELSE if_stmt
-    ELSE { maybe_nl stmt_list }
-    epsilon
+program =>
+    gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list world_stmt newline sim_stmt maybe_nl
 
 
 maybe_nl =>
     newline
     epsilon
-
-
-program =>
-    gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list world_stmt newline sim_stmt maybe_nl
 
 
 gene_stmt_list =>
@@ -162,6 +96,17 @@ dna_elem =>
     DNA ID
 
 
+behavior_stmt_list =>
+    behavior_stmt newline behavior_stmt_list
+    epsilon
+
+behavior_stmt =>
+    BEHAVIOR ID { newline func_stmt_list decide_stmt newline }
+
+decide_stmt =>
+    FUNC DECIDE = ORG TIME { maybe_nl stmt_list }
+
+
 entity_org_stmt_list =>
     entity_stmt newline entity_org_stmt_list
     organism_stmt newline entity_org_stmt_list
@@ -181,32 +126,6 @@ orgprop =>
     REPR ID
     DNA ID
     BEHAVIOR ID
-
-
-behavior_stmt_list =>
-    behavior_stmt newline behavior_stmt_list
-    epsilon
-
-behavior_stmt =>
-    BEHAVIOR ID { newline func_stmt_list decide_stmt newline }
-
-decide_stmt =>
-    FUNC DECIDE = ORG TIME { maybe_nl stmt_list }
-
-
-sim_stmt =>
-    SIMULATION => { maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl }
-
-simprop =>
-    EPISODES NUMBER
-    MAX_ROUNDS NUMBER
-    STOP IF disjunction
-    ACTIONS_TIME NUMBER
-    AVAILABLE_COMMANDS { maybe_nl command_list }
-
-command_list =>
-    ID maybe_nl command_list
-    epsilon
 
 
 world_stmt =>
@@ -234,6 +153,89 @@ terrainprop =>
 
 terrainposn_list =>
     NUMBER maybe_nl terrainposn_list
+    epsilon
+
+
+sim_stmt =>
+    SIMULATION => { maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl }
+
+simprop =>
+    EPISODES NUMBER
+    MAX_ROUNDS NUMBER
+    STOP IF disjunction
+    ACTIONS_TIME NUMBER
+    AVAILABLE_COMMANDS { maybe_nl command_list }
+
+command_list =>
+    ID maybe_nl command_list
+    epsilon
+
+
+func_stmt_list =>
+    func_stmt newline func_stmt_list
+    epsilon
+
+func_stmt =>
+    FUNC ID = param_list { maybe_nl stmt_list }
+
+param_list =>
+    ID param_list
+    epsilon
+
+ret_stmt =>
+    RETURN disjunction
+    RETURN epsilon
+
+
+stmt_list =>
+    stmt newline stmt_list
+    epsilon
+
+stmt =>
+    if_stmt
+    var_stmt
+    list_stmt
+    dict_stmt
+    loop_stmt
+    CONTINUE
+    BREAK
+    ret_stmt
+
+
+var_stmt =>
+    accessing = disjunction
+
+
+list_stmt =>
+    naming [ expr ] = disjunction
+
+
+dict_stmt =>
+    naming { disjunction } = disjunction
+
+
+loop_stmt =>
+    LOOP loop_init , loop_condition , loop_set { maybe_nl stmt_list }
+
+loop_condition =>
+    disjunction
+    epsilon
+
+loop_init =>
+    var_stmt
+    epsilon
+
+loop_set =>
+    var_stmt
+    epsilon
+
+
+if_stmt =>
+    IF disjunction { maybe_nl stmt_list } else_stmt
+
+else_stmt =>
+    ELSE if_stmt
+    ELSE { maybe_nl stmt_list }
     epsilon
 
 
@@ -288,6 +290,13 @@ naming =>
     ID ( arg_list )
     atom
 
+accessing =>
+    word
+    word . accessing
+
+word =>
+    ID
+
 atom =>
     NUMBER
     STRING
@@ -295,13 +304,6 @@ atom =>
     ( expr )
     [ arg_list ]
     { keyarg_list }
-
-accessing =>
-    word
-    word . accessing
-
-word =>
-    ID
 
 bool =>
     TRUE
