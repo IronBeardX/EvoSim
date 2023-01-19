@@ -168,7 +168,6 @@ entity_stmt =>
 entityprop =>
     COEXISTENCE bool
     REPR ID
-    BEHAVIOR ID
 
 
 organism_stmt =>
@@ -177,6 +176,7 @@ organism_stmt =>
 orgprop =>
     REPR ID
     DNA ID
+    BEHAVIOR ID
 
 
 behavior_stmt =>
