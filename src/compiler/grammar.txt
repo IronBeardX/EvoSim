@@ -151,7 +151,7 @@ dna_elem =>
 
 
 sim_stmt =>
-    SIMULATION => { maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl }
+    SIMULATION => { maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl simprop maybe_nl }
 
 simprop =>
     EPISODES NUMBER
