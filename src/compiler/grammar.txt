@@ -23,6 +23,8 @@ stmt_list =>
 stmt =>
     if_stmt
     var_stmt
+    list_stmt
+    dict_stmt
     loop_stmt
     CONTINUE
     BREAK
@@ -31,6 +33,12 @@ stmt =>
 
 var_stmt =>
     ID = disjunction
+
+list_stmt =>
+    naming [ expr ] = disjunction
+
+dict_stmt =>
+    naming { disjunction } = disjunction
 
 
 func_stmt =>

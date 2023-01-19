@@ -55,9 +55,10 @@ class ListNode(Node):
 
 
 class ListAccessNode(Node):
-    def __init__(self, listlike_node, index_node):
+    def __init__(self, listlike_node, index_node, set_node=None):
         self.list_node = listlike_node
         self.index_node = index_node
+        self.set_node = set_node
     
     def evaluate(self, context: Context):
         l = self.list_node.evaluate(context)
@@ -70,7 +71,10 @@ class ListAccessNode(Node):
         except ValueError:
             raise Exception()
         
-        return l[i % len(l)]
+        if self.set_node:
+            l[i % len(l)] = self.set_node.evaluate(context)
+        else:
+            return l[i % len(l)]
 
 
 class DictNode(Node):
@@ -90,9 +94,10 @@ class DictNode(Node):
 
 
 class DictAccessNode(Node):
-    def __init__(self, dictlike_node, index_node):
+    def __init__(self, dictlike_node, index_node, set_node=None):
         self.dict_node = dictlike_node
         self.index_node = index_node
+        self.set_node = set_node
     
     def evaluate(self, context: Context):
         d = self.dict_node.evaluate(context)
@@ -101,7 +106,10 @@ class DictAccessNode(Node):
         
         i = self.index_node.evaluate(context)
 
-        return d[i]
+        if self.set_node:
+            d[i] = self.set_node.evaluate(context)
+        else:
+            return d[i]
 
 
 class UnaryOpNode(Node):

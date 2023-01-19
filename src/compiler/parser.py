@@ -38,8 +38,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : expr"
-        p[0] = p[1]
+        "test : newline var_stmt newline dict_stmt newline"
+        p[0] = (p[2], p[4])
 
     # handle errors
     def p_error(t):
@@ -60,6 +60,8 @@ def get_parser(*args, **kwargs):
     def p_stmt(p):
         '''stmt : if_stmt
                 | var_stmt
+                | list_stmt
+                | dict_stmt
                 | loop_stmt'''
         p[0] = p[1]
     
@@ -264,10 +266,20 @@ def get_parser(*args, **kwargs):
         "command_list : epsilon"
         p[0] = []
     
-    # var setting stmt
+    # var setting stmt production
     def p_var(p):
         "var_stmt : ID '=' disjunction"
         p[0] = VariableSettingNode(p[1], p[3])
+    
+    # list stmt production
+    def p_list_stmt(p):
+        "list_stmt : naming '[' expr ']' '=' disjunction"
+        p[0] = ListAccessNode(p[1], p[3], p[6])
+    
+    # dict stmt production
+    def p_dict_stmt(p):
+        "dict_stmt : naming '{' disjunction '}' '=' disjunction"
+        p[0] = DictAccessNode(p[1], p[3], p[6])
     
     # if-else stmt productions
     def p_if(p):
