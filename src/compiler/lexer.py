@@ -68,6 +68,7 @@ tokens = (
     'GE',
     'LE',
     'NUMBER',
+    'STRING',
     'ID',
     *reserved.values(),
     'newline'
@@ -81,6 +82,7 @@ def get_lexer(*args, **kwargs):
     t_GE     = r'>='
     t_LE     = r'<='
     t_NUMBER = r'-?(0|[1-9][0-9]*)(\.[0-9]*)?'
+    t_STRING = r"'[^']*'"
 
     # match reserved words then IDs
     # valid IDs start with letter, followed by letters, digits and underscore chars

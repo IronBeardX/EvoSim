@@ -61,7 +61,7 @@ class ListAccessNode(Node):
     
     def evaluate(self, context: Context):
         l = self.list_node.evaluate(context)
-        if not isinstance(l, list):
+        if not isinstance(l, (list, str)):
             raise Exception()
         
         i = self.index_node.evaluate(context)

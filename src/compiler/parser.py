@@ -454,6 +454,10 @@ def get_parser(*args, **kwargs):
         "atom : NUMBER"
         p[0] = ValueNode(parse_number(p[1]))
     
+    def p_atom_string(p):
+        "atom : STRING"
+        p[0] = ValueNode(p[1][1:-1])
+    
     def p_atom_false(p):
         "atom : FALSE"
         p[0] = ValueNode(False)

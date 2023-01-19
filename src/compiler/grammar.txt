@@ -1,7 +1,7 @@
 [lexer]
 
 literals:
-    + - * / % ( ) ^ @ < > { } = , . [ ]
+    + - * / % ( ) ^ @ < > { } = , . [ ] '
 
 reserved:
     OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
@@ -11,7 +11,7 @@ reserved:
     FUNC RETURN DNA COST
 
 tokens:
-    INTDIV EQ NEQ GE LE NUMBER ID
+    INTDIV EQ NEQ GE LE NUMBER STRING ID
 
 
 [parser]
@@ -245,6 +245,7 @@ naming =>
 
 atom =>
     NUMBER
+    STRING
     TRUE
     FALSE
     ( expr )
