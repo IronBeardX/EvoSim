@@ -163,8 +163,8 @@ def get_parser(*args, **kwargs):
         p[0] = BehaviorNode(p[2], p[5], p[6])
 
     def p_decide_stmt(p):
-        "decide_stmt : FUNC DECIDE '=' ORGANISM TIME '{' newline stmt_list '}'"
-        p[0] = FunctionNode(p[2], [p[4], p[5]], p[8])
+        "decide_stmt : DECIDE ORGANISM TIME '{' newline stmt_list '}'"
+        p[0] = FunctionNode(p[1], [p[2], p[3]], p[6])
     
     # entity and organism stmt productions
     def p_entity_org_stmt_list(p):
@@ -268,8 +268,8 @@ def get_parser(*args, **kwargs):
         p[0] = {p[1]: parse_number(p[2])}
     
     def p_simprop_stop(p):
-        "simprop : STOP IF SIMULATION '{' newline stmt_list '}'"
-        p[0] = {'stop': FunctionNode('stop_sim', [p[3]], p[6])}
+        "simprop : STOP SIMULATION '{' newline stmt_list '}'"
+        p[0] = {p[1]: FunctionNode(p[1], [p[2]], p[5])}
     
     def p_simprop_commands(p):
         "simprop : AVAILABLE_COMMANDS '{' maybe_newline command_list '}'"

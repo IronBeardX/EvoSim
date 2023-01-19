@@ -104,7 +104,7 @@ behavior_stmt =>
     BEHAVIOR ID { newline func_stmt_list decide_stmt newline }
 
 decide_stmt =>
-    FUNC DECIDE = ORGANISM TIME { maybe_nl stmt_list }
+    DECIDE ORGANISM TIME { maybe_nl stmt_list }
 
 
 entity_org_stmt_list =>
@@ -162,7 +162,7 @@ sim_stmt =>
 simprop =>
     EPISODES NUMBER
     MAX_ROUNDS NUMBER
-    STOP IF SIMULATION { newline stmt_list }
+    STOP SIMULATION { newline stmt_list }
     ACTIONS_TIME NUMBER
     AVAILABLE_COMMANDS { maybe_nl command_list }
 
