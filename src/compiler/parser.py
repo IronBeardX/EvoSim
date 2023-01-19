@@ -37,8 +37,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : gene_stmt"
-        p[0] = p[1]
+        "test : newline func_stmt newline expr newline"
+        p[0] = [p[2], p[4]]
 
     # handle errors
     def p_error(t):

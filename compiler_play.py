@@ -4,20 +4,21 @@ from src.compiler.context import Context
 
 
 lexer = get_lexer(debug=True)
-parser = get_parser(debug=True)
+parser = get_parser(debug=True, start="test")
 
 context = Context()
-text = '''x = -2
-loop i = 0, i < 5, i = i + 1 {
-    if not x {
-        break
+text = '''
+func fib = nth {
+    if nth == 1 or nth == 2 {
+        return 1
     }
-    x = x + 1
+    return fib(nth - 1) + fib(nth - 2)
 }
+fib(25)
 '''
 
-stmts = parser.parse(text, lexer=lexer)
-for node in stmts:
-    node.evaluate(context)
+f, expr = parser.parse(text, lexer=lexer)
+f.evaluate(context)
+v = expr.evaluate(context)
 
-print(context.variables)
+print(v)
