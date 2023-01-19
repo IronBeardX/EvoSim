@@ -239,6 +239,7 @@ power =>
 
 naming =>
     naming [ expr ]
+    naming { disjunction }
     accessing
     ID ( arg_list )
     atom
@@ -250,6 +251,7 @@ atom =>
     FALSE
     ( expr )
     [ arg_list ]
+    { keyarg_list }
 
 accessing =>
     word
@@ -262,3 +264,11 @@ arg_list =>
     disjunction
     disjunction , arg_list
     epsilon
+
+keyarg_list =>
+    keyarg
+    keyarg , keyarg_list
+    epsilon
+
+keyarg =>
+    disjunction = disjunction

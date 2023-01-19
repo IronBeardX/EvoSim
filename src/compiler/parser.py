@@ -5,7 +5,8 @@ from src.compiler.lexer import tokens
 from src.compiler.util import parse_number, nth_root, token_column
 from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
-    ValueNode, UnaryOpNode, BinaryOpNode, VariableNode, ListNode, ListAccessNode,
+    ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
+    ListNode, ListAccessNode, DictNode, DictAccessNode,
     WorldNode, SimulationNode,
     PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
@@ -437,6 +438,10 @@ def get_parser(*args, **kwargs):
     def p_naming_index(p):
         "naming : naming '[' expr ']'"
         p[0] = ListAccessNode(p[1], p[3])
+    
+    def p_naming_index_dict(p):
+        "naming : naming '{' disjunction '}'"
+        p[0] = DictAccessNode(p[1], p[3])
 
     def p_naming_accessing(p):
         "naming : accessing"
@@ -474,6 +479,10 @@ def get_parser(*args, **kwargs):
         "atom : '[' arg_list ']'"
         p[0] = ListNode(p[2])
     
+    def p_atom_dict(p):
+        "atom : '{' keyarg_list '}'"
+        p[0] = DictNode(p[2])
+    
     def p_accessing(p):
         "accessing : word"
         p[0] = [p[1]]
@@ -497,5 +506,21 @@ def get_parser(*args, **kwargs):
     def p_arg_list_epsilon(p):
         "arg_list : epsilon"
         p[0] = []
+    
+    def p_keyarg_list(p):
+        "keyarg_list : keyarg"
+        p[0] = [p[1]]
+    
+    def p_keyarg_list_comma(p):
+        "keyarg_list : keyarg ',' keyarg_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_keyarg_list_epsilon(p):
+        "keyarg_list : epsilon"
+        p[0] = []
+    
+    def p_keyarg(p):
+        "keyarg : disjunction '=' disjunction"
+        p[0] = (p[1], p[3])
 
     return yacc.yacc(*args, **kwargs)

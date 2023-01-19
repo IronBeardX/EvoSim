@@ -73,6 +73,37 @@ class ListAccessNode(Node):
         return l[i % len(l)]
 
 
+class DictNode(Node):
+    def __init__(self, keyarg_nodes):
+        self.pairs = keyarg_nodes
+    
+    def evaluate(self, context: Context):
+        d = {}
+        for p in self.pairs:
+            k, v = p
+            try:
+                d[k.evaluate(context)] = v.evaluate(context)
+            except:
+                raise Exception()
+        
+        return d
+
+
+class DictAccessNode(Node):
+    def __init__(self, dictlike_node, index_node):
+        self.dict_node = dictlike_node
+        self.index_node = index_node
+    
+    def evaluate(self, context: Context):
+        d = self.dict_node.evaluate(context)
+        if not isinstance(d, dict):
+            raise Exception()
+        
+        i = self.index_node.evaluate(context)
+
+        return d[i]
+
+
 class UnaryOpNode(Node):
     def __init__(self, node, apply):
         self.node = node
