@@ -476,12 +476,8 @@ def get_parser(*args, **kwargs):
         p[0] = ValueNode(p[1][1:-1])
     
     def p_atom_false(p):
-        "atom : FALSE"
-        p[0] = ValueNode(False)
-    
-    def p_atom_true(p):
-        "atom : TRUE"
-        p[0] = ValueNode(True)
+        "atom : bool"
+        p[0] = p[1]
     
     def p_atom_group(p):
         "atom : '(' expr ')'"
@@ -506,6 +502,11 @@ def get_parser(*args, **kwargs):
     def p_word(p):
         "word : ID"
         p[0] = p[1]
+    
+    def p_bool(p):
+        '''bool : TRUE
+                | FALSE'''
+        p[0] = ValueNode(p[1] == 'true')
     
     def p_arg_list(p):
         "arg_list : disjunction"

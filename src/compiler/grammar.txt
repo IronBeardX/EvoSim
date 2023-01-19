@@ -255,8 +255,7 @@ naming =>
 atom =>
     NUMBER
     STRING
-    TRUE
-    FALSE
+    bool
     ( expr )
     [ arg_list ]
     { keyarg_list }
@@ -267,6 +266,10 @@ accessing =>
 
 word =>
     ID
+
+bool =>
+    TRUE
+    FALSE
 
 arg_list =>
     disjunction
