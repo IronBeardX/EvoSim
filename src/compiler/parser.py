@@ -163,7 +163,7 @@ def get_parser(*args, **kwargs):
         p[0] = BehaviorNode(p[2], p[5], p[6])
 
     def p_decide_stmt(p):
-        "decide_stmt : FUNC DECIDE '=' ORG TIME '{' newline stmt_list '}'"
+        "decide_stmt : FUNC DECIDE '=' ORGANISM TIME '{' newline stmt_list '}'"
         p[0] = FunctionNode(p[2], [p[4], p[5]], p[8])
     
     # entity and organism stmt productions
@@ -558,7 +558,8 @@ def get_parser(*args, **kwargs):
         p[0] = [p[1], *p[3]]
     
     def p_word(p):
-        "word : ID"
+        '''word : ID
+                | ORGANISM'''
         p[0] = p[1]
     
     def p_bool(p):

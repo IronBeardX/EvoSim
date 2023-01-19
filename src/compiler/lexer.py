@@ -64,7 +64,6 @@ reserved = {
     'entity'            : 'ENTITY',
     'behavior'          : 'BEHAVIOR',
     'decide'            : 'DECIDE',
-    'org'               : 'ORG',
     'time'              : 'TIME'
 }
 
