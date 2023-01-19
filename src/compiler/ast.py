@@ -281,7 +281,7 @@ class WorldNode(Node):
         if not isinstance(props['size'][0], bool):
             raise PARAMS_ERROR('world', 'finite must be a boolean')
 
-        if not 'width' in props['size'] or not 'height' in props['size']:
+        if not 'width' in props['size'][1] or not 'height' in props['size'][1]:
             raise PARAMS_ERROR('World', 'size', 'width or height')
 
         if not (isinstance(props['size'][1]['width'], int) and isinstance(props['size'][1]['height'], int)):

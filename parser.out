@@ -1,2498 +1,708 @@
 Created by PLY (http://www.dabeaz.com/ply)
 
+Unused terminals:
+
+    newline
+
 Grammar
 
-Rule 0     S' -> program
-Rule 1     program -> stmt_list
+Rule 0     S' -> test
+Rule 1     program -> gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list world_stmt sim_stmt
 Rule 2     epsilon -> <empty>
-Rule 3     maybe_newline -> newline
-Rule 4     maybe_newline -> epsilon
-Rule 5     stmt_list -> stmt newline stmt_list
-Rule 6     stmt_list -> epsilon
-Rule 7     stmt -> if_stmt
-Rule 8     stmt -> var_stmt
-Rule 9     stmt -> loop_stmt
-Rule 10    stmt -> CONTINUE
-Rule 11    stmt -> BREAK
-Rule 12    stmt -> RETURN disjunction
-Rule 13    stmt -> RETURN epsilon
-Rule 14    gene_stmt -> GENE phygene_stmt
-Rule 15    gene_stmt -> GENE percpgene
-Rule 16    gene_stmt -> GENE actgene
-Rule 17    percpgene -> SMELLING
-Rule 18    percpgene -> VISION
-Rule 19    actgene -> MOVE
-Rule 20    actgene -> EAT
-Rule 21    actgene -> REPRODUCE
-Rule 22    actgene -> ATTACK
-Rule 23    actgene -> DEFEND
-Rule 24    actgene -> PICK
-Rule 25    actgene -> SWIM
-Rule 26    phygene_stmt -> phygene ID { maybe_newline phygeneprop maybe_newline phygeneprop maybe_newline }
-Rule 27    phygene -> HEALTH
-Rule 28    phygene -> HUNGER
-Rule 29    phygene -> LEGS
-Rule 30    phygene -> EYES
-Rule 31    phygene -> ARMS
-Rule 32    phygene -> HORNS
-Rule 33    phygene -> SMELL
-Rule 34    phygene -> FINS
-Rule 35    phygene -> NOSE
-Rule 36    phygene -> MOUTH
-Rule 37    phygeneprop -> VALUE NUMBER IN { NUMBER NUMBER }
-Rule 38    phygeneprop -> MUTATION { maybe_newline mutationprop maybe_newline mutationprop maybe_newline }
-Rule 39    mutationprop -> CHANCE NUMBER
-Rule 40    mutationprop -> STEP NUMBER
-Rule 41    world_stmt -> WORLD { maybe_newline worldprop maybe_newline worldprop maybe_newline }
-Rule 42    worldprop -> SIZE worldsize
-Rule 43    worldprop -> TERRAIN worldterrain
-Rule 44    worldsize -> INFINITE
-Rule 45    worldsize -> { maybe_newline worldsizeprop maybe_newline worldsizeprop maybe_newline }
-Rule 46    worldsizeprop -> WIDTH NUMBER
-Rule 47    worldsizeprop -> HEIGHT NUMBER
-Rule 48    worldterrain -> { maybe_newline terrainprop_list }
-Rule 49    terrainprop_list -> terrainprop maybe_newline terrainprop_list
-Rule 50    terrainprop_list -> epsilon
-Rule 51    terrainprop -> ID
-Rule 52    terrainprop -> DEFAULT ID
-Rule 53    terrainprop -> ID AT { maybe_newline NUMBER maybe_newline terrainposn_list }
-Rule 54    terrainposn_list -> NUMBER maybe_newline terrainposn_list
-Rule 55    terrainposn_list -> epsilon
-Rule 56    sim_stmt -> SIMULATION { maybe_newline simprop maybe_newline simprop maybe_newline simprop maybe_newline }
-Rule 57    simprop -> EPISODES NUMBER
-Rule 58    simprop -> MAX_ROUNDS NUMBER
-Rule 59    simprop -> STOP IF disjunction
-Rule 60    var_stmt -> ID = disjunction
-Rule 61    if_stmt -> IF disjunction { maybe_newline stmt_list } else_stmt
-Rule 62    else_stmt -> ELSE if_stmt
-Rule 63    else_stmt -> ELSE { maybe_newline stmt_list }
-Rule 64    else_stmt -> epsilon
-Rule 65    loop_stmt -> LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list }
-Rule 66    loop_init -> var_stmt
-Rule 67    loop_init -> epsilon
-Rule 68    loop_set -> var_stmt
-Rule 69    loop_set -> epsilon
-Rule 70    loop_condition -> disjunction
-Rule 71    loop_condition -> epsilon
-Rule 72    func_stmt -> FUNC ID = param_list { maybe_newline stmt_list }
-Rule 73    param_list -> ID param_list
-Rule 74    param_list -> epsilon
-Rule 75    disjunction -> conjunction OR conjunction
-Rule 76    disjunction -> conjunction
-Rule 77    conjunction -> negation AND negation
-Rule 78    conjunction -> negation
-Rule 79    negation -> NOT comparison
-Rule 80    negation -> comparison
-Rule 81    comparison -> expr EQ expr
-Rule 82    comparison -> expr NEQ expr
-Rule 83    comparison -> expr GE expr
-Rule 84    comparison -> expr LE expr
-Rule 85    comparison -> expr > expr
-Rule 86    comparison -> expr < expr
-Rule 87    comparison -> expr
-Rule 88    expr -> expr + term
-Rule 89    expr -> expr - term
-Rule 90    expr -> term
-Rule 91    term -> term * factor
-Rule 92    term -> term / factor
-Rule 93    term -> term % factor
-Rule 94    term -> term INTDIV factor
-Rule 95    term -> factor
-Rule 96    factor -> - factor
-Rule 97    factor -> power
-Rule 98    power -> atom ^ factor
-Rule 99    power -> atom @ factor
-Rule 100   power -> atom
-Rule 101   atom -> NUMBER
-Rule 102   atom -> FALSE
-Rule 103   atom -> TRUE
-Rule 104   atom -> ID
-Rule 105   atom -> ID ( arg_list )
-Rule 106   atom -> ( expr )
-Rule 107   arg_list -> disjunction rest_args
-Rule 108   arg_list -> epsilon
-Rule 109   rest_args -> , disjunction rest_args
-Rule 110   rest_args -> epsilon
+Rule 3     test -> world_stmt
+Rule 4     gene_stmt_list -> gene_stmt gene_stmt_list
+Rule 5     gene_stmt_list -> epsilon
+Rule 6     gene_stmt -> GENE phygene_stmt
+Rule 7     gene_stmt -> GENE percpgene
+Rule 8     gene_stmt -> GENE actgene_stmt
+Rule 9     percpgene -> SMELLING
+Rule 10    percpgene -> VISION
+Rule 11    actgene_stmt -> actgene ID { COST NUMBER }
+Rule 12    actgene -> MOVE
+Rule 13    actgene -> EAT
+Rule 14    actgene -> REPRODUCE
+Rule 15    actgene -> ATTACK
+Rule 16    actgene -> DEFEND
+Rule 17    actgene -> PICK
+Rule 18    actgene -> SWIM
+Rule 19    phygene_stmt -> phygene ID { phygeneprop phygeneprop }
+Rule 20    phygene -> HEALTH
+Rule 21    phygene -> HUNGER
+Rule 22    phygene -> LEGS
+Rule 23    phygene -> EYES
+Rule 24    phygene -> ARMS
+Rule 25    phygene -> HORNS
+Rule 26    phygene -> SMELL
+Rule 27    phygene -> FINS
+Rule 28    phygene -> NOSE
+Rule 29    phygene -> MOUTH
+Rule 30    phygeneprop -> VALUE NUMBER IN { NUMBER NUMBER }
+Rule 31    phygeneprop -> MUTATION { mutationprop mutationprop }
+Rule 32    mutationprop -> CHANCE NUMBER
+Rule 33    mutationprop -> STEP NUMBER
+Rule 34    dna_stmt_list -> dna_stmt dna_stmt_list
+Rule 35    dna_stmt_list -> epsilon
+Rule 36    dna_stmt -> DNA ID { dna_elem_list }
+Rule 37    dna_elem_list -> dna_elem dna_elem_list
+Rule 38    dna_elem_list -> epsilon
+Rule 39    dna_elem -> percpgene
+Rule 40    dna_elem -> ID
+Rule 41    dna_elem -> DNA ID
+Rule 42    behavior_stmt_list -> behavior_stmt behavior_stmt_list
+Rule 43    behavior_stmt_list -> epsilon
+Rule 44    behavior_stmt -> BEHAVIOR ID { func_stmt_list decide_stmt }
+Rule 45    decide_stmt -> DECIDE ORGANISM TIME { stmt_list }
+Rule 46    entity_org_stmt_list -> entity_stmt entity_org_stmt_list
+Rule 47    entity_org_stmt_list -> organism_stmt entity_org_stmt_list
+Rule 48    entity_org_stmt_list -> epsilon
+Rule 49    entity_stmt -> ENTITY { entityprop entityprop }
+Rule 50    entityprop -> COEXISTENCE bool
+Rule 51    entityprop -> REPR ID
+Rule 52    organism_stmt -> ORGANISM { orgprop orgprop orgprop }
+Rule 53    orgprop -> DNA ID
+Rule 54    orgprop -> BEHAVIOR ID
+Rule 55    orgprop -> REPR ID
+Rule 56    world_stmt -> WORLD { worldprop worldprop }
+Rule 57    worldprop -> SIZE worldsize
+Rule 58    worldprop -> TERRAIN worldterrain
+Rule 59    worldsize -> INFINITE { worldsizeprop worldsizeprop }
+Rule 60    worldsize -> { worldsizeprop worldsizeprop }
+Rule 61    worldsizeprop -> WIDTH NUMBER
+Rule 62    worldsizeprop -> HEIGHT NUMBER
+Rule 63    worldterrain -> { terrainprop_list }
+Rule 64    terrainprop_list -> terrainprop terrainprop_list
+Rule 65    terrainprop_list -> epsilon
+Rule 66    terrainprop -> ID
+Rule 67    terrainprop -> DEFAULT ID
+Rule 68    terrainprop -> ID AT { NUMBER terrainposn_list }
+Rule 69    terrainposn_list -> NUMBER terrainposn_list
+Rule 70    terrainposn_list -> epsilon
+Rule 71    sim_stmt -> SIMULATION { simprop simprop simprop simprop simprop }
+Rule 72    simprop -> EPISODES NUMBER
+Rule 73    simprop -> MAX_ROUNDS NUMBER
+Rule 74    simprop -> ACTIONS_TIME NUMBER
+Rule 75    simprop -> STOP SIMULATION { stmt_list }
+Rule 76    simprop -> AVAILABLE_COMMANDS { command_list }
+Rule 77    command_list -> ID command_list
+Rule 78    command_list -> epsilon
+Rule 79    func_stmt_list -> func_stmt func_stmt_list
+Rule 80    func_stmt_list -> epsilon
+Rule 81    func_stmt -> FUNC ID = param_list { stmt_list }
+Rule 82    param_list -> ID param_list
+Rule 83    param_list -> epsilon
+Rule 84    stmt_list -> stmt stmt_list
+Rule 85    stmt_list -> epsilon
+Rule 86    stmt -> if_stmt
+Rule 87    stmt -> var_stmt ;
+Rule 88    stmt -> index_stmt ;
+Rule 89    stmt -> loop_stmt
+Rule 90    stmt -> CONTINUE ;
+Rule 91    stmt -> BREAK ;
+Rule 92    stmt -> RETURN disjunction ;
+Rule 93    stmt -> RETURN ;
+Rule 94    var_stmt -> accessing = disjunction
+Rule 95    index_stmt -> naming [ disjunction ] = disjunction
+Rule 96    if_stmt -> IF disjunction { stmt_list } else_stmt
+Rule 97    else_stmt -> ELSE if_stmt
+Rule 98    else_stmt -> ELSE { stmt_list }
+Rule 99    else_stmt -> epsilon
+Rule 100   loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list }
+Rule 101   loop_init -> var_stmt
+Rule 102   loop_init -> epsilon
+Rule 103   loop_set -> var_stmt
+Rule 104   loop_set -> epsilon
+Rule 105   loop_condition -> disjunction
+Rule 106   loop_condition -> epsilon
+Rule 107   disjunction -> conjunction OR conjunction
+Rule 108   disjunction -> conjunction
+Rule 109   conjunction -> negation AND negation
+Rule 110   conjunction -> negation
+Rule 111   negation -> NOT comparison
+Rule 112   negation -> comparison
+Rule 113   comparison -> expr EQ expr
+Rule 114   comparison -> expr NEQ expr
+Rule 115   comparison -> expr GE expr
+Rule 116   comparison -> expr LE expr
+Rule 117   comparison -> expr > expr
+Rule 118   comparison -> expr < expr
+Rule 119   comparison -> expr
+Rule 120   expr -> expr + term
+Rule 121   expr -> expr - term
+Rule 122   expr -> term
+Rule 123   term -> term * factor
+Rule 124   term -> term / factor
+Rule 125   term -> term % factor
+Rule 126   term -> term INTDIV factor
+Rule 127   term -> factor
+Rule 128   factor -> - factor
+Rule 129   factor -> power
+Rule 130   power -> atom ^ factor
+Rule 131   power -> atom @ factor
+Rule 132   power -> naming
+Rule 133   naming -> naming [ disjunction ]
+Rule 134   naming -> accessing
+Rule 135   naming -> ID ( arg_list )
+Rule 136   naming -> atom
+Rule 137   atom -> NUMBER
+Rule 138   atom -> STRING
+Rule 139   atom -> bool
+Rule 140   atom -> ( expr )
+Rule 141   atom -> [ arg_list ]
+Rule 142   atom -> { keyarg_list }
+Rule 143   accessing -> word
+Rule 144   accessing -> word . accessing
+Rule 145   word -> ID
+Rule 146   word -> ORGANISM
+Rule 147   word -> SIMULATION
+Rule 148   bool -> TRUE
+Rule 149   bool -> FALSE
+Rule 150   arg_list -> disjunction
+Rule 151   arg_list -> disjunction , arg_list
+Rule 152   arg_list -> epsilon
+Rule 153   keyarg_list -> keyarg
+Rule 154   keyarg_list -> keyarg , keyarg_list
+Rule 155   keyarg_list -> epsilon
+Rule 156   keyarg -> disjunction = disjunction
 
 Terminals, with rules where they appear
 
-%                    : 93
-(                    : 105 106
-)                    : 105 106
-*                    : 91
-+                    : 88
-,                    : 65 65 109
--                    : 89 96
-/                    : 92
-<                    : 86
-=                    : 60 72
->                    : 85
-@                    : 99
-AND                  : 77
-ARMS                 : 31
-AT                   : 53
-ATTACK               : 22
-BREAK                : 11
-CHANCE               : 39
-CONTINUE             : 10
-DEFAULT              : 52
-DEFEND               : 23
-EAT                  : 20
-ELSE                 : 62 63
-EPISODES             : 57
-EQ                   : 81
-EYES                 : 30
-FALSE                : 102
-FINS                 : 34
-FUNC                 : 72
-GE                   : 83
-GENE                 : 14 15 16
-HEALTH               : 27
-HEIGHT               : 47
-HORNS                : 32
-HUNGER               : 28
-ID                   : 26 51 52 53 60 72 73 104 105
-IF                   : 59 61
-IN                   : 37
-INFINITE             : 44
-INTDIV               : 94
-LE                   : 84
-LEGS                 : 29
-LOOP                 : 65
-MAX_ROUNDS           : 58
-MOUTH                : 36
-MOVE                 : 19
-MUTATION             : 38
-NEQ                  : 82
-NOSE                 : 35
-NOT                  : 79
-NUMBER               : 37 37 37 39 40 46 47 53 54 57 58 101
-OR                   : 75
-PICK                 : 24
-REPRODUCE            : 21
-RETURN               : 12 13
-SIMULATION           : 56
-SIZE                 : 42
-SMELL                : 33
-SMELLING             : 17
-STEP                 : 40
-STOP                 : 59
-SWIM                 : 25
-TERRAIN              : 43
-TRUE                 : 103
-VALUE                : 37
-VISION               : 18
-WIDTH                : 46
-WORLD                : 41
-^                    : 98
+%                    : 125
+(                    : 135 140
+)                    : 135 140
+*                    : 123
++                    : 120
+,                    : 100 100 151 154
+-                    : 121 128
+.                    : 144
+/                    : 124
+;                    : 87 88 90 91 92 93
+<                    : 118
+=                    : 81 94 95 156
+>                    : 117
+@                    : 131
+ACTIONS_TIME         : 74
+AND                  : 109
+ARMS                 : 24
+AT                   : 68
+ATTACK               : 15
+AVAILABLE_COMMANDS   : 76
+BEHAVIOR             : 44 54
+BREAK                : 91
+CHANCE               : 32
+COEXISTENCE          : 50
+CONTINUE             : 90
+COST                 : 11
+DECIDE               : 45
+DEFAULT              : 67
+DEFEND               : 16
+DNA                  : 36 41 53
+EAT                  : 13
+ELSE                 : 97 98
+ENTITY               : 49
+EPISODES             : 72
+EQ                   : 113
+EYES                 : 23
+FALSE                : 149
+FINS                 : 27
+FUNC                 : 81
+GE                   : 115
+GENE                 : 6 7 8
+HEALTH               : 20
+HEIGHT               : 62
+HORNS                : 25
+HUNGER               : 21
+ID                   : 11 19 36 40 41 44 51 53 54 55 66 67 68 77 81 82 135 145
+IF                   : 96
+IN                   : 30
+INFINITE             : 59
+INTDIV               : 126
+LE                   : 116
+LEGS                 : 22
+LOOP                 : 100
+MAX_ROUNDS           : 73
+MOUTH                : 29
+MOVE                 : 12
+MUTATION             : 31
+NEQ                  : 114
+NOSE                 : 28
+NOT                  : 111
+NUMBER               : 11 30 30 30 32 33 61 62 68 69 72 73 74 137
+OR                   : 107
+ORGANISM             : 45 52 146
+PICK                 : 17
+REPR                 : 51 55
+REPRODUCE            : 14
+RETURN               : 92 93
+SIMULATION           : 71 75 147
+SIZE                 : 57
+SMELL                : 26
+SMELLING             : 9
+STEP                 : 33
+STOP                 : 75
+STRING               : 138
+SWIM                 : 18
+TERRAIN              : 58
+TIME                 : 45
+TRUE                 : 148
+VALUE                : 30
+VISION               : 10
+WIDTH                : 61
+WORLD                : 56
+[                    : 95 133 141
+]                    : 95 133 141
+^                    : 130
 error                : 
-newline              : 3 5
-{                    : 26 37 38 41 45 48 53 56 61 63 65 72
-}                    : 26 37 38 41 45 48 53 56 61 63 65 72
+newline              : 
+{                    : 11 19 30 31 36 44 45 49 52 56 59 60 63 68 71 75 76 81 96 98 100 142
+}                    : 11 19 30 31 36 44 45 49 52 56 59 60 63 68 71 75 76 81 96 98 100 142
 
 Nonterminals, with rules where they appear
 
-actgene              : 16
-arg_list             : 105
-atom                 : 98 99 100
-comparison           : 79 80
-conjunction          : 75 75 76
-disjunction          : 12 59 60 61 70 107 109
-else_stmt            : 61
-epsilon              : 4 6 13 50 55 64 67 69 71 74 108 110
-expr                 : 81 81 82 82 83 83 84 84 85 85 86 86 87 88 89 106
-factor               : 91 92 93 94 95 96 98 99
-func_stmt            : 
-gene_stmt            : 
-if_stmt              : 7 62
-loop_condition       : 65
-loop_init            : 65
-loop_set             : 65
-loop_stmt            : 9
-maybe_newline        : 26 26 26 38 38 38 41 41 41 45 45 45 48 49 53 53 54 56 56 56 56 61 63 65 72
-mutationprop         : 38 38
-negation             : 77 77 78
-param_list           : 72 73
-percpgene            : 15
-phygene              : 26
-phygene_stmt         : 14
-phygeneprop          : 26 26
-power                : 97
-program              : 0
-rest_args            : 107 109
-sim_stmt             : 
-simprop              : 56 56 56
-stmt                 : 5
-stmt_list            : 1 5 61 63 65 72
-term                 : 88 89 90 91 92 93 94
-terrainposn_list     : 53 54
-terrainprop          : 49
-terrainprop_list     : 48 49
-var_stmt             : 8 66 68
-world_stmt           : 
-worldprop            : 41 41
-worldsize            : 42
-worldsizeprop        : 45 45
-worldterrain         : 43
+accessing            : 94 134 144
+actgene              : 11
+actgene_stmt         : 8
+arg_list             : 135 141 151
+atom                 : 130 131 136
+behavior_stmt        : 42
+behavior_stmt_list   : 1 42
+bool                 : 50 139
+command_list         : 76 77
+comparison           : 111 112
+conjunction          : 107 107 108
+decide_stmt          : 44
+disjunction          : 92 94 95 95 96 105 133 150 151 156 156
+dna_elem             : 37
+dna_elem_list        : 36 37
+dna_stmt             : 34
+dna_stmt_list        : 1 34
+else_stmt            : 96
+entity_org_stmt_list : 1 46 47
+entity_stmt          : 46
+entityprop           : 49 49
+epsilon              : 5 35 38 43 48 65 70 78 80 83 85 99 102 104 106 152 155
+expr                 : 113 113 114 114 115 115 116 116 117 117 118 118 119 120 121 140
+factor               : 123 124 125 126 127 128 130 131
+func_stmt            : 79
+func_stmt_list       : 44 79
+gene_stmt            : 4
+gene_stmt_list       : 1 4
+if_stmt              : 86 97
+index_stmt           : 88
+keyarg               : 153 154
+keyarg_list          : 142 154
+loop_condition       : 100
+loop_init            : 100
+loop_set             : 100
+loop_stmt            : 89
+mutationprop         : 31 31
+naming               : 95 132 133
+negation             : 109 109 110
+organism_stmt        : 47
+orgprop              : 52 52 52
+param_list           : 81 82
+percpgene            : 7 39
+phygene              : 19
+phygene_stmt         : 6
+phygeneprop          : 19 19
+power                : 129
+program              : 
+sim_stmt             : 1
+simprop              : 71 71 71 71 71
+stmt                 : 84
+stmt_list            : 45 75 81 84 96 98 100
+term                 : 120 121 122 123 124 125 126
+terrainposn_list     : 68 69
+terrainprop          : 64
+terrainprop_list     : 63 64
+test                 : 0
+var_stmt             : 87 101 103
+word                 : 143 144
+world_stmt           : 1 3
+worldprop            : 56 56
+worldsize            : 57
+worldsizeprop        : 59 59 60 60
+worldterrain         : 58
 
 
 state 0
 
-    (0) S' -> . program
-    (1) program -> . stmt_list
-    (5) stmt_list -> . stmt newline stmt_list
-    (6) stmt_list -> . epsilon
-    (7) stmt -> . if_stmt
-    (8) stmt -> . var_stmt
-    (9) stmt -> . loop_stmt
-    (10) stmt -> . CONTINUE
-    (11) stmt -> . BREAK
-    (12) stmt -> . RETURN disjunction
-    (13) stmt -> . RETURN epsilon
-    (2) epsilon -> .
-    (61) if_stmt -> . IF disjunction { maybe_newline stmt_list } else_stmt
-    (60) var_stmt -> . ID = disjunction
-    (65) loop_stmt -> . LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list }
+    (0) S' -> . test
+    (3) test -> . world_stmt
+    (56) world_stmt -> . WORLD { worldprop worldprop }
 
-    CONTINUE        shift and go to state 8
-    BREAK           shift and go to state 9
-    RETURN          shift and go to state 10
-    $end            reduce using rule 2 (epsilon -> .)
-    IF              shift and go to state 11
-    ID              shift and go to state 12
-    LOOP            shift and go to state 13
+    WORLD           shift and go to state 3
 
-    program                        shift and go to state 1
-    stmt_list                      shift and go to state 2
-    stmt                           shift and go to state 3
-    epsilon                        shift and go to state 4
-    if_stmt                        shift and go to state 5
-    var_stmt                       shift and go to state 6
-    loop_stmt                      shift and go to state 7
+    test                           shift and go to state 1
+    world_stmt                     shift and go to state 2
 
 state 1
 
-    (0) S' -> program .
+    (0) S' -> test .
 
 
 
 state 2
 
-    (1) program -> stmt_list .
+    (3) test -> world_stmt .
 
-    $end            reduce using rule 1 (program -> stmt_list .)
+    $end            reduce using rule 3 (test -> world_stmt .)
 
 
 state 3
 
-    (5) stmt_list -> stmt . newline stmt_list
+    (56) world_stmt -> WORLD . { worldprop worldprop }
 
-    newline         shift and go to state 14
+    {               shift and go to state 4
 
 
 state 4
 
-    (6) stmt_list -> epsilon .
+    (56) world_stmt -> WORLD { . worldprop worldprop }
+    (57) worldprop -> . SIZE worldsize
+    (58) worldprop -> . TERRAIN worldterrain
 
-    $end            reduce using rule 6 (stmt_list -> epsilon .)
-    }               reduce using rule 6 (stmt_list -> epsilon .)
+    SIZE            shift and go to state 6
+    TERRAIN         shift and go to state 7
 
+    worldprop                      shift and go to state 5
 
 state 5
 
-    (7) stmt -> if_stmt .
+    (56) world_stmt -> WORLD { worldprop . worldprop }
+    (57) worldprop -> . SIZE worldsize
+    (58) worldprop -> . TERRAIN worldterrain
 
-    newline         reduce using rule 7 (stmt -> if_stmt .)
+    SIZE            shift and go to state 6
+    TERRAIN         shift and go to state 7
 
+    worldprop                      shift and go to state 8
 
 state 6
 
-    (8) stmt -> var_stmt .
+    (57) worldprop -> SIZE . worldsize
+    (59) worldsize -> . INFINITE { worldsizeprop worldsizeprop }
+    (60) worldsize -> . { worldsizeprop worldsizeprop }
 
-    newline         reduce using rule 8 (stmt -> var_stmt .)
+    INFINITE        shift and go to state 10
+    {               shift and go to state 11
 
+    worldsize                      shift and go to state 9
 
 state 7
 
-    (9) stmt -> loop_stmt .
+    (58) worldprop -> TERRAIN . worldterrain
+    (63) worldterrain -> . { terrainprop_list }
 
-    newline         reduce using rule 9 (stmt -> loop_stmt .)
+    {               shift and go to state 13
 
+    worldterrain                   shift and go to state 12
 
 state 8
 
-    (10) stmt -> CONTINUE .
+    (56) world_stmt -> WORLD { worldprop worldprop . }
 
-    newline         reduce using rule 10 (stmt -> CONTINUE .)
+    }               shift and go to state 14
 
 
 state 9
 
-    (11) stmt -> BREAK .
+    (57) worldprop -> SIZE worldsize .
 
-    newline         reduce using rule 11 (stmt -> BREAK .)
+    SIZE            reduce using rule 57 (worldprop -> SIZE worldsize .)
+    TERRAIN         reduce using rule 57 (worldprop -> SIZE worldsize .)
+    }               reduce using rule 57 (worldprop -> SIZE worldsize .)
 
 
 state 10
 
-    (12) stmt -> RETURN . disjunction
-    (13) stmt -> RETURN . epsilon
-    (75) disjunction -> . conjunction OR conjunction
-    (76) disjunction -> . conjunction
-    (2) epsilon -> .
-    (77) conjunction -> . negation AND negation
-    (78) conjunction -> . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (59) worldsize -> INFINITE . { worldsizeprop worldsizeprop }
 
-    newline         reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    {               shift and go to state 15
 
-    disjunction                    shift and go to state 15
-    epsilon                        shift and go to state 16
-    conjunction                    shift and go to state 17
-    negation                       shift and go to state 18
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
 
 state 11
 
-    (61) if_stmt -> IF . disjunction { maybe_newline stmt_list } else_stmt
-    (75) disjunction -> . conjunction OR conjunction
-    (76) disjunction -> . conjunction
-    (77) conjunction -> . negation AND negation
-    (78) conjunction -> . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (60) worldsize -> { . worldsizeprop worldsizeprop }
+    (61) worldsizeprop -> . WIDTH NUMBER
+    (62) worldsizeprop -> . HEIGHT NUMBER
 
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    WIDTH           shift and go to state 17
+    HEIGHT          shift and go to state 18
 
-    disjunction                    shift and go to state 32
-    conjunction                    shift and go to state 17
-    negation                       shift and go to state 18
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
+    worldsizeprop                  shift and go to state 16
 
 state 12
 
-    (60) var_stmt -> ID . = disjunction
+    (58) worldprop -> TERRAIN worldterrain .
 
-    =               shift and go to state 33
+    SIZE            reduce using rule 58 (worldprop -> TERRAIN worldterrain .)
+    TERRAIN         reduce using rule 58 (worldprop -> TERRAIN worldterrain .)
+    }               reduce using rule 58 (worldprop -> TERRAIN worldterrain .)
 
 
 state 13
 
-    (65) loop_stmt -> LOOP . loop_init , loop_condition , loop_set { maybe_newline stmt_list }
-    (66) loop_init -> . var_stmt
-    (67) loop_init -> . epsilon
-    (60) var_stmt -> . ID = disjunction
+    (63) worldterrain -> { . terrainprop_list }
+    (64) terrainprop_list -> . terrainprop terrainprop_list
+    (65) terrainprop_list -> . epsilon
+    (66) terrainprop -> . ID
+    (67) terrainprop -> . DEFAULT ID
+    (68) terrainprop -> . ID AT { NUMBER terrainposn_list }
     (2) epsilon -> .
 
-    ID              shift and go to state 12
-    ,               reduce using rule 2 (epsilon -> .)
+    ID              shift and go to state 22
+    DEFAULT         shift and go to state 23
+    }               reduce using rule 2 (epsilon -> .)
 
-    loop_init                      shift and go to state 34
-    var_stmt                       shift and go to state 35
-    epsilon                        shift and go to state 36
+    terrainprop_list               shift and go to state 19
+    terrainprop                    shift and go to state 20
+    epsilon                        shift and go to state 21
 
 state 14
 
-    (5) stmt_list -> stmt newline . stmt_list
-    (5) stmt_list -> . stmt newline stmt_list
-    (6) stmt_list -> . epsilon
-    (7) stmt -> . if_stmt
-    (8) stmt -> . var_stmt
-    (9) stmt -> . loop_stmt
-    (10) stmt -> . CONTINUE
-    (11) stmt -> . BREAK
-    (12) stmt -> . RETURN disjunction
-    (13) stmt -> . RETURN epsilon
-    (2) epsilon -> .
-    (61) if_stmt -> . IF disjunction { maybe_newline stmt_list } else_stmt
-    (60) var_stmt -> . ID = disjunction
-    (65) loop_stmt -> . LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list }
+    (56) world_stmt -> WORLD { worldprop worldprop } .
 
-    CONTINUE        shift and go to state 8
-    BREAK           shift and go to state 9
-    RETURN          shift and go to state 10
-    $end            reduce using rule 2 (epsilon -> .)
-    }               reduce using rule 2 (epsilon -> .)
-    IF              shift and go to state 11
-    ID              shift and go to state 12
-    LOOP            shift and go to state 13
+    $end            reduce using rule 56 (world_stmt -> WORLD { worldprop worldprop } .)
 
-    stmt                           shift and go to state 3
-    stmt_list                      shift and go to state 37
-    epsilon                        shift and go to state 4
-    if_stmt                        shift and go to state 5
-    var_stmt                       shift and go to state 6
-    loop_stmt                      shift and go to state 7
 
 state 15
 
-    (12) stmt -> RETURN disjunction .
+    (59) worldsize -> INFINITE { . worldsizeprop worldsizeprop }
+    (61) worldsizeprop -> . WIDTH NUMBER
+    (62) worldsizeprop -> . HEIGHT NUMBER
 
-    newline         reduce using rule 12 (stmt -> RETURN disjunction .)
+    WIDTH           shift and go to state 17
+    HEIGHT          shift and go to state 18
 
+    worldsizeprop                  shift and go to state 24
 
 state 16
 
-    (13) stmt -> RETURN epsilon .
+    (60) worldsize -> { worldsizeprop . worldsizeprop }
+    (61) worldsizeprop -> . WIDTH NUMBER
+    (62) worldsizeprop -> . HEIGHT NUMBER
 
-    newline         reduce using rule 13 (stmt -> RETURN epsilon .)
+    WIDTH           shift and go to state 17
+    HEIGHT          shift and go to state 18
 
+    worldsizeprop                  shift and go to state 25
 
 state 17
 
-    (75) disjunction -> conjunction . OR conjunction
-    (76) disjunction -> conjunction .
+    (61) worldsizeprop -> WIDTH . NUMBER
 
-    OR              shift and go to state 38
-    newline         reduce using rule 76 (disjunction -> conjunction .)
-    {               reduce using rule 76 (disjunction -> conjunction .)
-    ,               reduce using rule 76 (disjunction -> conjunction .)
-    )               reduce using rule 76 (disjunction -> conjunction .)
+    NUMBER          shift and go to state 26
 
 
 state 18
 
-    (77) conjunction -> negation . AND negation
-    (78) conjunction -> negation .
+    (62) worldsizeprop -> HEIGHT . NUMBER
 
-    AND             shift and go to state 39
-    OR              reduce using rule 78 (conjunction -> negation .)
-    newline         reduce using rule 78 (conjunction -> negation .)
-    {               reduce using rule 78 (conjunction -> negation .)
-    ,               reduce using rule 78 (conjunction -> negation .)
-    )               reduce using rule 78 (conjunction -> negation .)
+    NUMBER          shift and go to state 27
 
 
 state 19
 
-    (79) negation -> NOT . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (63) worldterrain -> { terrainprop_list . }
 
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    }               shift and go to state 28
 
-    comparison                     shift and go to state 40
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
 
 state 20
 
-    (80) negation -> comparison .
+    (64) terrainprop_list -> terrainprop . terrainprop_list
+    (64) terrainprop_list -> . terrainprop terrainprop_list
+    (65) terrainprop_list -> . epsilon
+    (66) terrainprop -> . ID
+    (67) terrainprop -> . DEFAULT ID
+    (68) terrainprop -> . ID AT { NUMBER terrainposn_list }
+    (2) epsilon -> .
 
-    AND             reduce using rule 80 (negation -> comparison .)
-    OR              reduce using rule 80 (negation -> comparison .)
-    newline         reduce using rule 80 (negation -> comparison .)
-    {               reduce using rule 80 (negation -> comparison .)
-    ,               reduce using rule 80 (negation -> comparison .)
-    )               reduce using rule 80 (negation -> comparison .)
+    ID              shift and go to state 22
+    DEFAULT         shift and go to state 23
+    }               reduce using rule 2 (epsilon -> .)
 
+    terrainprop                    shift and go to state 20
+    terrainprop_list               shift and go to state 29
+    epsilon                        shift and go to state 21
 
 state 21
 
-    (81) comparison -> expr . EQ expr
-    (82) comparison -> expr . NEQ expr
-    (83) comparison -> expr . GE expr
-    (84) comparison -> expr . LE expr
-    (85) comparison -> expr . > expr
-    (86) comparison -> expr . < expr
-    (87) comparison -> expr .
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
+    (65) terrainprop_list -> epsilon .
 
-    EQ              shift and go to state 41
-    NEQ             shift and go to state 42
-    GE              shift and go to state 43
-    LE              shift and go to state 44
-    >               shift and go to state 45
-    <               shift and go to state 46
-    AND             reduce using rule 87 (comparison -> expr .)
-    OR              reduce using rule 87 (comparison -> expr .)
-    newline         reduce using rule 87 (comparison -> expr .)
-    {               reduce using rule 87 (comparison -> expr .)
-    ,               reduce using rule 87 (comparison -> expr .)
-    )               reduce using rule 87 (comparison -> expr .)
-    +               shift and go to state 47
-    -               shift and go to state 48
+    }               reduce using rule 65 (terrainprop_list -> epsilon .)
 
 
 state 22
 
-    (90) expr -> term .
-    (91) term -> term . * factor
-    (92) term -> term . / factor
-    (93) term -> term . % factor
-    (94) term -> term . INTDIV factor
+    (66) terrainprop -> ID .
+    (68) terrainprop -> ID . AT { NUMBER terrainposn_list }
 
-    EQ              reduce using rule 90 (expr -> term .)
-    NEQ             reduce using rule 90 (expr -> term .)
-    GE              reduce using rule 90 (expr -> term .)
-    LE              reduce using rule 90 (expr -> term .)
-    >               reduce using rule 90 (expr -> term .)
-    <               reduce using rule 90 (expr -> term .)
-    +               reduce using rule 90 (expr -> term .)
-    -               reduce using rule 90 (expr -> term .)
-    AND             reduce using rule 90 (expr -> term .)
-    OR              reduce using rule 90 (expr -> term .)
-    newline         reduce using rule 90 (expr -> term .)
-    {               reduce using rule 90 (expr -> term .)
-    ,               reduce using rule 90 (expr -> term .)
-    )               reduce using rule 90 (expr -> term .)
-    *               shift and go to state 49
-    /               shift and go to state 50
-    %               shift and go to state 51
-    INTDIV          shift and go to state 52
+    ID              reduce using rule 66 (terrainprop -> ID .)
+    DEFAULT         reduce using rule 66 (terrainprop -> ID .)
+    }               reduce using rule 66 (terrainprop -> ID .)
+    AT              shift and go to state 30
 
 
 state 23
 
-    (96) factor -> - . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (67) terrainprop -> DEFAULT . ID
 
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    ID              shift and go to state 31
 
-    factor                         shift and go to state 53
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
 
 state 24
 
-    (95) term -> factor .
+    (59) worldsize -> INFINITE { worldsizeprop . worldsizeprop }
+    (61) worldsizeprop -> . WIDTH NUMBER
+    (62) worldsizeprop -> . HEIGHT NUMBER
 
-    *               reduce using rule 95 (term -> factor .)
-    /               reduce using rule 95 (term -> factor .)
-    %               reduce using rule 95 (term -> factor .)
-    INTDIV          reduce using rule 95 (term -> factor .)
-    EQ              reduce using rule 95 (term -> factor .)
-    NEQ             reduce using rule 95 (term -> factor .)
-    GE              reduce using rule 95 (term -> factor .)
-    LE              reduce using rule 95 (term -> factor .)
-    >               reduce using rule 95 (term -> factor .)
-    <               reduce using rule 95 (term -> factor .)
-    +               reduce using rule 95 (term -> factor .)
-    -               reduce using rule 95 (term -> factor .)
-    AND             reduce using rule 95 (term -> factor .)
-    OR              reduce using rule 95 (term -> factor .)
-    newline         reduce using rule 95 (term -> factor .)
-    {               reduce using rule 95 (term -> factor .)
-    ,               reduce using rule 95 (term -> factor .)
-    )               reduce using rule 95 (term -> factor .)
+    WIDTH           shift and go to state 17
+    HEIGHT          shift and go to state 18
 
+    worldsizeprop                  shift and go to state 32
 
 state 25
 
-    (97) factor -> power .
+    (60) worldsize -> { worldsizeprop worldsizeprop . }
 
-    *               reduce using rule 97 (factor -> power .)
-    /               reduce using rule 97 (factor -> power .)
-    %               reduce using rule 97 (factor -> power .)
-    INTDIV          reduce using rule 97 (factor -> power .)
-    EQ              reduce using rule 97 (factor -> power .)
-    NEQ             reduce using rule 97 (factor -> power .)
-    GE              reduce using rule 97 (factor -> power .)
-    LE              reduce using rule 97 (factor -> power .)
-    >               reduce using rule 97 (factor -> power .)
-    <               reduce using rule 97 (factor -> power .)
-    +               reduce using rule 97 (factor -> power .)
-    -               reduce using rule 97 (factor -> power .)
-    AND             reduce using rule 97 (factor -> power .)
-    OR              reduce using rule 97 (factor -> power .)
-    newline         reduce using rule 97 (factor -> power .)
-    {               reduce using rule 97 (factor -> power .)
-    ,               reduce using rule 97 (factor -> power .)
-    )               reduce using rule 97 (factor -> power .)
+    }               shift and go to state 33
 
 
 state 26
 
-    (98) power -> atom . ^ factor
-    (99) power -> atom . @ factor
-    (100) power -> atom .
+    (61) worldsizeprop -> WIDTH NUMBER .
 
-    ^               shift and go to state 54
-    @               shift and go to state 55
-    *               reduce using rule 100 (power -> atom .)
-    /               reduce using rule 100 (power -> atom .)
-    %               reduce using rule 100 (power -> atom .)
-    INTDIV          reduce using rule 100 (power -> atom .)
-    EQ              reduce using rule 100 (power -> atom .)
-    NEQ             reduce using rule 100 (power -> atom .)
-    GE              reduce using rule 100 (power -> atom .)
-    LE              reduce using rule 100 (power -> atom .)
-    >               reduce using rule 100 (power -> atom .)
-    <               reduce using rule 100 (power -> atom .)
-    +               reduce using rule 100 (power -> atom .)
-    -               reduce using rule 100 (power -> atom .)
-    AND             reduce using rule 100 (power -> atom .)
-    OR              reduce using rule 100 (power -> atom .)
-    newline         reduce using rule 100 (power -> atom .)
-    {               reduce using rule 100 (power -> atom .)
-    ,               reduce using rule 100 (power -> atom .)
-    )               reduce using rule 100 (power -> atom .)
+    WIDTH           reduce using rule 61 (worldsizeprop -> WIDTH NUMBER .)
+    HEIGHT          reduce using rule 61 (worldsizeprop -> WIDTH NUMBER .)
+    }               reduce using rule 61 (worldsizeprop -> WIDTH NUMBER .)
 
 
 state 27
 
-    (101) atom -> NUMBER .
+    (62) worldsizeprop -> HEIGHT NUMBER .
 
-    ^               reduce using rule 101 (atom -> NUMBER .)
-    @               reduce using rule 101 (atom -> NUMBER .)
-    *               reduce using rule 101 (atom -> NUMBER .)
-    /               reduce using rule 101 (atom -> NUMBER .)
-    %               reduce using rule 101 (atom -> NUMBER .)
-    INTDIV          reduce using rule 101 (atom -> NUMBER .)
-    EQ              reduce using rule 101 (atom -> NUMBER .)
-    NEQ             reduce using rule 101 (atom -> NUMBER .)
-    GE              reduce using rule 101 (atom -> NUMBER .)
-    LE              reduce using rule 101 (atom -> NUMBER .)
-    >               reduce using rule 101 (atom -> NUMBER .)
-    <               reduce using rule 101 (atom -> NUMBER .)
-    +               reduce using rule 101 (atom -> NUMBER .)
-    -               reduce using rule 101 (atom -> NUMBER .)
-    AND             reduce using rule 101 (atom -> NUMBER .)
-    OR              reduce using rule 101 (atom -> NUMBER .)
-    newline         reduce using rule 101 (atom -> NUMBER .)
-    {               reduce using rule 101 (atom -> NUMBER .)
-    ,               reduce using rule 101 (atom -> NUMBER .)
-    )               reduce using rule 101 (atom -> NUMBER .)
+    WIDTH           reduce using rule 62 (worldsizeprop -> HEIGHT NUMBER .)
+    HEIGHT          reduce using rule 62 (worldsizeprop -> HEIGHT NUMBER .)
+    }               reduce using rule 62 (worldsizeprop -> HEIGHT NUMBER .)
 
 
 state 28
 
-    (102) atom -> FALSE .
+    (63) worldterrain -> { terrainprop_list } .
 
-    ^               reduce using rule 102 (atom -> FALSE .)
-    @               reduce using rule 102 (atom -> FALSE .)
-    *               reduce using rule 102 (atom -> FALSE .)
-    /               reduce using rule 102 (atom -> FALSE .)
-    %               reduce using rule 102 (atom -> FALSE .)
-    INTDIV          reduce using rule 102 (atom -> FALSE .)
-    EQ              reduce using rule 102 (atom -> FALSE .)
-    NEQ             reduce using rule 102 (atom -> FALSE .)
-    GE              reduce using rule 102 (atom -> FALSE .)
-    LE              reduce using rule 102 (atom -> FALSE .)
-    >               reduce using rule 102 (atom -> FALSE .)
-    <               reduce using rule 102 (atom -> FALSE .)
-    +               reduce using rule 102 (atom -> FALSE .)
-    -               reduce using rule 102 (atom -> FALSE .)
-    AND             reduce using rule 102 (atom -> FALSE .)
-    OR              reduce using rule 102 (atom -> FALSE .)
-    newline         reduce using rule 102 (atom -> FALSE .)
-    {               reduce using rule 102 (atom -> FALSE .)
-    ,               reduce using rule 102 (atom -> FALSE .)
-    )               reduce using rule 102 (atom -> FALSE .)
+    SIZE            reduce using rule 63 (worldterrain -> { terrainprop_list } .)
+    TERRAIN         reduce using rule 63 (worldterrain -> { terrainprop_list } .)
+    }               reduce using rule 63 (worldterrain -> { terrainprop_list } .)
 
 
 state 29
 
-    (103) atom -> TRUE .
+    (64) terrainprop_list -> terrainprop terrainprop_list .
 
-    ^               reduce using rule 103 (atom -> TRUE .)
-    @               reduce using rule 103 (atom -> TRUE .)
-    *               reduce using rule 103 (atom -> TRUE .)
-    /               reduce using rule 103 (atom -> TRUE .)
-    %               reduce using rule 103 (atom -> TRUE .)
-    INTDIV          reduce using rule 103 (atom -> TRUE .)
-    EQ              reduce using rule 103 (atom -> TRUE .)
-    NEQ             reduce using rule 103 (atom -> TRUE .)
-    GE              reduce using rule 103 (atom -> TRUE .)
-    LE              reduce using rule 103 (atom -> TRUE .)
-    >               reduce using rule 103 (atom -> TRUE .)
-    <               reduce using rule 103 (atom -> TRUE .)
-    +               reduce using rule 103 (atom -> TRUE .)
-    -               reduce using rule 103 (atom -> TRUE .)
-    AND             reduce using rule 103 (atom -> TRUE .)
-    OR              reduce using rule 103 (atom -> TRUE .)
-    newline         reduce using rule 103 (atom -> TRUE .)
-    {               reduce using rule 103 (atom -> TRUE .)
-    ,               reduce using rule 103 (atom -> TRUE .)
-    )               reduce using rule 103 (atom -> TRUE .)
+    }               reduce using rule 64 (terrainprop_list -> terrainprop terrainprop_list .)
 
 
 state 30
 
-    (104) atom -> ID .
-    (105) atom -> ID . ( arg_list )
+    (68) terrainprop -> ID AT . { NUMBER terrainposn_list }
 
-    ^               reduce using rule 104 (atom -> ID .)
-    @               reduce using rule 104 (atom -> ID .)
-    *               reduce using rule 104 (atom -> ID .)
-    /               reduce using rule 104 (atom -> ID .)
-    %               reduce using rule 104 (atom -> ID .)
-    INTDIV          reduce using rule 104 (atom -> ID .)
-    EQ              reduce using rule 104 (atom -> ID .)
-    NEQ             reduce using rule 104 (atom -> ID .)
-    GE              reduce using rule 104 (atom -> ID .)
-    LE              reduce using rule 104 (atom -> ID .)
-    >               reduce using rule 104 (atom -> ID .)
-    <               reduce using rule 104 (atom -> ID .)
-    +               reduce using rule 104 (atom -> ID .)
-    -               reduce using rule 104 (atom -> ID .)
-    AND             reduce using rule 104 (atom -> ID .)
-    OR              reduce using rule 104 (atom -> ID .)
-    newline         reduce using rule 104 (atom -> ID .)
-    {               reduce using rule 104 (atom -> ID .)
-    ,               reduce using rule 104 (atom -> ID .)
-    )               reduce using rule 104 (atom -> ID .)
-    (               shift and go to state 56
+    {               shift and go to state 34
 
 
 state 31
 
-    (106) atom -> ( . expr )
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (67) terrainprop -> DEFAULT ID .
 
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    ID              reduce using rule 67 (terrainprop -> DEFAULT ID .)
+    DEFAULT         reduce using rule 67 (terrainprop -> DEFAULT ID .)
+    }               reduce using rule 67 (terrainprop -> DEFAULT ID .)
 
-    expr                           shift and go to state 57
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
 
 state 32
 
-    (61) if_stmt -> IF disjunction . { maybe_newline stmt_list } else_stmt
+    (59) worldsize -> INFINITE { worldsizeprop worldsizeprop . }
 
-    {               shift and go to state 58
+    }               shift and go to state 35
 
 
 state 33
 
-    (60) var_stmt -> ID = . disjunction
-    (75) disjunction -> . conjunction OR conjunction
-    (76) disjunction -> . conjunction
-    (77) conjunction -> . negation AND negation
-    (78) conjunction -> . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (60) worldsize -> { worldsizeprop worldsizeprop } .
 
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    SIZE            reduce using rule 60 (worldsize -> { worldsizeprop worldsizeprop } .)
+    TERRAIN         reduce using rule 60 (worldsize -> { worldsizeprop worldsizeprop } .)
+    }               reduce using rule 60 (worldsize -> { worldsizeprop worldsizeprop } .)
 
-    disjunction                    shift and go to state 59
-    conjunction                    shift and go to state 17
-    negation                       shift and go to state 18
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
 
 state 34
 
-    (65) loop_stmt -> LOOP loop_init . , loop_condition , loop_set { maybe_newline stmt_list }
+    (68) terrainprop -> ID AT { . NUMBER terrainposn_list }
 
-    ,               shift and go to state 60
+    NUMBER          shift and go to state 36
 
 
 state 35
 
-    (66) loop_init -> var_stmt .
+    (59) worldsize -> INFINITE { worldsizeprop worldsizeprop } .
 
-    ,               reduce using rule 66 (loop_init -> var_stmt .)
+    SIZE            reduce using rule 59 (worldsize -> INFINITE { worldsizeprop worldsizeprop } .)
+    TERRAIN         reduce using rule 59 (worldsize -> INFINITE { worldsizeprop worldsizeprop } .)
+    }               reduce using rule 59 (worldsize -> INFINITE { worldsizeprop worldsizeprop } .)
 
 
 state 36
 
-    (67) loop_init -> epsilon .
+    (68) terrainprop -> ID AT { NUMBER . terrainposn_list }
+    (69) terrainposn_list -> . NUMBER terrainposn_list
+    (70) terrainposn_list -> . epsilon
+    (2) epsilon -> .
 
-    ,               reduce using rule 67 (loop_init -> epsilon .)
+    NUMBER          shift and go to state 37
+    }               reduce using rule 2 (epsilon -> .)
 
+    terrainposn_list               shift and go to state 38
+    epsilon                        shift and go to state 39
 
 state 37
 
-    (5) stmt_list -> stmt newline stmt_list .
+    (69) terrainposn_list -> NUMBER . terrainposn_list
+    (69) terrainposn_list -> . NUMBER terrainposn_list
+    (70) terrainposn_list -> . epsilon
+    (2) epsilon -> .
 
-    $end            reduce using rule 5 (stmt_list -> stmt newline stmt_list .)
-    }               reduce using rule 5 (stmt_list -> stmt newline stmt_list .)
+    NUMBER          shift and go to state 37
+    }               reduce using rule 2 (epsilon -> .)
 
+    terrainposn_list               shift and go to state 40
+    epsilon                        shift and go to state 39
 
 state 38
 
-    (75) disjunction -> conjunction OR . conjunction
-    (77) conjunction -> . negation AND negation
-    (78) conjunction -> . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (68) terrainprop -> ID AT { NUMBER terrainposn_list . }
 
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    }               shift and go to state 41
 
-    conjunction                    shift and go to state 61
-    negation                       shift and go to state 18
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
 
 state 39
 
-    (77) conjunction -> negation AND . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
+    (70) terrainposn_list -> epsilon .
 
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
+    }               reduce using rule 70 (terrainposn_list -> epsilon .)
 
-    negation                       shift and go to state 62
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
 
 state 40
 
-    (79) negation -> NOT comparison .
+    (69) terrainposn_list -> NUMBER terrainposn_list .
 
-    AND             reduce using rule 79 (negation -> NOT comparison .)
-    OR              reduce using rule 79 (negation -> NOT comparison .)
-    newline         reduce using rule 79 (negation -> NOT comparison .)
-    {               reduce using rule 79 (negation -> NOT comparison .)
-    ,               reduce using rule 79 (negation -> NOT comparison .)
-    )               reduce using rule 79 (negation -> NOT comparison .)
+    }               reduce using rule 69 (terrainposn_list -> NUMBER terrainposn_list .)
 
 
 state 41
 
-    (81) comparison -> expr EQ . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    expr                           shift and go to state 63
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 42
-
-    (82) comparison -> expr NEQ . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    expr                           shift and go to state 64
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 43
-
-    (83) comparison -> expr GE . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    expr                           shift and go to state 65
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 44
-
-    (84) comparison -> expr LE . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    expr                           shift and go to state 66
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 45
-
-    (85) comparison -> expr > . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    expr                           shift and go to state 67
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 46
-
-    (86) comparison -> expr < . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    expr                           shift and go to state 68
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 47
-
-    (88) expr -> expr + . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    term                           shift and go to state 69
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 48
-
-    (89) expr -> expr - . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    term                           shift and go to state 70
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 49
-
-    (91) term -> term * . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    factor                         shift and go to state 71
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 50
-
-    (92) term -> term / . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    factor                         shift and go to state 72
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 51
-
-    (93) term -> term % . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    factor                         shift and go to state 73
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 52
-
-    (94) term -> term INTDIV . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    factor                         shift and go to state 74
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 53
-
-    (96) factor -> - factor .
-
-    *               reduce using rule 96 (factor -> - factor .)
-    /               reduce using rule 96 (factor -> - factor .)
-    %               reduce using rule 96 (factor -> - factor .)
-    INTDIV          reduce using rule 96 (factor -> - factor .)
-    EQ              reduce using rule 96 (factor -> - factor .)
-    NEQ             reduce using rule 96 (factor -> - factor .)
-    GE              reduce using rule 96 (factor -> - factor .)
-    LE              reduce using rule 96 (factor -> - factor .)
-    >               reduce using rule 96 (factor -> - factor .)
-    <               reduce using rule 96 (factor -> - factor .)
-    +               reduce using rule 96 (factor -> - factor .)
-    -               reduce using rule 96 (factor -> - factor .)
-    AND             reduce using rule 96 (factor -> - factor .)
-    OR              reduce using rule 96 (factor -> - factor .)
-    newline         reduce using rule 96 (factor -> - factor .)
-    {               reduce using rule 96 (factor -> - factor .)
-    ,               reduce using rule 96 (factor -> - factor .)
-    )               reduce using rule 96 (factor -> - factor .)
-
-
-state 54
-
-    (98) power -> atom ^ . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    atom                           shift and go to state 26
-    factor                         shift and go to state 75
-    power                          shift and go to state 25
-
-state 55
-
-    (99) power -> atom @ . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    atom                           shift and go to state 26
-    factor                         shift and go to state 76
-    power                          shift and go to state 25
-
-state 56
-
-    (105) atom -> ID ( . arg_list )
-    (107) arg_list -> . disjunction rest_args
-    (108) arg_list -> . epsilon
-    (75) disjunction -> . conjunction OR conjunction
-    (76) disjunction -> . conjunction
-    (2) epsilon -> .
-    (77) conjunction -> . negation AND negation
-    (78) conjunction -> . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    )               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    arg_list                       shift and go to state 77
-    disjunction                    shift and go to state 78
-    epsilon                        shift and go to state 79
-    conjunction                    shift and go to state 17
-    negation                       shift and go to state 18
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 57
-
-    (106) atom -> ( expr . )
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
-
-    )               shift and go to state 80
-    +               shift and go to state 47
-    -               shift and go to state 48
-
-
-state 58
-
-    (61) if_stmt -> IF disjunction { . maybe_newline stmt_list } else_stmt
-    (3) maybe_newline -> . newline
-    (4) maybe_newline -> . epsilon
-    (2) epsilon -> .
-
-    newline         shift and go to state 82
-    CONTINUE        reduce using rule 2 (epsilon -> .)
-    BREAK           reduce using rule 2 (epsilon -> .)
-    RETURN          reduce using rule 2 (epsilon -> .)
-    IF              reduce using rule 2 (epsilon -> .)
-    ID              reduce using rule 2 (epsilon -> .)
-    LOOP            reduce using rule 2 (epsilon -> .)
-    }               reduce using rule 2 (epsilon -> .)
-
-    maybe_newline                  shift and go to state 81
-    epsilon                        shift and go to state 83
-
-state 59
-
-    (60) var_stmt -> ID = disjunction .
-
-    newline         reduce using rule 60 (var_stmt -> ID = disjunction .)
-    ,               reduce using rule 60 (var_stmt -> ID = disjunction .)
-    {               reduce using rule 60 (var_stmt -> ID = disjunction .)
-
-
-state 60
-
-    (65) loop_stmt -> LOOP loop_init , . loop_condition , loop_set { maybe_newline stmt_list }
-    (70) loop_condition -> . disjunction
-    (71) loop_condition -> . epsilon
-    (75) disjunction -> . conjunction OR conjunction
-    (76) disjunction -> . conjunction
-    (2) epsilon -> .
-    (77) conjunction -> . negation AND negation
-    (78) conjunction -> . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    ,               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    loop_condition                 shift and go to state 84
-    disjunction                    shift and go to state 85
-    epsilon                        shift and go to state 86
-    conjunction                    shift and go to state 17
-    negation                       shift and go to state 18
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 61
-
-    (75) disjunction -> conjunction OR conjunction .
-
-    newline         reduce using rule 75 (disjunction -> conjunction OR conjunction .)
-    {               reduce using rule 75 (disjunction -> conjunction OR conjunction .)
-    ,               reduce using rule 75 (disjunction -> conjunction OR conjunction .)
-    )               reduce using rule 75 (disjunction -> conjunction OR conjunction .)
-
-
-state 62
-
-    (77) conjunction -> negation AND negation .
-
-    OR              reduce using rule 77 (conjunction -> negation AND negation .)
-    newline         reduce using rule 77 (conjunction -> negation AND negation .)
-    {               reduce using rule 77 (conjunction -> negation AND negation .)
-    ,               reduce using rule 77 (conjunction -> negation AND negation .)
-    )               reduce using rule 77 (conjunction -> negation AND negation .)
-
-
-state 63
-
-    (81) comparison -> expr EQ expr .
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
-
-    AND             reduce using rule 81 (comparison -> expr EQ expr .)
-    OR              reduce using rule 81 (comparison -> expr EQ expr .)
-    newline         reduce using rule 81 (comparison -> expr EQ expr .)
-    {               reduce using rule 81 (comparison -> expr EQ expr .)
-    ,               reduce using rule 81 (comparison -> expr EQ expr .)
-    )               reduce using rule 81 (comparison -> expr EQ expr .)
-    +               shift and go to state 47
-    -               shift and go to state 48
-
-
-state 64
-
-    (82) comparison -> expr NEQ expr .
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
-
-    AND             reduce using rule 82 (comparison -> expr NEQ expr .)
-    OR              reduce using rule 82 (comparison -> expr NEQ expr .)
-    newline         reduce using rule 82 (comparison -> expr NEQ expr .)
-    {               reduce using rule 82 (comparison -> expr NEQ expr .)
-    ,               reduce using rule 82 (comparison -> expr NEQ expr .)
-    )               reduce using rule 82 (comparison -> expr NEQ expr .)
-    +               shift and go to state 47
-    -               shift and go to state 48
-
-
-state 65
-
-    (83) comparison -> expr GE expr .
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
-
-    AND             reduce using rule 83 (comparison -> expr GE expr .)
-    OR              reduce using rule 83 (comparison -> expr GE expr .)
-    newline         reduce using rule 83 (comparison -> expr GE expr .)
-    {               reduce using rule 83 (comparison -> expr GE expr .)
-    ,               reduce using rule 83 (comparison -> expr GE expr .)
-    )               reduce using rule 83 (comparison -> expr GE expr .)
-    +               shift and go to state 47
-    -               shift and go to state 48
-
-
-state 66
-
-    (84) comparison -> expr LE expr .
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
-
-    AND             reduce using rule 84 (comparison -> expr LE expr .)
-    OR              reduce using rule 84 (comparison -> expr LE expr .)
-    newline         reduce using rule 84 (comparison -> expr LE expr .)
-    {               reduce using rule 84 (comparison -> expr LE expr .)
-    ,               reduce using rule 84 (comparison -> expr LE expr .)
-    )               reduce using rule 84 (comparison -> expr LE expr .)
-    +               shift and go to state 47
-    -               shift and go to state 48
-
-
-state 67
-
-    (85) comparison -> expr > expr .
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
-
-    AND             reduce using rule 85 (comparison -> expr > expr .)
-    OR              reduce using rule 85 (comparison -> expr > expr .)
-    newline         reduce using rule 85 (comparison -> expr > expr .)
-    {               reduce using rule 85 (comparison -> expr > expr .)
-    ,               reduce using rule 85 (comparison -> expr > expr .)
-    )               reduce using rule 85 (comparison -> expr > expr .)
-    +               shift and go to state 47
-    -               shift and go to state 48
-
-
-state 68
-
-    (86) comparison -> expr < expr .
-    (88) expr -> expr . + term
-    (89) expr -> expr . - term
-
-    AND             reduce using rule 86 (comparison -> expr < expr .)
-    OR              reduce using rule 86 (comparison -> expr < expr .)
-    newline         reduce using rule 86 (comparison -> expr < expr .)
-    {               reduce using rule 86 (comparison -> expr < expr .)
-    ,               reduce using rule 86 (comparison -> expr < expr .)
-    )               reduce using rule 86 (comparison -> expr < expr .)
-    +               shift and go to state 47
-    -               shift and go to state 48
-
-
-state 69
-
-    (88) expr -> expr + term .
-    (91) term -> term . * factor
-    (92) term -> term . / factor
-    (93) term -> term . % factor
-    (94) term -> term . INTDIV factor
-
-    EQ              reduce using rule 88 (expr -> expr + term .)
-    NEQ             reduce using rule 88 (expr -> expr + term .)
-    GE              reduce using rule 88 (expr -> expr + term .)
-    LE              reduce using rule 88 (expr -> expr + term .)
-    >               reduce using rule 88 (expr -> expr + term .)
-    <               reduce using rule 88 (expr -> expr + term .)
-    +               reduce using rule 88 (expr -> expr + term .)
-    -               reduce using rule 88 (expr -> expr + term .)
-    AND             reduce using rule 88 (expr -> expr + term .)
-    OR              reduce using rule 88 (expr -> expr + term .)
-    newline         reduce using rule 88 (expr -> expr + term .)
-    {               reduce using rule 88 (expr -> expr + term .)
-    ,               reduce using rule 88 (expr -> expr + term .)
-    )               reduce using rule 88 (expr -> expr + term .)
-    *               shift and go to state 49
-    /               shift and go to state 50
-    %               shift and go to state 51
-    INTDIV          shift and go to state 52
-
-
-state 70
-
-    (89) expr -> expr - term .
-    (91) term -> term . * factor
-    (92) term -> term . / factor
-    (93) term -> term . % factor
-    (94) term -> term . INTDIV factor
-
-    EQ              reduce using rule 89 (expr -> expr - term .)
-    NEQ             reduce using rule 89 (expr -> expr - term .)
-    GE              reduce using rule 89 (expr -> expr - term .)
-    LE              reduce using rule 89 (expr -> expr - term .)
-    >               reduce using rule 89 (expr -> expr - term .)
-    <               reduce using rule 89 (expr -> expr - term .)
-    +               reduce using rule 89 (expr -> expr - term .)
-    -               reduce using rule 89 (expr -> expr - term .)
-    AND             reduce using rule 89 (expr -> expr - term .)
-    OR              reduce using rule 89 (expr -> expr - term .)
-    newline         reduce using rule 89 (expr -> expr - term .)
-    {               reduce using rule 89 (expr -> expr - term .)
-    ,               reduce using rule 89 (expr -> expr - term .)
-    )               reduce using rule 89 (expr -> expr - term .)
-    *               shift and go to state 49
-    /               shift and go to state 50
-    %               shift and go to state 51
-    INTDIV          shift and go to state 52
-
-
-state 71
-
-    (91) term -> term * factor .
-
-    *               reduce using rule 91 (term -> term * factor .)
-    /               reduce using rule 91 (term -> term * factor .)
-    %               reduce using rule 91 (term -> term * factor .)
-    INTDIV          reduce using rule 91 (term -> term * factor .)
-    EQ              reduce using rule 91 (term -> term * factor .)
-    NEQ             reduce using rule 91 (term -> term * factor .)
-    GE              reduce using rule 91 (term -> term * factor .)
-    LE              reduce using rule 91 (term -> term * factor .)
-    >               reduce using rule 91 (term -> term * factor .)
-    <               reduce using rule 91 (term -> term * factor .)
-    +               reduce using rule 91 (term -> term * factor .)
-    -               reduce using rule 91 (term -> term * factor .)
-    AND             reduce using rule 91 (term -> term * factor .)
-    OR              reduce using rule 91 (term -> term * factor .)
-    newline         reduce using rule 91 (term -> term * factor .)
-    {               reduce using rule 91 (term -> term * factor .)
-    ,               reduce using rule 91 (term -> term * factor .)
-    )               reduce using rule 91 (term -> term * factor .)
-
-
-state 72
-
-    (92) term -> term / factor .
-
-    *               reduce using rule 92 (term -> term / factor .)
-    /               reduce using rule 92 (term -> term / factor .)
-    %               reduce using rule 92 (term -> term / factor .)
-    INTDIV          reduce using rule 92 (term -> term / factor .)
-    EQ              reduce using rule 92 (term -> term / factor .)
-    NEQ             reduce using rule 92 (term -> term / factor .)
-    GE              reduce using rule 92 (term -> term / factor .)
-    LE              reduce using rule 92 (term -> term / factor .)
-    >               reduce using rule 92 (term -> term / factor .)
-    <               reduce using rule 92 (term -> term / factor .)
-    +               reduce using rule 92 (term -> term / factor .)
-    -               reduce using rule 92 (term -> term / factor .)
-    AND             reduce using rule 92 (term -> term / factor .)
-    OR              reduce using rule 92 (term -> term / factor .)
-    newline         reduce using rule 92 (term -> term / factor .)
-    {               reduce using rule 92 (term -> term / factor .)
-    ,               reduce using rule 92 (term -> term / factor .)
-    )               reduce using rule 92 (term -> term / factor .)
-
-
-state 73
-
-    (93) term -> term % factor .
-
-    *               reduce using rule 93 (term -> term % factor .)
-    /               reduce using rule 93 (term -> term % factor .)
-    %               reduce using rule 93 (term -> term % factor .)
-    INTDIV          reduce using rule 93 (term -> term % factor .)
-    EQ              reduce using rule 93 (term -> term % factor .)
-    NEQ             reduce using rule 93 (term -> term % factor .)
-    GE              reduce using rule 93 (term -> term % factor .)
-    LE              reduce using rule 93 (term -> term % factor .)
-    >               reduce using rule 93 (term -> term % factor .)
-    <               reduce using rule 93 (term -> term % factor .)
-    +               reduce using rule 93 (term -> term % factor .)
-    -               reduce using rule 93 (term -> term % factor .)
-    AND             reduce using rule 93 (term -> term % factor .)
-    OR              reduce using rule 93 (term -> term % factor .)
-    newline         reduce using rule 93 (term -> term % factor .)
-    {               reduce using rule 93 (term -> term % factor .)
-    ,               reduce using rule 93 (term -> term % factor .)
-    )               reduce using rule 93 (term -> term % factor .)
-
-
-state 74
-
-    (94) term -> term INTDIV factor .
-
-    *               reduce using rule 94 (term -> term INTDIV factor .)
-    /               reduce using rule 94 (term -> term INTDIV factor .)
-    %               reduce using rule 94 (term -> term INTDIV factor .)
-    INTDIV          reduce using rule 94 (term -> term INTDIV factor .)
-    EQ              reduce using rule 94 (term -> term INTDIV factor .)
-    NEQ             reduce using rule 94 (term -> term INTDIV factor .)
-    GE              reduce using rule 94 (term -> term INTDIV factor .)
-    LE              reduce using rule 94 (term -> term INTDIV factor .)
-    >               reduce using rule 94 (term -> term INTDIV factor .)
-    <               reduce using rule 94 (term -> term INTDIV factor .)
-    +               reduce using rule 94 (term -> term INTDIV factor .)
-    -               reduce using rule 94 (term -> term INTDIV factor .)
-    AND             reduce using rule 94 (term -> term INTDIV factor .)
-    OR              reduce using rule 94 (term -> term INTDIV factor .)
-    newline         reduce using rule 94 (term -> term INTDIV factor .)
-    {               reduce using rule 94 (term -> term INTDIV factor .)
-    ,               reduce using rule 94 (term -> term INTDIV factor .)
-    )               reduce using rule 94 (term -> term INTDIV factor .)
-
-
-state 75
-
-    (98) power -> atom ^ factor .
-
-    *               reduce using rule 98 (power -> atom ^ factor .)
-    /               reduce using rule 98 (power -> atom ^ factor .)
-    %               reduce using rule 98 (power -> atom ^ factor .)
-    INTDIV          reduce using rule 98 (power -> atom ^ factor .)
-    EQ              reduce using rule 98 (power -> atom ^ factor .)
-    NEQ             reduce using rule 98 (power -> atom ^ factor .)
-    GE              reduce using rule 98 (power -> atom ^ factor .)
-    LE              reduce using rule 98 (power -> atom ^ factor .)
-    >               reduce using rule 98 (power -> atom ^ factor .)
-    <               reduce using rule 98 (power -> atom ^ factor .)
-    +               reduce using rule 98 (power -> atom ^ factor .)
-    -               reduce using rule 98 (power -> atom ^ factor .)
-    AND             reduce using rule 98 (power -> atom ^ factor .)
-    OR              reduce using rule 98 (power -> atom ^ factor .)
-    newline         reduce using rule 98 (power -> atom ^ factor .)
-    {               reduce using rule 98 (power -> atom ^ factor .)
-    ,               reduce using rule 98 (power -> atom ^ factor .)
-    )               reduce using rule 98 (power -> atom ^ factor .)
-
-
-state 76
-
-    (99) power -> atom @ factor .
-
-    *               reduce using rule 99 (power -> atom @ factor .)
-    /               reduce using rule 99 (power -> atom @ factor .)
-    %               reduce using rule 99 (power -> atom @ factor .)
-    INTDIV          reduce using rule 99 (power -> atom @ factor .)
-    EQ              reduce using rule 99 (power -> atom @ factor .)
-    NEQ             reduce using rule 99 (power -> atom @ factor .)
-    GE              reduce using rule 99 (power -> atom @ factor .)
-    LE              reduce using rule 99 (power -> atom @ factor .)
-    >               reduce using rule 99 (power -> atom @ factor .)
-    <               reduce using rule 99 (power -> atom @ factor .)
-    +               reduce using rule 99 (power -> atom @ factor .)
-    -               reduce using rule 99 (power -> atom @ factor .)
-    AND             reduce using rule 99 (power -> atom @ factor .)
-    OR              reduce using rule 99 (power -> atom @ factor .)
-    newline         reduce using rule 99 (power -> atom @ factor .)
-    {               reduce using rule 99 (power -> atom @ factor .)
-    ,               reduce using rule 99 (power -> atom @ factor .)
-    )               reduce using rule 99 (power -> atom @ factor .)
-
-
-state 77
-
-    (105) atom -> ID ( arg_list . )
-
-    )               shift and go to state 87
-
-
-state 78
-
-    (107) arg_list -> disjunction . rest_args
-    (109) rest_args -> . , disjunction rest_args
-    (110) rest_args -> . epsilon
-    (2) epsilon -> .
-
-    ,               shift and go to state 89
-    )               reduce using rule 2 (epsilon -> .)
-
-    rest_args                      shift and go to state 88
-    epsilon                        shift and go to state 90
-
-state 79
-
-    (108) arg_list -> epsilon .
-
-    )               reduce using rule 108 (arg_list -> epsilon .)
-
-
-state 80
-
-    (106) atom -> ( expr ) .
-
-    ^               reduce using rule 106 (atom -> ( expr ) .)
-    @               reduce using rule 106 (atom -> ( expr ) .)
-    *               reduce using rule 106 (atom -> ( expr ) .)
-    /               reduce using rule 106 (atom -> ( expr ) .)
-    %               reduce using rule 106 (atom -> ( expr ) .)
-    INTDIV          reduce using rule 106 (atom -> ( expr ) .)
-    EQ              reduce using rule 106 (atom -> ( expr ) .)
-    NEQ             reduce using rule 106 (atom -> ( expr ) .)
-    GE              reduce using rule 106 (atom -> ( expr ) .)
-    LE              reduce using rule 106 (atom -> ( expr ) .)
-    >               reduce using rule 106 (atom -> ( expr ) .)
-    <               reduce using rule 106 (atom -> ( expr ) .)
-    +               reduce using rule 106 (atom -> ( expr ) .)
-    -               reduce using rule 106 (atom -> ( expr ) .)
-    AND             reduce using rule 106 (atom -> ( expr ) .)
-    OR              reduce using rule 106 (atom -> ( expr ) .)
-    newline         reduce using rule 106 (atom -> ( expr ) .)
-    {               reduce using rule 106 (atom -> ( expr ) .)
-    ,               reduce using rule 106 (atom -> ( expr ) .)
-    )               reduce using rule 106 (atom -> ( expr ) .)
-
-
-state 81
-
-    (61) if_stmt -> IF disjunction { maybe_newline . stmt_list } else_stmt
-    (5) stmt_list -> . stmt newline stmt_list
-    (6) stmt_list -> . epsilon
-    (7) stmt -> . if_stmt
-    (8) stmt -> . var_stmt
-    (9) stmt -> . loop_stmt
-    (10) stmt -> . CONTINUE
-    (11) stmt -> . BREAK
-    (12) stmt -> . RETURN disjunction
-    (13) stmt -> . RETURN epsilon
-    (2) epsilon -> .
-    (61) if_stmt -> . IF disjunction { maybe_newline stmt_list } else_stmt
-    (60) var_stmt -> . ID = disjunction
-    (65) loop_stmt -> . LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list }
-
-    CONTINUE        shift and go to state 8
-    BREAK           shift and go to state 9
-    RETURN          shift and go to state 10
-    }               reduce using rule 2 (epsilon -> .)
-    IF              shift and go to state 11
-    ID              shift and go to state 12
-    LOOP            shift and go to state 13
-
-    stmt_list                      shift and go to state 91
-    stmt                           shift and go to state 3
-    epsilon                        shift and go to state 4
-    if_stmt                        shift and go to state 5
-    var_stmt                       shift and go to state 6
-    loop_stmt                      shift and go to state 7
-
-state 82
-
-    (3) maybe_newline -> newline .
-
-    CONTINUE        reduce using rule 3 (maybe_newline -> newline .)
-    BREAK           reduce using rule 3 (maybe_newline -> newline .)
-    RETURN          reduce using rule 3 (maybe_newline -> newline .)
-    IF              reduce using rule 3 (maybe_newline -> newline .)
-    ID              reduce using rule 3 (maybe_newline -> newline .)
-    LOOP            reduce using rule 3 (maybe_newline -> newline .)
-    }               reduce using rule 3 (maybe_newline -> newline .)
-
-
-state 83
-
-    (4) maybe_newline -> epsilon .
-
-    CONTINUE        reduce using rule 4 (maybe_newline -> epsilon .)
-    BREAK           reduce using rule 4 (maybe_newline -> epsilon .)
-    RETURN          reduce using rule 4 (maybe_newline -> epsilon .)
-    IF              reduce using rule 4 (maybe_newline -> epsilon .)
-    ID              reduce using rule 4 (maybe_newline -> epsilon .)
-    LOOP            reduce using rule 4 (maybe_newline -> epsilon .)
-    }               reduce using rule 4 (maybe_newline -> epsilon .)
-
-
-state 84
-
-    (65) loop_stmt -> LOOP loop_init , loop_condition . , loop_set { maybe_newline stmt_list }
-
-    ,               shift and go to state 92
-
-
-state 85
-
-    (70) loop_condition -> disjunction .
-
-    ,               reduce using rule 70 (loop_condition -> disjunction .)
-
-
-state 86
-
-    (71) loop_condition -> epsilon .
-
-    ,               reduce using rule 71 (loop_condition -> epsilon .)
-
-
-state 87
-
-    (105) atom -> ID ( arg_list ) .
-
-    ^               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    @               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    *               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    /               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    %               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    INTDIV          reduce using rule 105 (atom -> ID ( arg_list ) .)
-    EQ              reduce using rule 105 (atom -> ID ( arg_list ) .)
-    NEQ             reduce using rule 105 (atom -> ID ( arg_list ) .)
-    GE              reduce using rule 105 (atom -> ID ( arg_list ) .)
-    LE              reduce using rule 105 (atom -> ID ( arg_list ) .)
-    >               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    <               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    +               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    -               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    AND             reduce using rule 105 (atom -> ID ( arg_list ) .)
-    OR              reduce using rule 105 (atom -> ID ( arg_list ) .)
-    newline         reduce using rule 105 (atom -> ID ( arg_list ) .)
-    {               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    ,               reduce using rule 105 (atom -> ID ( arg_list ) .)
-    )               reduce using rule 105 (atom -> ID ( arg_list ) .)
-
-
-state 88
-
-    (107) arg_list -> disjunction rest_args .
-
-    )               reduce using rule 107 (arg_list -> disjunction rest_args .)
-
-
-state 89
-
-    (109) rest_args -> , . disjunction rest_args
-    (75) disjunction -> . conjunction OR conjunction
-    (76) disjunction -> . conjunction
-    (77) conjunction -> . negation AND negation
-    (78) conjunction -> . negation
-    (79) negation -> . NOT comparison
-    (80) negation -> . comparison
-    (81) comparison -> . expr EQ expr
-    (82) comparison -> . expr NEQ expr
-    (83) comparison -> . expr GE expr
-    (84) comparison -> . expr LE expr
-    (85) comparison -> . expr > expr
-    (86) comparison -> . expr < expr
-    (87) comparison -> . expr
-    (88) expr -> . expr + term
-    (89) expr -> . expr - term
-    (90) expr -> . term
-    (91) term -> . term * factor
-    (92) term -> . term / factor
-    (93) term -> . term % factor
-    (94) term -> . term INTDIV factor
-    (95) term -> . factor
-    (96) factor -> . - factor
-    (97) factor -> . power
-    (98) power -> . atom ^ factor
-    (99) power -> . atom @ factor
-    (100) power -> . atom
-    (101) atom -> . NUMBER
-    (102) atom -> . FALSE
-    (103) atom -> . TRUE
-    (104) atom -> . ID
-    (105) atom -> . ID ( arg_list )
-    (106) atom -> . ( expr )
-
-    NOT             shift and go to state 19
-    -               shift and go to state 23
-    NUMBER          shift and go to state 27
-    FALSE           shift and go to state 28
-    TRUE            shift and go to state 29
-    ID              shift and go to state 30
-    (               shift and go to state 31
-
-    disjunction                    shift and go to state 93
-    conjunction                    shift and go to state 17
-    negation                       shift and go to state 18
-    comparison                     shift and go to state 20
-    expr                           shift and go to state 21
-    term                           shift and go to state 22
-    factor                         shift and go to state 24
-    power                          shift and go to state 25
-    atom                           shift and go to state 26
-
-state 90
-
-    (110) rest_args -> epsilon .
-
-    )               reduce using rule 110 (rest_args -> epsilon .)
-
-
-state 91
-
-    (61) if_stmt -> IF disjunction { maybe_newline stmt_list . } else_stmt
-
-    }               shift and go to state 94
-
-
-state 92
-
-    (65) loop_stmt -> LOOP loop_init , loop_condition , . loop_set { maybe_newline stmt_list }
-    (68) loop_set -> . var_stmt
-    (69) loop_set -> . epsilon
-    (60) var_stmt -> . ID = disjunction
-    (2) epsilon -> .
-
-    ID              shift and go to state 12
-    {               reduce using rule 2 (epsilon -> .)
-
-    loop_set                       shift and go to state 95
-    var_stmt                       shift and go to state 96
-    epsilon                        shift and go to state 97
-
-state 93
-
-    (109) rest_args -> , disjunction . rest_args
-    (109) rest_args -> . , disjunction rest_args
-    (110) rest_args -> . epsilon
-    (2) epsilon -> .
-
-    ,               shift and go to state 89
-    )               reduce using rule 2 (epsilon -> .)
-
-    rest_args                      shift and go to state 98
-    epsilon                        shift and go to state 90
-
-state 94
-
-    (61) if_stmt -> IF disjunction { maybe_newline stmt_list } . else_stmt
-    (62) else_stmt -> . ELSE if_stmt
-    (63) else_stmt -> . ELSE { maybe_newline stmt_list }
-    (64) else_stmt -> . epsilon
-    (2) epsilon -> .
-
-    ELSE            shift and go to state 100
-    newline         reduce using rule 2 (epsilon -> .)
-
-    else_stmt                      shift and go to state 99
-    epsilon                        shift and go to state 101
-
-state 95
-
-    (65) loop_stmt -> LOOP loop_init , loop_condition , loop_set . { maybe_newline stmt_list }
-
-    {               shift and go to state 102
-
-
-state 96
-
-    (68) loop_set -> var_stmt .
-
-    {               reduce using rule 68 (loop_set -> var_stmt .)
-
-
-state 97
-
-    (69) loop_set -> epsilon .
-
-    {               reduce using rule 69 (loop_set -> epsilon .)
-
-
-state 98
-
-    (109) rest_args -> , disjunction rest_args .
-
-    )               reduce using rule 109 (rest_args -> , disjunction rest_args .)
-
-
-state 99
-
-    (61) if_stmt -> IF disjunction { maybe_newline stmt_list } else_stmt .
-
-    newline         reduce using rule 61 (if_stmt -> IF disjunction { maybe_newline stmt_list } else_stmt .)
-
-
-state 100
-
-    (62) else_stmt -> ELSE . if_stmt
-    (63) else_stmt -> ELSE . { maybe_newline stmt_list }
-    (61) if_stmt -> . IF disjunction { maybe_newline stmt_list } else_stmt
-
-    {               shift and go to state 104
-    IF              shift and go to state 11
-
-    if_stmt                        shift and go to state 103
-
-state 101
-
-    (64) else_stmt -> epsilon .
-
-    newline         reduce using rule 64 (else_stmt -> epsilon .)
-
-
-state 102
-
-    (65) loop_stmt -> LOOP loop_init , loop_condition , loop_set { . maybe_newline stmt_list }
-    (3) maybe_newline -> . newline
-    (4) maybe_newline -> . epsilon
-    (2) epsilon -> .
-
-    newline         shift and go to state 82
-    CONTINUE        reduce using rule 2 (epsilon -> .)
-    BREAK           reduce using rule 2 (epsilon -> .)
-    RETURN          reduce using rule 2 (epsilon -> .)
-    IF              reduce using rule 2 (epsilon -> .)
-    ID              reduce using rule 2 (epsilon -> .)
-    LOOP            reduce using rule 2 (epsilon -> .)
-    }               reduce using rule 2 (epsilon -> .)
-
-    maybe_newline                  shift and go to state 105
-    epsilon                        shift and go to state 83
-
-state 103
-
-    (62) else_stmt -> ELSE if_stmt .
-
-    newline         reduce using rule 62 (else_stmt -> ELSE if_stmt .)
-
-
-state 104
-
-    (63) else_stmt -> ELSE { . maybe_newline stmt_list }
-    (3) maybe_newline -> . newline
-    (4) maybe_newline -> . epsilon
-    (2) epsilon -> .
-
-    newline         shift and go to state 82
-    CONTINUE        reduce using rule 2 (epsilon -> .)
-    BREAK           reduce using rule 2 (epsilon -> .)
-    RETURN          reduce using rule 2 (epsilon -> .)
-    IF              reduce using rule 2 (epsilon -> .)
-    ID              reduce using rule 2 (epsilon -> .)
-    LOOP            reduce using rule 2 (epsilon -> .)
-    }               reduce using rule 2 (epsilon -> .)
-
-    maybe_newline                  shift and go to state 106
-    epsilon                        shift and go to state 83
-
-state 105
-
-    (65) loop_stmt -> LOOP loop_init , loop_condition , loop_set { maybe_newline . stmt_list }
-    (5) stmt_list -> . stmt newline stmt_list
-    (6) stmt_list -> . epsilon
-    (7) stmt -> . if_stmt
-    (8) stmt -> . var_stmt
-    (9) stmt -> . loop_stmt
-    (10) stmt -> . CONTINUE
-    (11) stmt -> . BREAK
-    (12) stmt -> . RETURN disjunction
-    (13) stmt -> . RETURN epsilon
-    (2) epsilon -> .
-    (61) if_stmt -> . IF disjunction { maybe_newline stmt_list } else_stmt
-    (60) var_stmt -> . ID = disjunction
-    (65) loop_stmt -> . LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list }
-
-    CONTINUE        shift and go to state 8
-    BREAK           shift and go to state 9
-    RETURN          shift and go to state 10
-    }               reduce using rule 2 (epsilon -> .)
-    IF              shift and go to state 11
-    ID              shift and go to state 12
-    LOOP            shift and go to state 13
-
-    stmt_list                      shift and go to state 107
-    stmt                           shift and go to state 3
-    epsilon                        shift and go to state 4
-    if_stmt                        shift and go to state 5
-    var_stmt                       shift and go to state 6
-    loop_stmt                      shift and go to state 7
-
-state 106
-
-    (63) else_stmt -> ELSE { maybe_newline . stmt_list }
-    (5) stmt_list -> . stmt newline stmt_list
-    (6) stmt_list -> . epsilon
-    (7) stmt -> . if_stmt
-    (8) stmt -> . var_stmt
-    (9) stmt -> . loop_stmt
-    (10) stmt -> . CONTINUE
-    (11) stmt -> . BREAK
-    (12) stmt -> . RETURN disjunction
-    (13) stmt -> . RETURN epsilon
-    (2) epsilon -> .
-    (61) if_stmt -> . IF disjunction { maybe_newline stmt_list } else_stmt
-    (60) var_stmt -> . ID = disjunction
-    (65) loop_stmt -> . LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list }
-
-    CONTINUE        shift and go to state 8
-    BREAK           shift and go to state 9
-    RETURN          shift and go to state 10
-    }               reduce using rule 2 (epsilon -> .)
-    IF              shift and go to state 11
-    ID              shift and go to state 12
-    LOOP            shift and go to state 13
-
-    stmt_list                      shift and go to state 108
-    stmt                           shift and go to state 3
-    epsilon                        shift and go to state 4
-    if_stmt                        shift and go to state 5
-    var_stmt                       shift and go to state 6
-    loop_stmt                      shift and go to state 7
-
-state 107
-
-    (65) loop_stmt -> LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list . }
-
-    }               shift and go to state 109
-
-
-state 108
-
-    (63) else_stmt -> ELSE { maybe_newline stmt_list . }
-
-    }               shift and go to state 110
-
-
-state 109
-
-    (65) loop_stmt -> LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list } .
-
-    newline         reduce using rule 65 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { maybe_newline stmt_list } .)
-
-
-state 110
-
-    (63) else_stmt -> ELSE { maybe_newline stmt_list } .
-
-    newline         reduce using rule 63 (else_stmt -> ELSE { maybe_newline stmt_list } .)
+    (68) terrainprop -> ID AT { NUMBER terrainposn_list } .
+
+    ID              reduce using rule 68 (terrainprop -> ID AT { NUMBER terrainposn_list } .)
+    DEFAULT         reduce using rule 68 (terrainprop -> ID AT { NUMBER terrainposn_list } .)
+    }               reduce using rule 68 (terrainprop -> ID AT { NUMBER terrainposn_list } .)
 
