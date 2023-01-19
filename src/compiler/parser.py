@@ -7,7 +7,7 @@ from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
     ListNode, ListAccessNode, DictNode, DictAccessNode,
-    WorldNode, SimulationNode,
+    WorldNode, SimulationNode, EntityNode,
     PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
     VariableSettingNode,
@@ -183,6 +183,19 @@ def get_parser(*args, **kwargs):
     def p_dna_elem_dna(p):
         "dna_elem : DNA ID"
         p[0] = {"type": "dna", "name": p[2]}
+    
+    # entity stmt productions
+    def p_entity_stmt(p):
+        "entity_stmt : ENTITY '{' maybe_newline entityprop maybe_newline entityprop maybe_newline '}'"
+        p[0] = EntityNode({**p[4], **p[6]})
+
+    def p_entityprop_coex(p):
+        "entityprop : COEXISTANCE bool"
+        p[0] = {p[1]: p[2] == 'true'}
+    
+    def p_entityprop_repr(p):
+        "entityprop : REPR ID"
+        p[0] = {'representation': p[2]}
 
     # world stmt productions
     def p_world(p):
@@ -477,7 +490,7 @@ def get_parser(*args, **kwargs):
     
     def p_atom_false(p):
         "atom : bool"
-        p[0] = p[1]
+        p[0] = ValueNode(p[1] == 'true')
     
     def p_atom_group(p):
         "atom : '(' expr ')'"
@@ -506,7 +519,7 @@ def get_parser(*args, **kwargs):
     def p_bool(p):
         '''bool : TRUE
                 | FALSE'''
-        p[0] = ValueNode(p[1] == 'true')
+        p[0] = p[1]
     
     def p_arg_list(p):
         "arg_list : disjunction"

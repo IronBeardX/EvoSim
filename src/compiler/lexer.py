@@ -58,7 +58,10 @@ reserved = {
     'actions_time'      : 'ACTIONS_TIME',
     'available_commands': 'AVAILABLE_COMMANDS',
     'dna'               : 'DNA',
-    'cost'              : 'COST'
+    'cost'              : 'COST',
+    'repr'              : 'REPR',
+    'coexistance'       : 'COEXISTANCE',
+    'entity'            : 'ENTITY'
 }
 
 tokens = (
