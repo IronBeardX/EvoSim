@@ -62,7 +62,10 @@ reserved = {
     'repr'              : 'REPR',
     'coexistence'       : 'COEXISTENCE',
     'entity'            : 'ENTITY',
-    'behavior'          : 'BEHAVIOR'
+    'behavior'          : 'BEHAVIOR',
+    'decide'            : 'DECIDE',
+    'org'               : 'ORG',
+    'time'              : 'TIME'
 }
 
 tokens = (
@@ -94,7 +97,7 @@ def get_lexer(*args, **kwargs):
         r'[a-zA-Z][a-zA-Z0-9_]*'
         
         # fix lexer ignoring 't' as first letter
-        if t.value in ['errain', 'rue']:
+        if t.value in ['errain', 'rue', 'ime']:
             t.value = f't{t.value}'
         
         t.type = reserved.get(t.value, 'ID')

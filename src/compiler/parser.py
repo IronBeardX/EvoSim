@@ -7,7 +7,7 @@ from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
     ListNode, ListAccessNode, DictNode, DictAccessNode,
-    WorldNode, SimulationNode, EntityNode, OrganismNode,
+    WorldNode, SimulationNode, EntityNode, OrganismNode, BehaviorNode,
     PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
     VariableSettingNode,
@@ -210,6 +210,15 @@ def get_parser(*args, **kwargs):
     def p_orgprop_repr(p):
         "orgprop : REPR ID"
         p[0] = {'representation': p[2]}
+    
+    # behavior stmt productions
+    def p_behavior_stmt(p):
+        "behavior_stmt : BEHAVIOR ID '{' maybe_newline func_stmt_list decide_stmt newline '}'"
+        p[0] = BehaviorNode(p[2], p[5], p[6])
+
+    def p_decide_stmt(p):
+        "decide_stmt : FUNC DECIDE '=' ORG TIME '{' newline stmt_list '}'"
+        p[0] = FunctionNode(p[2], [p[4], p[5]], p[8])
 
     # world stmt productions
     def p_world(p):
@@ -355,6 +364,14 @@ def get_parser(*args, **kwargs):
         p[0] = None
     
     # function declaration stmt productions
+    def p_func_list(p):
+        "func_stmt_list : func_stmt newline func_stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_func_list_epsilon(p):
+        "func_stmt_list : epsilon"
+        p[0] = []
+
     def p_func(p):
         "func_stmt : FUNC ID '=' param_list '{' maybe_newline stmt_list '}'"
         p[0] = FunctionNode(p[2], p[4], p[7])

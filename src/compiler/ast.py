@@ -270,6 +270,16 @@ class OrganismNode(Node):
         return super().evaluate(context)
 
 
+class BehaviorNode(Node):
+    def __init__(self, name, func_nodes, decide_node):
+        self.name = name
+        self.func_nodes = func_nodes
+        self.decide_node = decide_node
+    
+    def evaluate(self, context: Context):
+        return super().evaluate(context)
+
+
 class PhyGeneNode(Node):
     TYPES = {
         'health': Health,
