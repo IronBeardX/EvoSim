@@ -1,5 +1,6 @@
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
+from src.evo_entity import *
 from src.compiler.error import (
     PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR,
     VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR
@@ -169,6 +170,7 @@ class ProgramNode(Node):
         # create gene and dna dicts
         context.set_var("gene", {})
         context.set_var("dna", {})
+        context.set_var("gene_facts", [])
 
         # store genes
         for node in self.gene_nodes:
@@ -243,10 +245,21 @@ class SimulationNode(Node):
 
 class EntityNode(Node):
     def __init__(self, props):
-        pass
+        DELETE_THIS = '''
+        'representation':str
+        'coeaxistence':bool
+        '''
+
+        #checking if all props are in props
+        if not ('representation' in props and 'coexistence' in props):
+            raise ValueError('Entity must have representation and coexistence')
+
+        self.factory = lambda: Entity(props['representation'], props['coexistence'])
+        
 
     def evaluate(self, context: Context):
-        return super().evaluate(context)
+        fac_list = context.get_var('gene_facts')
+        fac_list.append(self.factory)
 
 
 class OrganismNode(Node):
