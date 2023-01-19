@@ -46,6 +46,33 @@ class VariableNode(Node):
         return v
 
 
+class ListNode(Node):
+    def __init__(self, element_nodes):
+        self.elements = element_nodes
+    
+    def evaluate(self, context: Context):
+        return [element.evaluate(context) for element in self.elements]
+
+
+class ListAccessNode(Node):
+    def __init__(self, listlike_node, index_node):
+        self.list_node = listlike_node
+        self.index_node = index_node
+    
+    def evaluate(self, context: Context):
+        l = self.list_node.evaluate(context)
+        if not isinstance(l, list):
+            raise Exception()
+        
+        i = self.index_node.evaluate(context)
+        try:
+            i = int(i)
+        except ValueError:
+            raise Exception()
+        
+        return l[i % len(l)]
+
+
 class UnaryOpNode(Node):
     def __init__(self, node, apply):
         self.node = node

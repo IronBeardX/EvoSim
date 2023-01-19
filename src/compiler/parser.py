@@ -5,7 +5,7 @@ from src.compiler.lexer import tokens
 from src.compiler.util import parse_number, nth_root, token_column
 from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
-    ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
+    ValueNode, UnaryOpNode, BinaryOpNode, VariableNode, ListNode, ListAccessNode,
     WorldNode, SimulationNode,
     PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
@@ -37,8 +37,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : newline func_stmt newline expr newline"
-        p[0] = [p[2], p[4]]
+        "test : expr"
+        p[0] = p[1]
 
     # handle errors
     def p_error(t):
@@ -431,7 +431,23 @@ def get_parser(*args, **kwargs):
         p[0] = BinaryOpNode(p[1], p[3], lambda x,y: nth_root(x, y))
     
     def p_power_atom(p):
-        "power : atom"
+        "power : naming"
+        p[0] = p[1]
+    
+    def p_naming_index(p):
+        "naming : naming '[' expr ']'"
+        p[0] = ListAccessNode(p[1], p[3])
+
+    def p_naming_accessing(p):
+        "naming : accessing"
+        p[0] = VariableNode(p[1])
+
+    def p_naming_func(p):
+        "naming : ID '(' arg_list ')'"
+        p[0] = FunctionCallNode(p[1], p[3])
+    
+    def p_naming_atom(p):
+        "naming : atom"
         p[0] = p[1]
     
     def p_atom_number(p):
@@ -446,17 +462,13 @@ def get_parser(*args, **kwargs):
         "atom : TRUE"
         p[0] = ValueNode(True)
     
-    def p_atom_var(p):
-        "atom : accessing"
-        p[0] = VariableNode(p[1])
-    
-    def p_atom_function(p):
-        "atom : ID '(' arg_list ')'"
-        p[0] = FunctionCallNode(p[1], p[3])
-    
     def p_atom_group(p):
         "atom : '(' expr ')'"
         p[0] = p[2]
+    
+    def p_atom_list(p):
+        "atom : '[' arg_list ']'"
+        p[0] = ListNode(p[2])
     
     def p_accessing(p):
         "accessing : word"
