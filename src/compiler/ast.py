@@ -443,7 +443,7 @@ class VariableNode(Node):
         current_name = self.name
         for name in self.rest:
             try:
-                v = v[name]
+                v = getattr(v, name)
                 current_name = f'{current_name}.{name}'
             except:
                 raise PROP_NOT_IN_VAR_ERROR(current_name, name)
@@ -470,7 +470,7 @@ class VariableSettingNode(Node):
             v = vnode.evaluate(context)
 
             try:
-                v[last] = value
+                setattr(v, last, value)
             except:
                 raise PROP_NOT_IN_VAR_ERROR('.'.join(names), last)
 
