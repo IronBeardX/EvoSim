@@ -21,8 +21,8 @@ from src.compiler.ast import (
 def get_parser(*args, **kwargs):
     # program production
     def p_program(p):
-        "program : gene_stmt_list dna_stmt_list world_stmt newline sim_stmt maybe_newline"
-        p[0] = ProgramNode(p[1], p[2], p[3], p[5])
+        "program : gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list world_stmt newline sim_stmt maybe_newline"
+        p[0] = ProgramNode(p[1], p[2], p[3], p[4], p[5], p[7])
     
     # handy productions
     def p_epsilon(p):
@@ -185,6 +185,15 @@ def get_parser(*args, **kwargs):
         p[0] = {"type": "dna", "name": p[2]}
     
     # entity stmt productions
+    def p_entity_org_stmt_list(p):
+        '''entity_org_stmt_list : entity_stmt newline entity_org_stmt_list
+                                | organism_stmt newline entity_org_stmt_list'''
+        p[0] = [p[1], *p[3]]
+    
+    def p_entity_org_stmt_list_epsilon(p):
+        "entity_org_stmt_list : epsilon"
+        p[0] = []
+
     def p_entity_stmt(p):
         "entity_stmt : ENTITY '{' maybe_newline entityprop maybe_newline entityprop maybe_newline '}'"
         p[0] = EntityNode({**p[4], **p[6]})
@@ -212,6 +221,14 @@ def get_parser(*args, **kwargs):
         p[0] = {'representation': p[2]}
     
     # behavior stmt productions
+    def p_behavior_stmt_list(p):
+        "behavior_stmt_list : behavior_stmt newline behavior_stmt_list"
+        p[0] = [p[1], *p[3]]
+    
+    def p_behavior_stmt_list_epsilon(p):
+        "behavior_stmt_list : epsilon"
+        p[0] = []
+
     def p_behavior_stmt(p):
         "behavior_stmt : BEHAVIOR ID '{' maybe_newline func_stmt_list decide_stmt newline '}'"
         p[0] = BehaviorNode(p[2], p[5], p[6])

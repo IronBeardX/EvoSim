@@ -160,14 +160,16 @@ class BinaryOpNode(Node):
 
 
 class ProgramNode(Node):
-    def __init__(self, gene_nodes, dna_nodes, world_node, sim_node):
+    def __init__(self, gene_nodes, dna_nodes, behavior_nodes, entity_org_nodes, world_node, sim_node):
         self.gene_nodes = gene_nodes
         self.dna_nodes = dna_nodes
+        self.behavior_nodes = behavior_nodes
+        self.entity_org_nodes = entity_org_nodes
         self.world_node = world_node
         self.sim_node = sim_node
 
     def evaluate(self, context: Context):
-        # create gene and dna dicts
+        # create gene, dna and behavior dicts, and entity factory list
         context.set_var("gene", {})
         context.set_var("dna", {})
         context.set_var("behaviors", {})
@@ -179,6 +181,14 @@ class ProgramNode(Node):
 
         # store dna chains
         for node in self.dna_nodes:
+            node.evaluate(context)
+        
+        # store behavior classes
+        for node in self.behavior_nodes:
+            node.evaluate(context)
+        
+        # store entity factories
+        for node in self.entity_org_nodes:
             node.evaluate(context)
 
         # handle world & sim nodes
