@@ -45,6 +45,30 @@ class VariableNode(Node):
 
         return v
 
+class VariableSettingNode(Node):
+    def __init__(self, names, node):
+        name, *rest = names
+        self.name = name
+        self.rest = rest
+        self.node = node
+
+    def evaluate(self, context: Context):
+        value = self.node.evaluate(context)
+
+        if len(self.rest) == 0:
+            context.set_var(self.name, value)
+        else:
+            *middle, last = self.rest
+            names = [self.name, *middle]
+
+            vnode = VariableNode(names)
+            v = vnode.evaluate(context)
+
+            try:
+                v[last] = value
+            except:
+                raise PROP_NOT_IN_VAR_ERROR('.'.join(names), last)
+
 
 class ListNode(Node):
     def __init__(self, element_nodes):
@@ -352,16 +376,6 @@ class ElseNode(Node):
 
         for node in self.body:
             node.evaluate(child_context)
-
-
-class VariableSettingNode(Node):
-    def __init__(self, name, node):
-        self.name = name
-        self.node = node
-
-    def evaluate(self, context: Context):
-        value = self.node.evaluate(context)
-        context.set_var(self.name, value)
 
 
 class LoopNode(Node):

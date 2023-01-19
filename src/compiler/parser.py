@@ -38,8 +38,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : newline var_stmt newline dict_stmt newline"
-        p[0] = (p[2], p[4])
+        "test : newline var_stmt newline"
+        p[0] = p[2]
 
     # handle errors
     def p_error(t):
@@ -267,8 +267,8 @@ def get_parser(*args, **kwargs):
         p[0] = []
     
     # var setting stmt production
-    def p_var(p):
-        "var_stmt : ID '=' disjunction"
+    def p_var_stmt(p):
+        "var_stmt : accessing '=' disjunction"
         p[0] = VariableSettingNode(p[1], p[3])
     
     # list stmt production

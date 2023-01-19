@@ -32,7 +32,7 @@ stmt =>
 
 
 var_stmt =>
-    ID = disjunction
+    accessing = disjunction
 
 list_stmt =>
     naming [ expr ] = disjunction
