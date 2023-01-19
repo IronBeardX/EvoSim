@@ -3,7 +3,9 @@ from src.compiler.util import Signal, BREAK, ValueSignal
 from src.evo_entity import *
 from src.compiler.error import (
     PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR,
-    VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR
+    VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR,
+    NOT_A_LIST_ERROR, BAD_LIST_INDEXER_ERROR,
+    KEY_NOT_IN_DICT_ERROR, NOT_A_DICT_ERROR, BAD_INDEXER_ERROR
 )
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
@@ -490,13 +492,13 @@ class ListAccessNode(Node):
     def evaluate(self, context: Context):
         l = self.list_node.evaluate(context)
         if not isinstance(l, (list, str)):
-            raise Exception()
+            raise NOT_A_LIST_ERROR()
         
         i = self.index_node.evaluate(context)
         try:
             i = int(i)
         except ValueError:
-            raise Exception()
+            raise BAD_LIST_INDEXER_ERROR(i)
         
         if self.set_node:
             l[i % len(l)] = self.set_node.evaluate(context)
@@ -512,10 +514,11 @@ class DictNode(Node):
         d = {}
         for p in self.pairs:
             k, v = p
+            key = k.evaluate(context)
             try:
-                d[k.evaluate(context)] = v.evaluate(context)
-            except:
-                raise Exception()
+                d[key] = v.evaluate(context)
+            except TypeError:
+                raise BAD_INDEXER_ERROR(key)
         
         return d
 
@@ -529,14 +532,20 @@ class DictAccessNode(Node):
     def evaluate(self, context: Context):
         d = self.dict_node.evaluate(context)
         if not isinstance(d, dict):
-            raise Exception()
+            raise NOT_A_DICT_ERROR()
         
         i = self.index_node.evaluate(context)
 
         if self.set_node:
-            d[i] = self.set_node.evaluate(context)
+            try:
+                d[i] = self.set_node.evaluate(context)
+            except TypeError:
+                raise BAD_INDEXER_ERROR(i)
         else:
-            return d[i]
+            try:
+                return d[i]
+            except KeyError:
+                raise KEY_NOT_IN_DICT_ERROR(i)
 
 
 class UnaryOpNode(Node):
