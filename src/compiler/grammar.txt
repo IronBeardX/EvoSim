@@ -78,14 +78,10 @@ maybe_nl =>
 program =>
     gene_stmt_list dna_stmt_list world_stmt newline sim_stmt maybe_nl
 
+
 gene_stmt_list =>
     gene_stmt newline gene_stmt_list
     epsilon
-
-dna_stmt_list =>
-    dna_stmt newline dna_stmt_list
-    epsilon
-
 
 gene_stmt =>
     GENE phygene_stmt
@@ -135,6 +131,10 @@ mutationprop =>
     CHANCE NUMBER
     STEP NUMBER
 
+
+dna_stmt_list =>
+    dna_stmt newline dna_stmt_list
+    epsilon
 
 dna_stmt =>
     DNA ID { maybe_nl dna_elem_list }
