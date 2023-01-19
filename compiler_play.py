@@ -8,17 +8,19 @@ parser = get_parser(debug=True, start="test")
 
 context = Context()
 text = '''
-func fib = nth {
-    if nth == 1 or nth == 2 {
-        return 1
+world {
+    size infinite { width 1920 height 1080 }
+    terrain {
+        aaa
+        default bbb
+        ccc at {1 2 3}
+        ddd
+        eee at {4 5}
+        fff
     }
-    return fib(nth - 1) + fib(nth - 2)
 }
-fib(25)
 '''
 
-f, expr = parser.parse(text, lexer=lexer)
-f.evaluate(context)
-v = expr.evaluate(context)
+expr = parser.parse(text, lexer=lexer)
 
-print(v)
+print(expr)

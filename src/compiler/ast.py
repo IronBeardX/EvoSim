@@ -498,6 +498,28 @@ class ListNode(Node):
         return [element.evaluate(context) for element in self.elements]
 
 
+class DictNode(Node):
+    def __init__(self, keyarg_nodes):
+        self.pairs = keyarg_nodes
+    
+    def evaluate(self, context: Context):
+        d = {}
+        for p in self.pairs:
+            k, v = p
+            key = k.evaluate(context)
+            try:
+                d[key] = v.evaluate(context)
+            except TypeError:
+                raise BAD_INDEXER_ERROR(key)
+        
+        return d
+
+
+class IndexNode(Node):
+    def __init__(self, store_node, index_node, set_node=None):
+        pass
+
+
 class ListAccessNode(Node):
     def __init__(self, listlike_node, index_node, set_node=None):
         self.list_node = listlike_node
@@ -519,23 +541,6 @@ class ListAccessNode(Node):
             l[i % len(l)] = self.set_node.evaluate(context)
         else:
             return l[i % len(l)]
-
-
-class DictNode(Node):
-    def __init__(self, keyarg_nodes):
-        self.pairs = keyarg_nodes
-    
-    def evaluate(self, context: Context):
-        d = {}
-        for p in self.pairs:
-            k, v = p
-            key = k.evaluate(context)
-            try:
-                d[key] = v.evaluate(context)
-            except TypeError:
-                raise BAD_INDEXER_ERROR(key)
-        
-        return d
 
 
 class DictAccessNode(Node):
