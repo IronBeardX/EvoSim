@@ -6,7 +6,7 @@ from src.compiler.util import parse_number, nth_root, token_column
 from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
-    ListNode, ListAccessNode, DictNode, DictAccessNode,
+    ListNode, DictNode, IndexNode,
     WorldNode, SimulationNode, EntityNode, OrganismNode, BehaviorNode,
     PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
@@ -27,6 +27,10 @@ def get_parser(*args, **kwargs):
     def p_epsilon(p):
         "epsilon :"
         pass
+
+    def p_test(p):
+        "test : world_stmt"
+        p[0] = p[1]
 
     # handle errors
     def p_error(t):
@@ -327,7 +331,7 @@ def get_parser(*args, **kwargs):
     # index stmt production
     def p_index_stmt(p):
         "index_stmt : naming '[' disjunction ']' '=' disjunction"
-        p[0] = None
+        p[0] = IndexNode(p[1], p[3], p[6])
     
     # if-else stmt productions
     def p_if(p):
@@ -484,7 +488,7 @@ def get_parser(*args, **kwargs):
     
     def p_naming_index(p):
         "naming : naming '[' disjunction ']'"
-        p[0] = None
+        p[0] = IndexNode(p[1], p[3])
 
     def p_naming_accessing(p):
         "naming : accessing"

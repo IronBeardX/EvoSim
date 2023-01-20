@@ -25,10 +25,6 @@ PROP_NOT_IN_VAR_ERROR = lambda var_name, name: EvoSimVariableError(
     f"'{name}' property not found in '{var_name}' variable"
 )
 
-NOT_A_LIST_ERROR = lambda: EvoSimVariableError(
-    f"the variable is not a list or a string"
-)
-
 BAD_LIST_INDEXER_ERROR = lambda value: EvoSimVariableError(
     f"'{value}' key is not an integer"
 )
@@ -37,12 +33,12 @@ KEY_NOT_IN_DICT_ERROR = lambda value: EvoSimVariableError(
     f"'{value}' key not found in dictionary"
 )
 
-NOT_A_DICT_ERROR = lambda: EvoSimVariableError(
-    f"the variable is not a dictionary"
-)
-
 BAD_INDEXER_ERROR = lambda value: EvoSimVariableError(
     f"dictionary not indexable by '{value}'"
+)
+
+NOT_INDEXABLE_ERROR = lambda store: EvoSimVariableError(
+    f"'{store}' variable not a dictionary, list or string"
 )
 
 

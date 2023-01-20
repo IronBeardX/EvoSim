@@ -4,8 +4,9 @@ from src.evo_entity import *
 from src.compiler.error import (
     PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR,
     VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR,
-    NOT_A_LIST_ERROR, BAD_LIST_INDEXER_ERROR,
-    KEY_NOT_IN_DICT_ERROR, NOT_A_DICT_ERROR, BAD_INDEXER_ERROR
+    BAD_LIST_INDEXER_ERROR,
+    KEY_NOT_IN_DICT_ERROR, BAD_INDEXER_ERROR,
+    NOT_INDEXABLE_ERROR
 )
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
@@ -516,55 +517,38 @@ class DictNode(Node):
 
 class IndexNode(Node):
     def __init__(self, store_node, index_node, set_node=None):
-        pass
-
-
-class ListAccessNode(Node):
-    def __init__(self, listlike_node, index_node, set_node=None):
-        self.list_node = listlike_node
+        self.store_node = store_node
         self.index_node = index_node
         self.set_node = set_node
     
     def evaluate(self, context: Context):
-        l = self.list_node.evaluate(context)
-        if not isinstance(l, (list, str)):
-            raise NOT_A_LIST_ERROR()
-        
-        i = self.index_node.evaluate(context)
-        try:
-            i = int(i)
-        except ValueError:
-            raise BAD_LIST_INDEXER_ERROR(i)
-        
-        if self.set_node:
-            l[i % len(l)] = self.set_node.evaluate(context)
-        else:
-            return l[i % len(l)]
+        store = self.store_node.evaluate(context)
+        index = self.index_node.evaluate(context)
 
-
-class DictAccessNode(Node):
-    def __init__(self, dictlike_node, index_node, set_node=None):
-        self.dict_node = dictlike_node
-        self.index_node = index_node
-        self.set_node = set_node
-    
-    def evaluate(self, context: Context):
-        d = self.dict_node.evaluate(context)
-        if not isinstance(d, dict):
-            raise NOT_A_DICT_ERROR()
-        
-        i = self.index_node.evaluate(context)
-
-        if self.set_node:
+        if isinstance(store, (list, str)):
             try:
-                d[i] = self.set_node.evaluate(context)
-            except TypeError:
-                raise BAD_INDEXER_ERROR(i)
+                index = int(index)
+            except ValueError:
+                raise BAD_LIST_INDEXER_ERROR(index)
+            
+            if self.set_node:
+                store[index % len(store)] = self.set_node.evaluate(context)
+            else:
+                return store[index % len(store)]
+
+        elif isinstance(store, dict):
+            if self.set_node:
+                try:
+                    store[index] = self.set_node.evaluate(context)
+                except TypeError:
+                    raise BAD_INDEXER_ERROR(index)
+            else:
+                try:
+                    return store[index]
+                except KeyError:
+                    raise KEY_NOT_IN_DICT_ERROR(index)
         else:
-            try:
-                return d[i]
-            except KeyError:
-                raise KEY_NOT_IN_DICT_ERROR(i)
+            raise NOT_INDEXABLE_ERROR(store)
 
 
 class UnaryOpNode(Node):
