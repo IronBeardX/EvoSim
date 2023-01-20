@@ -71,13 +71,14 @@ class Organism(
                     self.physical_properties["health"] -= 10
             case _:
                 pass
-
-        self.physical_properties["health"] -= 1
-        self.physical_properties["hunger"] -= 1
-        if self.physical_properties["health"] <= 0:
-            return False
-        if self.physical_properties["hunger"] <= 0:
-            return False
+        if 'health' in list(self.physical_properties.keys()):
+            self.physical_properties["health"] -= 1
+            if self.physical_properties["health"] <= 0:
+                return False
+        if 'hunger' in list(self.physical_properties.keys()):
+            self.physical_properties["hunger"] -= 1
+            if self.physical_properties["hunger"] <= 0:
+                return False
         if "defending" in list(self.physical_properties.keys()):
             self.physical_properties["defending"] = False
         return True
