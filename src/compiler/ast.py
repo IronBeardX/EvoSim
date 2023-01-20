@@ -398,6 +398,9 @@ class FunctionCallNode(Node):
             if isinstance(f, FunctionNode):
                 args = [arg.evaluate(context) for arg in self.args]
                 return f.call(func_context, args)
+            elif isinstance(f, Callable):
+                args = [arg.evaluate(context) for arg in self.args]
+                return f(*args)
 
             raise NOT_A_FUNCTION_ERROR(self.name)
 
