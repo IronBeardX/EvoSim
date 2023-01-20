@@ -244,7 +244,7 @@ class EntityNode(Node):
             raise ValueError('Entity must have representation and coexistence')
 
         self.positions = props['positions']
-        self.factory = lambda: Entity(props['representation'], props['coexistence'])
+        self.factory = lambda: Entity(intelligence = False, representation = props['representation'], coexistence = props['coexistence'])
         
 
     def evaluate(self, context: Context):
