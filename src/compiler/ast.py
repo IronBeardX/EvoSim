@@ -573,14 +573,14 @@ class IndexNode(Node):
         store = self.store_node.evaluate(context)
         index = self.index_node.evaluate(context)
 
-        if isinstance(store, (list, str)):
+        if isinstance(store, (list, str, tuple)):
             try:
                 index = int(index)
             except ValueError:
                 raise BAD_LIST_INDEXER_ERROR(index)
             
             if self.set_node:
-                if isinstance(store, str):
+                if isinstance(store, (str, tuple)):
                     raise INDEX_ASSIGNMENT_ERROR(store)
                 store[index % len(store)] = self.set_node.evaluate(context)
             else:
