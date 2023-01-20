@@ -228,6 +228,31 @@ class EvoSim:
                     (self.intelligent_entities[ent_id], pos, distance))
         return entities
 
+    def entities_in_radius(self, ent_id, r):
+        entities_id_list = [(other_id, pos, distance)
+                            for other_id, pos, distance in self.world.see_r(ent_id, r)]
+        entities = []
+        for ent_id, pos, distance in entities_id_list:
+            if ent_id in self.entities:
+                entities.append((self.entities[ent_id], pos, distance))
+            elif ent_id in self.intelligent_entities:
+                entities.append(
+                    (self.intelligent_entities[ent_id], pos, distance))
+        return entities
+
+    def entities_around_position(self, position, r):
+        ent_id = self.world.get_entity_by_position(position)
+        entities_id_list = [(other_id, pos, distance)
+                            for other_id, pos, distance in self.world.see_r(ent_id, r)]
+        entities = []
+        for ent_id, pos, distance in entities_id_list:
+            if ent_id in self.entities:
+                entities.append((self.entities[ent_id], pos, distance))
+            elif ent_id in self.intelligent_entities:
+                entities.append(
+                    (self.intelligent_entities[ent_id], pos, distance))
+        return entities
+
     def attack(self, ent_id, other_id, value):
         # Check if the ids are correct:
         if (ent_id not in self.intelligent_entities) or (other_id not in self.intelligent_entities):
