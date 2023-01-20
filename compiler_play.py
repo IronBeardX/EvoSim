@@ -17,8 +17,10 @@ gene health aaa {
     }
 }
 gene fins bbb {
-    value 3 in {2 4} mutation {
-        chance 0.6 step 4
+    value 3 in {2 4}
+    mutation {
+        chance 0.6
+        step 4
     }
 }
 gene attack ccc { cost 10 }
@@ -26,46 +28,53 @@ gene attack ccc { cost 10 }
 dna ddd {bbb vision}
 dna eee {aaa dna ddd ccc}
 
-behavior fff {
-    func fffa = x y {
-        return x + y;
-    }
-    func fffb = {
-        if 1 == 0 {
-            return false;
-        }
-    }
-    decide organism time {
-        return [3, 'hello'];
-    }
-}
-behavior ggg {
-    decide organism time {
-        loop x = 1, x < 10, x = x + 1 {
-            return;
-        }
-    }
-}
+behavior ggg
 
 entity {
-    coexistence false repr hhh
-    at {(1 3) (4 5) (0 100)}
+    coexistence false
+    repr hhh
+    at {(1 3) (4 5)}
 }
 
 organism {
-    dna ddd behavior ggg repr iii at {(6 171) (9 90) (46 0)}
+    dna ddd
+    behavior ggg
+    repr iii
+    at {(6 14) (9 9) (5 0)}
+}
+
+organism {
+    dna eee
+    behavior ggg
+    repr jjj
+    at {(15 15)}
+}
+
+world {
+    size {
+        width 20
+        height 20
+    }
+    terrain {
+        default sand
+        dirt
+        grass
+        water
+    }
+}
+
+simulation {
+    episodes 10
+    max_rounds 10
+    actions_time 10
+    available_commands {}
+    stop simulation {
+        return false;
+    }
 }
 '''
 
-stmts = parser.parse(data, lexer=lexer)
-print(stmts)
+program = parser.parse(data, lexer=lexer)
+print(program)
 
-context.set_var('gene', {})
-context.set_var('dna', {})
-context.set_var('behaviors', {})
-context.set_var("ent_facts", [])
-for node in stmts:
-    node.evaluate(context)
-
-print(context.variables)
-print(context.children)
+program.evaluate(context)

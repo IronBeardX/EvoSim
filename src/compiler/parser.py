@@ -29,7 +29,7 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : behavior_stmt_list"
+        "test : program"
         p[0] = p[1]
 
     # handle errors
