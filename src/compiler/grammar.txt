@@ -81,7 +81,8 @@ dna_elem_list =>
     epsilon
 
 dna_elem =>
-    percpgene
+    SMELLING
+    VISION
     ID
     DNA ID
 

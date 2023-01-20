@@ -29,8 +29,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : gene_stmt_list"
-        p[0] = p[1]
+        "test : gene_stmt_list dna_stmt_list"
+        p[0] = [*p[1], *p[2]]
 
     # handle errors
     def p_error(t):
@@ -124,12 +124,10 @@ def get_parser(*args, **kwargs):
         "dna_elem_list : epsilon"
         p[0] = []
     
-    def p_dna_elem_perp(p):
-        "dna_elem : percpgene"
-        p[0] = {"type": "gene", "name": p[1]}
-    
-    def p_dna_elem_phy_or_act(p):
-        "dna_elem : ID"
+    def p_dna_elem_gene(p):
+        '''dna_elem : ID
+                    | SMELLING
+                    | VISION'''
         p[0] = {"type": "gene", "name": p[1]}
     
     def p_dna_elem_dna(p):

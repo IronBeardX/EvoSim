@@ -22,11 +22,15 @@ gene fins bbb {
     }
 }
 gene attack ccc { cost 10 }
+dna ddd {bbb vision}
+dna eee {aaa dna ddd ccc}
 '''
 
-context.set_var('gene', {})
-
 stmts = parser.parse(data, lexer=lexer)
+print(stmts)
+
+context.set_var('gene', {})
+context.set_var('dna', {})
 for node in stmts:
     node.evaluate(context)
 
