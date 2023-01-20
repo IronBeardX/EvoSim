@@ -277,10 +277,10 @@ class OrganismNode(Node):
 
         #create a new class that inherits from Organism and the behavior class
         class NewOrganism(Organism, behavior_class):
-            def __init__(self):
+            def __init__(self, dna_chain, representation="O", species="default"):
                 super().__init__(dna_chain, representation)
             
-        fac_list.append((lambda: NewOrganism(), self.positions))
+        fac_list.append((lambda: NewOrganism(dna_chain, species = NewOrganism), self.positions))
 
 
 class WorldNode(Node):
