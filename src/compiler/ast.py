@@ -6,7 +6,7 @@ from src.compiler.error import (
     VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR,
     BAD_LIST_INDEXER_ERROR,
     KEY_NOT_IN_DICT_ERROR, BAD_INDEXER_ERROR,
-    NOT_INDEXABLE_ERROR
+    NOT_INDEXABLE_ERROR, INDEX_ASSIGNMENT_ERROR
 )
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
@@ -532,6 +532,8 @@ class IndexNode(Node):
                 raise BAD_LIST_INDEXER_ERROR(index)
             
             if self.set_node:
+                if isinstance(store, str):
+                    raise INDEX_ASSIGNMENT_ERROR(store)
                 store[index % len(store)] = self.set_node.evaluate(context)
             else:
                 return store[index % len(store)]
