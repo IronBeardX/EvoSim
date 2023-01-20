@@ -226,9 +226,10 @@ class BehaviorNode(Node):
             node.evaluate(child_context)
 
         if self.decide_node:
+            decision_fn = lambda org, time: self.decide_node.call(child_context, [org, time])
             class NewBehavior(RandomBehavior):
                 def decide_action(self, time = 1):
-                    return self.decide_node.call(child_context, [self, time])
+                    return decision_fn(self, time)
         
             behavior_dict[self.name] = NewBehavior
         else:
