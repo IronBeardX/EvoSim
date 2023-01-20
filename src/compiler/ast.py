@@ -219,7 +219,7 @@ class BehaviorNode(Node):
         self.decide_node = decide_node
     
     def evaluate(self, context: Context):
-        child_context = context.create_child()
+        child_context = context.new_child()
         behavior_dict = context.get_var('behaviors')
         for node in self.func_nodes:
             node.evaluate(child_context)
@@ -341,7 +341,7 @@ class SimulationNode(Node):
         self.evo_props = props
 
     def evaluate(self, context: Context):
-        child_context = context.create_child()
+        child_context = context.new_child()
         stop_fn = lambda sim: self.evo_props['stop'].call(child_context, [sim])
         self.evo_props['stop'] = stop_fn
         return self.evo_props

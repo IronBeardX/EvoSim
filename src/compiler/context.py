@@ -1,7 +1,10 @@
 class Context:
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, debug=False):
         self.parent = parent
         self.variables = {}
+        
+        self.debug = debug
+        self.children = []
     
     def search(self, name, recursive=True):
         if name in self.variables:
@@ -11,7 +14,11 @@ class Context:
         return None
     
     def new_child(self):
-        return Context(self)
+        child_context = Context(self, self.debug)
+        if self.debug:
+            self.children.append(child_context)
+        
+        return child_context
     
     def get_var(self, name, recursive=True):
         context = self.search(name, recursive)

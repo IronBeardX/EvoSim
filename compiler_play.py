@@ -5,7 +5,7 @@ from src.compiler.context import Context
 
 lexer = get_lexer(debug=True)
 parser = get_parser(debug=True, start="test")
-context = Context()
+context = Context(debug=True)
 
 data = '''
 gene vision
@@ -22,8 +22,30 @@ gene fins bbb {
     }
 }
 gene attack ccc { cost 10 }
+
 dna ddd {bbb vision}
 dna eee {aaa dna ddd ccc}
+
+behavior fff {
+    func fffa = x y {
+        return x + y;
+    }
+    func fffb = {
+        if 1 == 0 {
+            return false;
+        }
+    }
+    decide organism time {
+        return [3, 'hello'];
+    }
+}
+behavior ggg {
+    decide organism time {
+        loop x = 1, x < 10, x = x + 1 {
+            return;
+        }
+    }
+}
 '''
 
 stmts = parser.parse(data, lexer=lexer)
@@ -31,7 +53,9 @@ print(stmts)
 
 context.set_var('gene', {})
 context.set_var('dna', {})
+context.set_var('behaviors', {})
 for node in stmts:
     node.evaluate(context)
 
 print(context.variables)
+print(context.children)
