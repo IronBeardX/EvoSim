@@ -1,6 +1,7 @@
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
 from src.evo_entity import *
+from src.evo_sim import *
 from src.compiler.error import (
     PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR,
     VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR,
@@ -52,6 +53,28 @@ class ProgramNode(Node):
             node.evaluate(context)
 
         # TODO: handle world & sim nodes
+        '''
+            props looks like: {'size': Tuple, 'terrain': list[tuples[3]]}
+
+            'size' is (True, {'width': -1, 'height': -1}) if infinite
+            else is (False, {'width': number, 'height': number})
+
+            'terrain' is a list of Tuple (string, boolean, list)
+            the string is the name of the terrain
+            the boolean represents if it's default or not
+            the list of numbers are the positions (empty if terrain is default)
+        '''
+        world_props = self.world_node.evaluate(context)
+        '''
+            props looks like: {'episodes': number, 'max_rounds': number, 'stop': FunctionNode, 'actions_time': number, 'available_commands': dict{string, callable}}
+        '''
+        sim_props = self.sim_node.evaluate(context)
+
+        # TODO: process terrain
+        simulation = EvoSim(
+        )
+
+
 
         # TODO: run simulation
 
