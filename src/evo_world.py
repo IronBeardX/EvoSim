@@ -50,7 +50,7 @@ class World():
         '''
         entities = []
         for i in self.entities.keys():
-            if self.entities[i].position == position:
+            if self.entities[i].position[0] == position[0] and self.entities[i].position[1] == position[1]:
                 entities.append(i)
         return entities
 
