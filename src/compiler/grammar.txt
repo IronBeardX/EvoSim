@@ -93,10 +93,10 @@ behavior_stmt_list =>
 
 behavior_stmt =>
     BEHAVIOR ID { func_stmt_list decide_stmt }
+    BEHAVIOR ID
 
 decide_stmt =>
     DECIDE ORGANISM TIME { stmt_list }
-    epsilon
 
 
 entity_org_stmt_list =>

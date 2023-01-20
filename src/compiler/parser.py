@@ -29,7 +29,7 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : program"
+        "test : behavior_stmt_list"
         p[0] = p[1]
 
     # handle errors
@@ -146,14 +146,14 @@ def get_parser(*args, **kwargs):
     def p_behavior_stmt(p):
         "behavior_stmt : BEHAVIOR ID '{' func_stmt_list decide_stmt '}'"
         p[0] = BehaviorNode(p[2], p[4], p[5])
+    
+    def p_behavior_stmt_epsilon(p):
+        "behavior_stmt : BEHAVIOR ID"
+        p[0] = BehaviorNode(p[2], [], None)
 
     def p_decide_stmt(p):
         "decide_stmt : DECIDE ORGANISM TIME '{' stmt_list '}'"
         p[0] = FunctionNode(p[1], [p[2], p[3]], p[5])
-    
-    def p_decide_stmt_epsilon(p):
-        "decide_stmt : epsilon"
-        p[0] = None
     
     # entity and organism stmt productions
     def p_entity_org_stmt_list(p):
