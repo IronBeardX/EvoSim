@@ -61,7 +61,7 @@ class ProgramNode(Node):
         for terrain in world_props['terrain']:
             terrain_types[terrain[0][0]] = terrain[0]
             if terrain[1]:
-                terrain['default'] = terrain_types[terrain[0][0]]
+                terrain_types['default'] = terrain_types[terrain[0][0]]
             for position in terrain[2]:
                 terrain_distribution[position] = terrain_types[terrain[0][0]]
 
