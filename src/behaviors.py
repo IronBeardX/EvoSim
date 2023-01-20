@@ -51,6 +51,8 @@ class RandomBehavior(Behavior):
     def decide_action(self, day, time=10):
         actions = []
         action_time = 0
+        if len(self.actions) == 0:
+            return []
         while action_time < time:
             action = random.choice(self.actions)
             match action["name"]:
