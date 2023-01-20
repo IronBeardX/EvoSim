@@ -96,6 +96,7 @@ behavior_stmt =>
 
 decide_stmt =>
     DECIDE ORGANISM TIME { stmt_list }
+    epsilon
 
 
 entity_org_stmt_list =>

@@ -29,8 +29,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list"
-        p[0] = [*p[1], *p[2], *p[3], *p[4]]
+        "test : program"
+        p[0] = p[1]
 
     # handle errors
     def p_error(t):
@@ -150,6 +150,10 @@ def get_parser(*args, **kwargs):
     def p_decide_stmt(p):
         "decide_stmt : DECIDE ORGANISM TIME '{' stmt_list '}'"
         p[0] = FunctionNode(p[1], [p[2], p[3]], p[5])
+    
+    def p_decide_stmt_epsilon(p):
+        "decide_stmt : epsilon"
+        p[0] = None
     
     # entity and organism stmt productions
     def p_entity_org_stmt_list(p):
