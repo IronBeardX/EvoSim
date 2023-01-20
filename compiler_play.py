@@ -8,25 +8,26 @@ parser = get_parser(debug=True, start="test")
 context = Context(debug=True)
 
 data = '''
+gene eyes aaa {
+    value 2 in {1 4}
+    mutation {
+        chance 0.75
+        step 2
+    }
+}
 gene vision
-gene health aaa {
+
+gene legs bbb {
     value 5 in {0 10}
     mutation {
         chance 0.5
         step 1
     }
 }
-gene fins bbb {
-    value 3 in {2 4}
-    mutation {
-        chance 0.6
-        step 4
-    }
-}
-gene attack ccc { cost 10 }
+gene move ccc { cost 10 }
 
-dna ddd {bbb vision}
-dna eee {aaa dna ddd ccc}
+dna ddd {aaa vision}
+dna eee {dna ddd bbb ccc}
 
 behavior ggg
 

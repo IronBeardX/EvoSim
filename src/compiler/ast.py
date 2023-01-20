@@ -85,7 +85,8 @@ class ProgramNode(Node):
         # Add entity factories
         for i in range(len(factories)):
             simulation.add_entity_gen(factories[i][0])
-            ent_distributions.append((i, factories[i][1]))
+            for position in factories[i][1]:
+                ent_distributions.append((i, position))
 
         simulation.run(ent_distributions)
         
@@ -140,7 +141,7 @@ class PhyGeneNode(Node):
         'health': Health,
         'hunger': Hunger,
         'legs': Legs,
-        'eye': Eye,
+        'eyes': Eye,
         'arms': Arms,
         'horns': Horns,
         'smell': Smell,
