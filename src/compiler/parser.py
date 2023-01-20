@@ -326,6 +326,7 @@ def get_parser(*args, **kwargs):
         '''stmt : if_stmt
                 | var_stmt ';'
                 | index_stmt ';'
+                | disjunction ';'
                 | loop_stmt'''
         p[0] = p[1]
     

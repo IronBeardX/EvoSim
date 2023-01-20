@@ -204,6 +204,7 @@ stmt =>
     CONTINUE ;
     BREAK ;
     ret_stmt ;
+    disjunction ;
 
 
 var_stmt =>
