@@ -159,7 +159,7 @@ class EvoSim:
         return (position, self.world.get_pos_terrain(position))
 
     def smell(self, ent_id, day, r):
-        entities_list = self.__entities_in_radius(ent_id, r)
+        entities_list = self.entities_in_radius(ent_id, r)
         ent = self.intelligent_entities[ent_id]
         species = ent.species
         perception_list = []
@@ -180,7 +180,7 @@ class EvoSim:
         return perception_list
 
     def see(self, ent_id, day, r):
-        entities_list = self.__entities_in_radius(ent_id, r)
+        entities_list = self.entities_in_radius(ent_id, r)
         ent = self.intelligent_entities[ent_id]
         species = ent.species
         perception_list = []
@@ -216,7 +216,7 @@ class EvoSim:
             {"surroundings": self.world.terrain_r(ent_id, r)})
         return perception_list
 
-    def __entities_in_radius(self, ent_id, r):
+    def entities_in_radius(self, ent_id, r):
         entities_id_list = [(other_id, pos, distance)
                             for other_id, pos, distance in self.world.see_r(ent_id, r)]
         entities = []
