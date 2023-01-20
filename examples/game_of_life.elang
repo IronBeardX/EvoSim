@@ -26,6 +26,7 @@ simulation {
         ents_in_position = simulation.entities_in_position;
         kill = simulation.kill_in_position;
         create = simulation.create_in_position;
+        print = simulation.gol_visualizer
 
         "implementing the game of life";
         count = 0;
