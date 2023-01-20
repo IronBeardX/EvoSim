@@ -46,6 +46,15 @@ behavior ggg {
         }
     }
 }
+
+entity {
+    coexistence false repr hhh
+    at {(1 3) (4 5) (0 100)}
+}
+
+organism {
+    dna ddd behavior ggg repr iii at {(6 171) (9 90) (46 0)}
+}
 '''
 
 stmts = parser.parse(data, lexer=lexer)
@@ -54,6 +63,7 @@ print(stmts)
 context.set_var('gene', {})
 context.set_var('dna', {})
 context.set_var('behaviors', {})
+context.set_var("ent_facts", [])
 for node in stmts:
     node.evaluate(context)
 

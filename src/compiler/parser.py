@@ -29,8 +29,8 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : gene_stmt_list dna_stmt_list behavior_stmt_list"
-        p[0] = [*p[1], *p[2], *p[3]]
+        "test : gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list"
+        p[0] = [*p[1], *p[2], *p[3], *p[4]]
 
     # handle errors
     def p_error(t):
