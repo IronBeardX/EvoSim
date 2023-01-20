@@ -38,6 +38,7 @@ simulation {
         create = simulation.create_in_position;
         print = simulation.gol_visualizer;
 
+
         'implementing the game of life';
         count = 0;
         command_list = [];
@@ -59,7 +60,7 @@ simulation {
                     }
                 }
                 else{
-                    if current_ent == 0{
+                    if current_ent < 1{
                         command_list = command_list + [[create, position]];
                         count = count + 1;
                     }

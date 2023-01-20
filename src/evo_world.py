@@ -67,7 +67,7 @@ class World():
         entities_in_radius = []
         valid_pos = self.__get_positions_in_radius(position, 1)
         for entity in self.entities:
-            if self.entities[entity].position in valid_pos and self.entities[entity].position:
+            if self.entities[entity].position in valid_pos and self.entities[entity].position != position:
                 entities_in_radius.append(
                     (entity, self.entities[entity].position))
         return entities_in_radius
