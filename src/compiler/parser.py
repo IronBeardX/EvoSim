@@ -28,10 +28,6 @@ def get_parser(*args, **kwargs):
         "epsilon :"
         pass
 
-    def p_test(p):
-        "test : world_stmt"
-        p[0] = p[1]
-
     # handle errors
     def p_error(t):
         if t:
@@ -572,5 +568,14 @@ def get_parser(*args, **kwargs):
     def p_keyarg(p):
         "keyarg : disjunction '=' disjunction"
         p[0] = (p[1], p[3])
+
+
+    # TEST PRODUCTIONS FOR PARSING
+    #[ ]
+    def p_test_world_stmt(p):
+        "test_world : world_stmt"
+        p[0] = p[1]
+
+    def p_test_
 
     return yacc.yacc(*args, **kwargs)

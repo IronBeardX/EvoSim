@@ -4,7 +4,7 @@ from src.compiler.context import Context
 
 
 lexer = get_lexer(debug=True)
-parser = get_parser(debug=True, start="test")
+parser = get_parser(debug=True, start="test_world")
 
 context = Context()
 text = '''

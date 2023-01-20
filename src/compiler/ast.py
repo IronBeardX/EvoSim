@@ -51,10 +51,9 @@ class ProgramNode(Node):
         for node in self.entity_org_nodes:
             node.evaluate(context)
 
-        # handle world & sim nodes
+        # TODO: handle world & sim nodes
 
-        # lastly: run simulation
-        pass
+        # TODO: run simulation
 
 
 class PerceptionGeneNode(Node):
