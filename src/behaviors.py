@@ -48,7 +48,7 @@ class RandomBehavior(Behavior):
                     return
             self.knowledge.append(new_info)
 
-    def decide_action(self, day, time=10):
+    def decide_action(self, time=10):
         actions = []
         action_time = 0
         if len(self.actions) == 0:
