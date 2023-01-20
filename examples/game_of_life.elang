@@ -1,0 +1,28 @@
+entity {
+    coexistence false
+    repr *
+    at {}
+}
+
+world {
+    size {
+        width 20
+        height 20
+    }
+    terrain {
+        _
+    }
+}
+
+simulation {
+    episodes 1
+    max_rounds 10
+    actions_time 1
+    available_commands {}
+    stop simulation {
+        loop i = 0, i < simulation.world.world_map.shape[0], i = i+1{
+            
+            entities_dict = keys(simulation.entities)
+        }
+    }
+}
