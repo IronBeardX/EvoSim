@@ -59,8 +59,8 @@ simulation {
                         count = count + 1;
                     }
                 }
-                else{
-                    if current_ent < 1{
+                if entities_count == 3{
+                    if current_ent == 0{
                         command_list = command_list + [[create, position]];
                         count = count + 1;
                     }
