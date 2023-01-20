@@ -110,7 +110,6 @@ class EvoSim:
                         self.visualization_fun(action)
 
     def gol_visualizer(self):
-        print(chr(27) + "[2J")
         print("\n")
         for i in range(self.world.world_rep().shape[0]):
             for j in range(self.world.world_rep().shape[1]):
@@ -128,9 +127,8 @@ class EvoSim:
                         f"{Fore.RED}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
                 else:
                     print(self.world.world_rep()[i, j], end=" ")
-            print("\n")
+            print()
         print("\n \n")
-        print(chr(27) + "[2J")
         time.sleep(1)
 
     def visualization_fun(self, action=None, banished=None):
