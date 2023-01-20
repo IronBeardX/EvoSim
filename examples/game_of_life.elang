@@ -22,7 +22,7 @@ simulation {
     stop simulation {
         "wrapping necessary functions";
 
-        ents_around_pos = simulation.world.entities_around_position;
+        ents_around_pos = simulation.entities_around_position;
         ents_in_position = simulation.entities_in_position;
         kill = simulation.kill_in_position;
         create = simulation.create_in_position;
@@ -51,7 +51,7 @@ simulation {
         
         loop i = 0, i < count, i = i + 1{
             command = command_list[i][0]
-            command(command_list[1])
+            command(simulation, command_list[1])
         }
         return false;
     }

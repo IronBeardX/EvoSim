@@ -246,12 +246,12 @@ class EvoSim:
     def entities_in_position(self, position):
         return len(self.world.get_entity_by_position(position))
 
-    def kill(self, position):
+    def kill_in_position(self, position):
         entity_id = self.world.get_entity_by_position(position)
         self.entities.pop(entity_id)
         self.world.remove_entity(entity_id)
 
-    def create(self, position):
+    def create_in_position(self, position):
         self.instantiate_entity( 0, (position[0], position[1]))
 
     def attack(self, ent_id, other_id, value):

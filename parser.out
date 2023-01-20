@@ -163,16 +163,17 @@ Rule 153   accessing -> word . accessing
 Rule 154   word -> ID
 Rule 155   word -> ORGANISM
 Rule 156   word -> SIMULATION
-Rule 157   bool -> TRUE
-Rule 158   bool -> FALSE
-Rule 159   arg_list -> disjunction
-Rule 160   arg_list -> disjunction , arg_list
-Rule 161   arg_list -> epsilon
-Rule 162   keyarg_list -> keyarg
-Rule 163   keyarg_list -> keyarg , keyarg_list
-Rule 164   keyarg_list -> epsilon
-Rule 165   keyarg -> disjunction = disjunction
-Rule 166   test_world -> world_stmt
+Rule 157   word -> WORLD
+Rule 158   bool -> TRUE
+Rule 159   bool -> FALSE
+Rule 160   arg_list -> disjunction
+Rule 161   arg_list -> disjunction , arg_list
+Rule 162   arg_list -> epsilon
+Rule 163   keyarg_list -> keyarg
+Rule 164   keyarg_list -> keyarg , keyarg_list
+Rule 165   keyarg_list -> epsilon
+Rule 166   keyarg -> disjunction = disjunction
+Rule 167   test_world -> world_stmt
 
 Terminals, with rules where they appear
 
@@ -181,13 +182,13 @@ Terminals, with rules where they appear
 )                    : 62 143 144 149
 *                    : 131
 +                    : 128
-,                    : 108 108 160 163
+,                    : 108 108 161 164
 -                    : 129 136
 .                    : 153
 /                    : 132
 ;                    : 94 95 96 98 99 100 101
 <                    : 126
-=                    : 88 102 103 165
+=                    : 88 102 103 166
 >                    : 125
 @                    : 139
 ACTIONS_TIME         : 81
@@ -212,7 +213,7 @@ ENTITY               : 51
 EPISODES             : 79
 EQ                   : 121
 EYES                 : 23
-FALSE                : 158
+FALSE                : 159
 FINS                 : 27
 FUNC                 : 88
 GE                   : 123
@@ -254,11 +255,11 @@ STRING               : 147
 SWIM                 : 18
 TERRAIN              : 65
 TIME                 : 47
-TRUE                 : 157
+TRUE                 : 158
 VALUE                : 30
 VISION               : 10 41
 WIDTH                : 68
-WORLD                : 63
+WORLD                : 63 157
 [                    : 103 141 150
 ]                    : 103 141 150
 ^                    : 138
@@ -272,7 +273,7 @@ Nonterminals, with rules where they appear
 accessing            : 102 142 153
 actgene              : 11
 actgene_stmt         : 8
-arg_list             : 144 150 160
+arg_list             : 144 150 161
 atom                 : 138 139 145
 behavior_stmt        : 43
 behavior_stmt_list   : 1 43
@@ -281,7 +282,7 @@ command_list         : 83 84
 comparison           : 119 120
 conjunction          : 115 115 116
 decide_stmt          : 45
-disjunction          : 96 100 102 103 103 104 113 141 159 160 165 165
+disjunction          : 96 100 102 103 103 104 113 141 160 161 166 166
 dna_elem             : 37
 dna_elem_list        : 36 37
 dna_stmt             : 34
@@ -290,7 +291,7 @@ else_stmt            : 104
 entity_org_stmt_list : 1 48 49
 entity_stmt          : 48
 entityprop           : 51 51 51
-epsilon              : 5 35 38 44 50 61 72 77 85 87 90 92 107 110 112 114 161 164
+epsilon              : 5 35 38 44 50 61 72 77 85 87 90 92 107 110 112 114 162 165
 expr                 : 121 121 122 122 123 123 124 124 125 125 126 126 127 128 129 149
 factor               : 131 132 133 134 135 136 138 139
 func_stmt            : 86
@@ -299,8 +300,8 @@ gene_stmt            : 4
 gene_stmt_list       : 1 4
 if_stmt              : 93 105
 index_stmt           : 95
-keyarg               : 162 163
-keyarg_list          : 151 163
+keyarg               : 163 164
+keyarg_list          : 151 164
 loop_condition       : 108
 loop_init            : 108
 loop_set             : 108
@@ -331,7 +332,7 @@ test                 : 0
 test_world           : 
 var_stmt             : 94 109 111
 word                 : 152 153
-world_stmt           : 1 166
+world_stmt           : 1 167
 worldprop            : 63 63
 worldsize            : 64
 worldsizeprop        : 66 66 67 67
@@ -1170,8 +1171,8 @@ state 76
 state 77
 
     (52) entityprop -> COEXISTENCE . bool
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
 
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
@@ -1407,68 +1408,68 @@ state 101
 
 state 102
 
-    (157) bool -> TRUE .
+    (158) bool -> TRUE .
 
-    COEXISTENCE     reduce using rule 157 (bool -> TRUE .)
-    REPR            reduce using rule 157 (bool -> TRUE .)
-    AT              reduce using rule 157 (bool -> TRUE .)
-    }               reduce using rule 157 (bool -> TRUE .)
-    ^               reduce using rule 157 (bool -> TRUE .)
-    @               reduce using rule 157 (bool -> TRUE .)
-    [               reduce using rule 157 (bool -> TRUE .)
-    *               reduce using rule 157 (bool -> TRUE .)
-    /               reduce using rule 157 (bool -> TRUE .)
-    %               reduce using rule 157 (bool -> TRUE .)
-    INTDIV          reduce using rule 157 (bool -> TRUE .)
-    EQ              reduce using rule 157 (bool -> TRUE .)
-    NEQ             reduce using rule 157 (bool -> TRUE .)
-    GE              reduce using rule 157 (bool -> TRUE .)
-    LE              reduce using rule 157 (bool -> TRUE .)
-    >               reduce using rule 157 (bool -> TRUE .)
-    <               reduce using rule 157 (bool -> TRUE .)
-    +               reduce using rule 157 (bool -> TRUE .)
-    -               reduce using rule 157 (bool -> TRUE .)
-    AND             reduce using rule 157 (bool -> TRUE .)
-    OR              reduce using rule 157 (bool -> TRUE .)
-    ;               reduce using rule 157 (bool -> TRUE .)
-    =               reduce using rule 157 (bool -> TRUE .)
-    {               reduce using rule 157 (bool -> TRUE .)
-    ,               reduce using rule 157 (bool -> TRUE .)
-    ]               reduce using rule 157 (bool -> TRUE .)
-    )               reduce using rule 157 (bool -> TRUE .)
+    COEXISTENCE     reduce using rule 158 (bool -> TRUE .)
+    REPR            reduce using rule 158 (bool -> TRUE .)
+    AT              reduce using rule 158 (bool -> TRUE .)
+    }               reduce using rule 158 (bool -> TRUE .)
+    ^               reduce using rule 158 (bool -> TRUE .)
+    @               reduce using rule 158 (bool -> TRUE .)
+    [               reduce using rule 158 (bool -> TRUE .)
+    *               reduce using rule 158 (bool -> TRUE .)
+    /               reduce using rule 158 (bool -> TRUE .)
+    %               reduce using rule 158 (bool -> TRUE .)
+    INTDIV          reduce using rule 158 (bool -> TRUE .)
+    EQ              reduce using rule 158 (bool -> TRUE .)
+    NEQ             reduce using rule 158 (bool -> TRUE .)
+    GE              reduce using rule 158 (bool -> TRUE .)
+    LE              reduce using rule 158 (bool -> TRUE .)
+    >               reduce using rule 158 (bool -> TRUE .)
+    <               reduce using rule 158 (bool -> TRUE .)
+    +               reduce using rule 158 (bool -> TRUE .)
+    -               reduce using rule 158 (bool -> TRUE .)
+    AND             reduce using rule 158 (bool -> TRUE .)
+    OR              reduce using rule 158 (bool -> TRUE .)
+    ;               reduce using rule 158 (bool -> TRUE .)
+    =               reduce using rule 158 (bool -> TRUE .)
+    {               reduce using rule 158 (bool -> TRUE .)
+    ,               reduce using rule 158 (bool -> TRUE .)
+    ]               reduce using rule 158 (bool -> TRUE .)
+    )               reduce using rule 158 (bool -> TRUE .)
 
 
 state 103
 
-    (158) bool -> FALSE .
+    (159) bool -> FALSE .
 
-    COEXISTENCE     reduce using rule 158 (bool -> FALSE .)
-    REPR            reduce using rule 158 (bool -> FALSE .)
-    AT              reduce using rule 158 (bool -> FALSE .)
-    }               reduce using rule 158 (bool -> FALSE .)
-    ^               reduce using rule 158 (bool -> FALSE .)
-    @               reduce using rule 158 (bool -> FALSE .)
-    [               reduce using rule 158 (bool -> FALSE .)
-    *               reduce using rule 158 (bool -> FALSE .)
-    /               reduce using rule 158 (bool -> FALSE .)
-    %               reduce using rule 158 (bool -> FALSE .)
-    INTDIV          reduce using rule 158 (bool -> FALSE .)
-    EQ              reduce using rule 158 (bool -> FALSE .)
-    NEQ             reduce using rule 158 (bool -> FALSE .)
-    GE              reduce using rule 158 (bool -> FALSE .)
-    LE              reduce using rule 158 (bool -> FALSE .)
-    >               reduce using rule 158 (bool -> FALSE .)
-    <               reduce using rule 158 (bool -> FALSE .)
-    +               reduce using rule 158 (bool -> FALSE .)
-    -               reduce using rule 158 (bool -> FALSE .)
-    AND             reduce using rule 158 (bool -> FALSE .)
-    OR              reduce using rule 158 (bool -> FALSE .)
-    ;               reduce using rule 158 (bool -> FALSE .)
-    =               reduce using rule 158 (bool -> FALSE .)
-    {               reduce using rule 158 (bool -> FALSE .)
-    ,               reduce using rule 158 (bool -> FALSE .)
-    ]               reduce using rule 158 (bool -> FALSE .)
-    )               reduce using rule 158 (bool -> FALSE .)
+    COEXISTENCE     reduce using rule 159 (bool -> FALSE .)
+    REPR            reduce using rule 159 (bool -> FALSE .)
+    AT              reduce using rule 159 (bool -> FALSE .)
+    }               reduce using rule 159 (bool -> FALSE .)
+    ^               reduce using rule 159 (bool -> FALSE .)
+    @               reduce using rule 159 (bool -> FALSE .)
+    [               reduce using rule 159 (bool -> FALSE .)
+    *               reduce using rule 159 (bool -> FALSE .)
+    /               reduce using rule 159 (bool -> FALSE .)
+    %               reduce using rule 159 (bool -> FALSE .)
+    INTDIV          reduce using rule 159 (bool -> FALSE .)
+    EQ              reduce using rule 159 (bool -> FALSE .)
+    NEQ             reduce using rule 159 (bool -> FALSE .)
+    GE              reduce using rule 159 (bool -> FALSE .)
+    LE              reduce using rule 159 (bool -> FALSE .)
+    >               reduce using rule 159 (bool -> FALSE .)
+    <               reduce using rule 159 (bool -> FALSE .)
+    +               reduce using rule 159 (bool -> FALSE .)
+    -               reduce using rule 159 (bool -> FALSE .)
+    AND             reduce using rule 159 (bool -> FALSE .)
+    OR              reduce using rule 159 (bool -> FALSE .)
+    ;               reduce using rule 159 (bool -> FALSE .)
+    =               reduce using rule 159 (bool -> FALSE .)
+    {               reduce using rule 159 (bool -> FALSE .)
+    ,               reduce using rule 159 (bool -> FALSE .)
+    ]               reduce using rule 159 (bool -> FALSE .)
+    )               reduce using rule 159 (bool -> FALSE .)
 
 
 state 104
@@ -2190,6 +2191,7 @@ state 175
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
     (146) atom -> . NUMBER
     (147) atom -> . STRING
     (148) atom -> . bool
@@ -2198,8 +2200,8 @@ state 175
     (151) atom -> . { keyarg_list }
     (119) negation -> . NOT comparison
     (120) negation -> . comparison
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (121) comparison -> . expr EQ expr
     (122) comparison -> . expr NEQ expr
     (123) comparison -> . expr GE expr
@@ -2231,15 +2233,16 @@ state 175
     ID              shift and go to state 219
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    WORLD           shift and go to state 223
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
-    NOT             shift and go to state 227
+    NOT             shift and go to state 228
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
-    -               shift and go to state 230
+    -               shift and go to state 231
 
     stmt_list                      shift and go to state 199
     stmt                           shift and go to state 200
@@ -2255,18 +2258,18 @@ state 175
     word                           shift and go to state 216
     atom                           shift and go to state 220
     negation                       shift and go to state 221
-    bool                           shift and go to state 225
-    expr                           shift and go to state 226
-    comparison                     shift and go to state 228
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
+    bool                           shift and go to state 226
+    expr                           shift and go to state 227
+    comparison                     shift and go to state 229
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
 
 state 176
 
     (83) simprop -> AVAILABLE_COMMANDS { command_list . }
 
-    }               shift and go to state 233
+    }               shift and go to state 234
 
 
 state 177
@@ -2279,7 +2282,7 @@ state 177
     ID              shift and go to state 177
     }               reduce using rule 2 (epsilon -> .)
 
-    command_list                   shift and go to state 234
+    command_list                   shift and go to state 235
     epsilon                        shift and go to state 178
 
 state 178
@@ -2298,13 +2301,13 @@ state 179
     WIDTH           shift and go to state 154
     HEIGHT          shift and go to state 155
 
-    worldsizeprop                  shift and go to state 235
+    worldsizeprop                  shift and go to state 236
 
 state 180
 
     (67) worldsize -> { worldsizeprop worldsizeprop . }
 
-    }               shift and go to state 236
+    }               shift and go to state 237
 
 
 state 181
@@ -2345,7 +2348,7 @@ state 185
 
     (75) terrainprop -> ID AT . { NUMBER terrainposn_list }
 
-    {               shift and go to state 237
+    {               shift and go to state 238
 
 
 state 186
@@ -2378,7 +2381,7 @@ state 189
 
     (62) position -> ( NUMBER NUMBER . )
 
-    )               shift and go to state 238
+    )               shift and go to state 239
 
 
 state 190
@@ -2434,6 +2437,7 @@ state 192
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
     (146) atom -> . NUMBER
     (147) atom -> . STRING
     (148) atom -> . bool
@@ -2442,8 +2446,8 @@ state 192
     (151) atom -> . { keyarg_list }
     (119) negation -> . NOT comparison
     (120) negation -> . comparison
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (121) comparison -> . expr EQ expr
     (122) comparison -> . expr NEQ expr
     (123) comparison -> . expr GE expr
@@ -2475,17 +2479,18 @@ state 192
     ID              shift and go to state 219
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    WORLD           shift and go to state 223
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
-    NOT             shift and go to state 227
+    NOT             shift and go to state 228
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
-    -               shift and go to state 230
+    -               shift and go to state 231
 
-    stmt_list                      shift and go to state 239
+    stmt_list                      shift and go to state 240
     stmt                           shift and go to state 200
     epsilon                        shift and go to state 201
     if_stmt                        shift and go to state 202
@@ -2499,12 +2504,12 @@ state 192
     word                           shift and go to state 216
     atom                           shift and go to state 220
     negation                       shift and go to state 221
-    bool                           shift and go to state 225
-    expr                           shift and go to state 226
-    comparison                     shift and go to state 228
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
+    bool                           shift and go to state 226
+    expr                           shift and go to state 227
+    comparison                     shift and go to state 229
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
 
 state 193
 
@@ -2546,6 +2551,7 @@ state 194
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
     (146) atom -> . NUMBER
     (147) atom -> . STRING
     (148) atom -> . bool
@@ -2554,8 +2560,8 @@ state 194
     (151) atom -> . { keyarg_list }
     (119) negation -> . NOT comparison
     (120) negation -> . comparison
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (121) comparison -> . expr EQ expr
     (122) comparison -> . expr NEQ expr
     (123) comparison -> . expr GE expr
@@ -2587,17 +2593,18 @@ state 194
     ID              shift and go to state 219
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    WORLD           shift and go to state 223
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
-    NOT             shift and go to state 227
+    NOT             shift and go to state 228
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
-    -               shift and go to state 230
+    -               shift and go to state 231
 
-    stmt_list                      shift and go to state 240
+    stmt_list                      shift and go to state 241
     stmt                           shift and go to state 200
     epsilon                        shift and go to state 201
     if_stmt                        shift and go to state 202
@@ -2611,18 +2618,18 @@ state 194
     word                           shift and go to state 216
     atom                           shift and go to state 220
     negation                       shift and go to state 221
-    bool                           shift and go to state 225
-    expr                           shift and go to state 226
-    comparison                     shift and go to state 228
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
+    bool                           shift and go to state 226
+    expr                           shift and go to state 227
+    comparison                     shift and go to state 229
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
 
 state 195
 
     (30) phygeneprop -> VALUE NUMBER IN { NUMBER NUMBER . }
 
-    }               shift and go to state 241
+    }               shift and go to state 242
 
 
 state 196
@@ -2640,7 +2647,7 @@ state 196
     STOP            shift and go to state 125
     AVAILABLE_COMMANDS shift and go to state 126
 
-    simprop                        shift and go to state 242
+    simprop                        shift and go to state 243
 
 state 197
 
@@ -2674,10 +2681,10 @@ state 197
 state 198
 
     (151) atom -> { . keyarg_list }
-    (162) keyarg_list -> . keyarg
-    (163) keyarg_list -> . keyarg , keyarg_list
-    (164) keyarg_list -> . epsilon
-    (165) keyarg -> . disjunction = disjunction
+    (163) keyarg_list -> . keyarg
+    (164) keyarg_list -> . keyarg , keyarg_list
+    (165) keyarg_list -> . epsilon
+    (166) keyarg -> . disjunction = disjunction
     (2) epsilon -> .
     (115) disjunction -> . conjunction OR conjunction
     (116) disjunction -> . conjunction
@@ -2716,19 +2723,20 @@ state 198
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     }               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -2738,29 +2746,30 @@ state 198
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    keyarg_list                    shift and go to state 243
-    keyarg                         shift and go to state 244
-    epsilon                        shift and go to state 245
-    disjunction                    shift and go to state 246
+    keyarg_list                    shift and go to state 244
+    keyarg                         shift and go to state 245
+    epsilon                        shift and go to state 246
+    disjunction                    shift and go to state 247
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
 state 199
 
     (82) simprop -> STOP SIMULATION { stmt_list . }
 
-    }               shift and go to state 250
+    }               shift and go to state 251
 
 
 state 200
@@ -2796,6 +2805,7 @@ state 200
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
     (146) atom -> . NUMBER
     (147) atom -> . STRING
     (148) atom -> . bool
@@ -2804,8 +2814,8 @@ state 200
     (151) atom -> . { keyarg_list }
     (119) negation -> . NOT comparison
     (120) negation -> . comparison
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (121) comparison -> . expr EQ expr
     (122) comparison -> . expr NEQ expr
     (123) comparison -> . expr GE expr
@@ -2837,18 +2847,19 @@ state 200
     ID              shift and go to state 219
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    WORLD           shift and go to state 223
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
-    NOT             shift and go to state 227
+    NOT             shift and go to state 228
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
-    -               shift and go to state 230
+    -               shift and go to state 231
 
     stmt                           shift and go to state 200
-    stmt_list                      shift and go to state 251
+    stmt_list                      shift and go to state 252
     epsilon                        shift and go to state 201
     if_stmt                        shift and go to state 202
     var_stmt                       shift and go to state 203
@@ -2861,12 +2872,12 @@ state 200
     word                           shift and go to state 216
     atom                           shift and go to state 220
     negation                       shift and go to state 221
-    bool                           shift and go to state 225
-    expr                           shift and go to state 226
-    comparison                     shift and go to state 228
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
+    bool                           shift and go to state 226
+    expr                           shift and go to state 227
+    comparison                     shift and go to state 229
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
 
 state 201
 
@@ -2888,6 +2899,7 @@ state 202
     ID              reduce using rule 93 (stmt -> if_stmt .)
     ORGANISM        reduce using rule 93 (stmt -> if_stmt .)
     SIMULATION      reduce using rule 93 (stmt -> if_stmt .)
+    WORLD           reduce using rule 93 (stmt -> if_stmt .)
     NUMBER          reduce using rule 93 (stmt -> if_stmt .)
     STRING          reduce using rule 93 (stmt -> if_stmt .)
     (               reduce using rule 93 (stmt -> if_stmt .)
@@ -2904,21 +2916,21 @@ state 203
 
     (94) stmt -> var_stmt . ;
 
-    ;               shift and go to state 252
+    ;               shift and go to state 253
 
 
 state 204
 
     (95) stmt -> index_stmt . ;
 
-    ;               shift and go to state 253
+    ;               shift and go to state 254
 
 
 state 205
 
     (96) stmt -> disjunction . ;
 
-    ;               shift and go to state 254
+    ;               shift and go to state 255
 
 
 state 206
@@ -2934,6 +2946,7 @@ state 206
     ID              reduce using rule 97 (stmt -> loop_stmt .)
     ORGANISM        reduce using rule 97 (stmt -> loop_stmt .)
     SIMULATION      reduce using rule 97 (stmt -> loop_stmt .)
+    WORLD           reduce using rule 97 (stmt -> loop_stmt .)
     NUMBER          reduce using rule 97 (stmt -> loop_stmt .)
     STRING          reduce using rule 97 (stmt -> loop_stmt .)
     (               reduce using rule 97 (stmt -> loop_stmt .)
@@ -2950,14 +2963,14 @@ state 207
 
     (98) stmt -> CONTINUE . ;
 
-    ;               shift and go to state 255
+    ;               shift and go to state 256
 
 
 state 208
 
     (99) stmt -> BREAK . ;
 
-    ;               shift and go to state 256
+    ;               shift and go to state 257
 
 
 state 209
@@ -3001,19 +3014,20 @@ state 209
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    ;               shift and go to state 258
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    ;               shift and go to state 259
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -3023,19 +3037,20 @@ state 209
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    disjunction                    shift and go to state 257
+    disjunction                    shift and go to state 258
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
 state 210
@@ -3078,18 +3093,19 @@ state 210
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -3099,19 +3115,20 @@ state 210
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    disjunction                    shift and go to state 259
+    disjunction                    shift and go to state 260
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
 state 211
@@ -3119,7 +3136,7 @@ state 211
     (102) var_stmt -> accessing . = disjunction
     (142) naming -> accessing .
 
-    =               shift and go to state 260
+    =               shift and go to state 261
     [               reduce using rule 142 (naming -> accessing .)
     *               reduce using rule 142 (naming -> accessing .)
     /               reduce using rule 142 (naming -> accessing .)
@@ -3144,7 +3161,7 @@ state 212
     (141) naming -> naming . [ disjunction ]
     (140) power -> naming .
 
-    [               shift and go to state 261
+    [               shift and go to state 262
     *               reduce using rule 140 (power -> naming .)
     /               reduce using rule 140 (power -> naming .)
     %               reduce using rule 140 (power -> naming .)
@@ -3165,9 +3182,9 @@ state 212
 state 213
 
     (150) atom -> [ . arg_list ]
-    (159) arg_list -> . disjunction
-    (160) arg_list -> . disjunction , arg_list
-    (161) arg_list -> . epsilon
+    (160) arg_list -> . disjunction
+    (161) arg_list -> . disjunction , arg_list
+    (162) arg_list -> . epsilon
     (115) disjunction -> . conjunction OR conjunction
     (116) disjunction -> . conjunction
     (2) epsilon -> .
@@ -3206,19 +3223,20 @@ state 213
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     ]               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -3228,21 +3246,22 @@ state 213
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    arg_list                       shift and go to state 262
-    disjunction                    shift and go to state 263
-    epsilon                        shift and go to state 264
+    arg_list                       shift and go to state 263
+    disjunction                    shift and go to state 264
+    epsilon                        shift and go to state 265
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
 state 214
@@ -3250,7 +3269,7 @@ state 214
     (115) disjunction -> conjunction . OR conjunction
     (116) disjunction -> conjunction .
 
-    OR              shift and go to state 265
+    OR              shift and go to state 266
     ;               reduce using rule 116 (disjunction -> conjunction .)
     =               reduce using rule 116 (disjunction -> conjunction .)
     {               reduce using rule 116 (disjunction -> conjunction .)
@@ -3272,16 +3291,18 @@ state 215
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     ,               reduce using rule 2 (epsilon -> .)
-    ID              shift and go to state 270
+    ID              shift and go to state 271
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    loop_init                      shift and go to state 266
-    var_stmt                       shift and go to state 267
-    epsilon                        shift and go to state 268
-    accessing                      shift and go to state 269
+    loop_init                      shift and go to state 267
+    var_stmt                       shift and go to state 268
+    epsilon                        shift and go to state 269
+    accessing                      shift and go to state 270
     word                           shift and go to state 216
 
 state 216
@@ -3311,14 +3332,14 @@ state 216
     ]               reduce using rule 152 (accessing -> word .)
     )               reduce using rule 152 (accessing -> word .)
     }               reduce using rule 152 (accessing -> word .)
-    .               shift and go to state 271
+    .               shift and go to state 272
 
 
 state 217
 
     (143) naming -> KEYS . ( naming )
 
-    (               shift and go to state 272
+    (               shift and go to state 273
 
 
 state 218
@@ -3348,17 +3369,18 @@ state 218
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -3368,15 +3390,16 @@ state 218
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    expr                           shift and go to state 273
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    expr                           shift and go to state 274
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
 state 219
@@ -3384,7 +3407,7 @@ state 219
     (144) naming -> ID . ( arg_list )
     (154) word -> ID .
 
-    (               shift and go to state 274
+    (               shift and go to state 275
     .               reduce using rule 154 (word -> ID .)
     =               reduce using rule 154 (word -> ID .)
     [               reduce using rule 154 (word -> ID .)
@@ -3432,8 +3455,8 @@ state 220
     AND             reduce using rule 145 (naming -> atom .)
     OR              reduce using rule 145 (naming -> atom .)
     ;               reduce using rule 145 (naming -> atom .)
-    ^               shift and go to state 275
-    @               shift and go to state 276
+    ^               shift and go to state 276
+    @               shift and go to state 277
 
 
 state 221
@@ -3441,7 +3464,7 @@ state 221
     (117) conjunction -> negation . AND negation
     (118) conjunction -> negation .
 
-    AND             shift and go to state 277
+    AND             shift and go to state 278
     OR              reduce using rule 118 (conjunction -> negation .)
     ;               reduce using rule 118 (conjunction -> negation .)
     =               reduce using rule 118 (conjunction -> negation .)
@@ -3483,6 +3506,35 @@ state 222
 
 state 223
 
+    (157) word -> WORLD .
+
+    .               reduce using rule 157 (word -> WORLD .)
+    =               reduce using rule 157 (word -> WORLD .)
+    [               reduce using rule 157 (word -> WORLD .)
+    *               reduce using rule 157 (word -> WORLD .)
+    /               reduce using rule 157 (word -> WORLD .)
+    %               reduce using rule 157 (word -> WORLD .)
+    INTDIV          reduce using rule 157 (word -> WORLD .)
+    EQ              reduce using rule 157 (word -> WORLD .)
+    NEQ             reduce using rule 157 (word -> WORLD .)
+    GE              reduce using rule 157 (word -> WORLD .)
+    LE              reduce using rule 157 (word -> WORLD .)
+    >               reduce using rule 157 (word -> WORLD .)
+    <               reduce using rule 157 (word -> WORLD .)
+    +               reduce using rule 157 (word -> WORLD .)
+    -               reduce using rule 157 (word -> WORLD .)
+    AND             reduce using rule 157 (word -> WORLD .)
+    OR              reduce using rule 157 (word -> WORLD .)
+    ;               reduce using rule 157 (word -> WORLD .)
+    {               reduce using rule 157 (word -> WORLD .)
+    ,               reduce using rule 157 (word -> WORLD .)
+    ]               reduce using rule 157 (word -> WORLD .)
+    )               reduce using rule 157 (word -> WORLD .)
+    }               reduce using rule 157 (word -> WORLD .)
+
+
+state 224
+
     (146) atom -> NUMBER .
 
     ^               reduce using rule 146 (atom -> NUMBER .)
@@ -3511,7 +3563,7 @@ state 223
     }               reduce using rule 146 (atom -> NUMBER .)
 
 
-state 224
+state 225
 
     (147) atom -> STRING .
 
@@ -3541,7 +3593,7 @@ state 224
     }               reduce using rule 147 (atom -> STRING .)
 
 
-state 225
+state 226
 
     (148) atom -> bool .
 
@@ -3571,7 +3623,7 @@ state 225
     }               reduce using rule 148 (atom -> bool .)
 
 
-state 226
+state 227
 
     (121) comparison -> expr . EQ expr
     (122) comparison -> expr . NEQ expr
@@ -3583,12 +3635,12 @@ state 226
     (128) expr -> expr . + term
     (129) expr -> expr . - term
 
-    EQ              shift and go to state 278
-    NEQ             shift and go to state 279
-    GE              shift and go to state 280
-    LE              shift and go to state 281
-    >               shift and go to state 282
-    <               shift and go to state 283
+    EQ              shift and go to state 279
+    NEQ             shift and go to state 280
+    GE              shift and go to state 281
+    LE              shift and go to state 282
+    >               shift and go to state 283
+    <               shift and go to state 284
     AND             reduce using rule 127 (comparison -> expr .)
     OR              reduce using rule 127 (comparison -> expr .)
     ;               reduce using rule 127 (comparison -> expr .)
@@ -3598,11 +3650,11 @@ state 226
     ]               reduce using rule 127 (comparison -> expr .)
     )               reduce using rule 127 (comparison -> expr .)
     }               reduce using rule 127 (comparison -> expr .)
-    +               shift and go to state 284
-    -               shift and go to state 285
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 227
+state 228
 
     (119) negation -> NOT . comparison
     (121) comparison -> . expr EQ expr
@@ -3636,17 +3688,18 @@ state 227
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -3656,19 +3709,20 @@ state 227
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    comparison                     shift and go to state 286
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 287
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 228
+state 229
 
     (120) negation -> comparison .
 
@@ -3683,7 +3737,7 @@ state 228
     }               reduce using rule 120 (negation -> comparison .)
 
 
-state 229
+state 230
 
     (130) expr -> term .
     (131) term -> term . * factor
@@ -3708,13 +3762,13 @@ state 229
     ]               reduce using rule 130 (expr -> term .)
     )               reduce using rule 130 (expr -> term .)
     }               reduce using rule 130 (expr -> term .)
-    *               shift and go to state 287
-    /               shift and go to state 288
-    %               shift and go to state 289
-    INTDIV          shift and go to state 290
+    *               shift and go to state 288
+    /               shift and go to state 289
+    %               shift and go to state 290
+    INTDIV          shift and go to state 291
 
 
-state 230
+state 231
 
     (136) factor -> - . factor
     (136) factor -> . - factor
@@ -3733,17 +3787,18 @@ state 230
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -3753,16 +3808,17 @@ state 230
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    factor                         shift and go to state 291
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    factor                         shift and go to state 292
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 231
+state 232
 
     (135) term -> factor .
 
@@ -3789,7 +3845,7 @@ state 231
     }               reduce using rule 135 (term -> factor .)
 
 
-state 232
+state 233
 
     (137) factor -> power .
 
@@ -3816,7 +3872,7 @@ state 232
     }               reduce using rule 137 (factor -> power .)
 
 
-state 233
+state 234
 
     (83) simprop -> AVAILABLE_COMMANDS { command_list } .
 
@@ -3828,21 +3884,21 @@ state 233
     }               reduce using rule 83 (simprop -> AVAILABLE_COMMANDS { command_list } .)
 
 
-state 234
+state 235
 
     (84) command_list -> ID command_list .
 
     }               reduce using rule 84 (command_list -> ID command_list .)
 
 
-state 235
+state 236
 
     (66) worldsize -> INFINITE { worldsizeprop worldsizeprop . }
 
-    }               shift and go to state 292
+    }               shift and go to state 293
 
 
-state 236
+state 237
 
     (67) worldsize -> { worldsizeprop worldsizeprop } .
 
@@ -3851,14 +3907,14 @@ state 236
     }               reduce using rule 67 (worldsize -> { worldsizeprop worldsizeprop } .)
 
 
-state 237
+state 238
 
     (75) terrainprop -> ID AT { . NUMBER terrainposn_list }
 
-    NUMBER          shift and go to state 293
+    NUMBER          shift and go to state 294
 
 
-state 238
+state 239
 
     (62) position -> ( NUMBER NUMBER ) .
 
@@ -3866,21 +3922,21 @@ state 238
     }               reduce using rule 62 (position -> ( NUMBER NUMBER ) .)
 
 
-state 239
-
-    (47) decide_stmt -> DECIDE ORGANISM TIME { stmt_list . }
-
-    }               shift and go to state 294
-
-
 state 240
 
-    (88) func_stmt -> FUNC ID = param_list { stmt_list . }
+    (47) decide_stmt -> DECIDE ORGANISM TIME { stmt_list . }
 
     }               shift and go to state 295
 
 
 state 241
+
+    (88) func_stmt -> FUNC ID = param_list { stmt_list . }
+
+    }               shift and go to state 296
+
+
+state 242
 
     (30) phygeneprop -> VALUE NUMBER IN { NUMBER NUMBER } .
 
@@ -3889,51 +3945,51 @@ state 241
     }               reduce using rule 30 (phygeneprop -> VALUE NUMBER IN { NUMBER NUMBER } .)
 
 
-state 242
-
-    (78) sim_stmt -> SIMULATION { simprop simprop simprop simprop simprop . }
-
-    }               shift and go to state 296
-
-
 state 243
 
-    (151) atom -> { keyarg_list . }
+    (78) sim_stmt -> SIMULATION { simprop simprop simprop simprop simprop . }
 
     }               shift and go to state 297
 
 
 state 244
 
-    (162) keyarg_list -> keyarg .
-    (163) keyarg_list -> keyarg . , keyarg_list
+    (151) atom -> { keyarg_list . }
 
-    }               reduce using rule 162 (keyarg_list -> keyarg .)
-    ,               shift and go to state 298
+    }               shift and go to state 298
 
 
 state 245
 
-    (164) keyarg_list -> epsilon .
+    (163) keyarg_list -> keyarg .
+    (164) keyarg_list -> keyarg . , keyarg_list
 
-    }               reduce using rule 164 (keyarg_list -> epsilon .)
+    }               reduce using rule 163 (keyarg_list -> keyarg .)
+    ,               shift and go to state 299
 
 
 state 246
 
-    (165) keyarg -> disjunction . = disjunction
+    (165) keyarg_list -> epsilon .
 
-    =               shift and go to state 299
+    }               reduce using rule 165 (keyarg_list -> epsilon .)
 
 
 state 247
+
+    (166) keyarg -> disjunction . = disjunction
+
+    =               shift and go to state 300
+
+
+state 248
 
     (138) power -> atom . ^ factor
     (139) power -> atom . @ factor
     (145) naming -> atom .
 
-    ^               shift and go to state 275
-    @               shift and go to state 276
+    ^               shift and go to state 276
+    @               shift and go to state 277
     [               reduce using rule 145 (naming -> atom .)
     *               reduce using rule 145 (naming -> atom .)
     /               reduce using rule 145 (naming -> atom .)
@@ -3958,7 +4014,7 @@ state 247
     }               reduce using rule 145 (naming -> atom .)
 
 
-state 248
+state 249
 
     (140) power -> naming .
     (141) naming -> naming . [ disjunction ]
@@ -3984,10 +4040,10 @@ state 248
     ]               reduce using rule 140 (power -> naming .)
     )               reduce using rule 140 (power -> naming .)
     }               reduce using rule 140 (power -> naming .)
-    [               shift and go to state 300
+    [               shift and go to state 301
 
 
-state 249
+state 250
 
     (142) naming -> accessing .
 
@@ -4015,7 +4071,7 @@ state 249
     }               reduce using rule 142 (naming -> accessing .)
 
 
-state 250
+state 251
 
     (82) simprop -> STOP SIMULATION { stmt_list } .
 
@@ -4027,14 +4083,14 @@ state 250
     }               reduce using rule 82 (simprop -> STOP SIMULATION { stmt_list } .)
 
 
-state 251
+state 252
 
     (91) stmt_list -> stmt stmt_list .
 
     }               reduce using rule 91 (stmt_list -> stmt stmt_list .)
 
 
-state 252
+state 253
 
     (94) stmt -> var_stmt ; .
 
@@ -4047,6 +4103,7 @@ state 252
     ID              reduce using rule 94 (stmt -> var_stmt ; .)
     ORGANISM        reduce using rule 94 (stmt -> var_stmt ; .)
     SIMULATION      reduce using rule 94 (stmt -> var_stmt ; .)
+    WORLD           reduce using rule 94 (stmt -> var_stmt ; .)
     NUMBER          reduce using rule 94 (stmt -> var_stmt ; .)
     STRING          reduce using rule 94 (stmt -> var_stmt ; .)
     (               reduce using rule 94 (stmt -> var_stmt ; .)
@@ -4059,7 +4116,7 @@ state 252
     }               reduce using rule 94 (stmt -> var_stmt ; .)
 
 
-state 253
+state 254
 
     (95) stmt -> index_stmt ; .
 
@@ -4072,6 +4129,7 @@ state 253
     ID              reduce using rule 95 (stmt -> index_stmt ; .)
     ORGANISM        reduce using rule 95 (stmt -> index_stmt ; .)
     SIMULATION      reduce using rule 95 (stmt -> index_stmt ; .)
+    WORLD           reduce using rule 95 (stmt -> index_stmt ; .)
     NUMBER          reduce using rule 95 (stmt -> index_stmt ; .)
     STRING          reduce using rule 95 (stmt -> index_stmt ; .)
     (               reduce using rule 95 (stmt -> index_stmt ; .)
@@ -4084,7 +4142,7 @@ state 253
     }               reduce using rule 95 (stmt -> index_stmt ; .)
 
 
-state 254
+state 255
 
     (96) stmt -> disjunction ; .
 
@@ -4097,6 +4155,7 @@ state 254
     ID              reduce using rule 96 (stmt -> disjunction ; .)
     ORGANISM        reduce using rule 96 (stmt -> disjunction ; .)
     SIMULATION      reduce using rule 96 (stmt -> disjunction ; .)
+    WORLD           reduce using rule 96 (stmt -> disjunction ; .)
     NUMBER          reduce using rule 96 (stmt -> disjunction ; .)
     STRING          reduce using rule 96 (stmt -> disjunction ; .)
     (               reduce using rule 96 (stmt -> disjunction ; .)
@@ -4109,7 +4168,7 @@ state 254
     }               reduce using rule 96 (stmt -> disjunction ; .)
 
 
-state 255
+state 256
 
     (98) stmt -> CONTINUE ; .
 
@@ -4122,6 +4181,7 @@ state 255
     ID              reduce using rule 98 (stmt -> CONTINUE ; .)
     ORGANISM        reduce using rule 98 (stmt -> CONTINUE ; .)
     SIMULATION      reduce using rule 98 (stmt -> CONTINUE ; .)
+    WORLD           reduce using rule 98 (stmt -> CONTINUE ; .)
     NUMBER          reduce using rule 98 (stmt -> CONTINUE ; .)
     STRING          reduce using rule 98 (stmt -> CONTINUE ; .)
     (               reduce using rule 98 (stmt -> CONTINUE ; .)
@@ -4134,7 +4194,7 @@ state 255
     }               reduce using rule 98 (stmt -> CONTINUE ; .)
 
 
-state 256
+state 257
 
     (99) stmt -> BREAK ; .
 
@@ -4147,6 +4207,7 @@ state 256
     ID              reduce using rule 99 (stmt -> BREAK ; .)
     ORGANISM        reduce using rule 99 (stmt -> BREAK ; .)
     SIMULATION      reduce using rule 99 (stmt -> BREAK ; .)
+    WORLD           reduce using rule 99 (stmt -> BREAK ; .)
     NUMBER          reduce using rule 99 (stmt -> BREAK ; .)
     STRING          reduce using rule 99 (stmt -> BREAK ; .)
     (               reduce using rule 99 (stmt -> BREAK ; .)
@@ -4159,14 +4220,14 @@ state 256
     }               reduce using rule 99 (stmt -> BREAK ; .)
 
 
-state 257
+state 258
 
     (100) stmt -> RETURN disjunction . ;
 
-    ;               shift and go to state 301
+    ;               shift and go to state 302
 
 
-state 258
+state 259
 
     (101) stmt -> RETURN ; .
 
@@ -4179,6 +4240,7 @@ state 258
     ID              reduce using rule 101 (stmt -> RETURN ; .)
     ORGANISM        reduce using rule 101 (stmt -> RETURN ; .)
     SIMULATION      reduce using rule 101 (stmt -> RETURN ; .)
+    WORLD           reduce using rule 101 (stmt -> RETURN ; .)
     NUMBER          reduce using rule 101 (stmt -> RETURN ; .)
     STRING          reduce using rule 101 (stmt -> RETURN ; .)
     (               reduce using rule 101 (stmt -> RETURN ; .)
@@ -4191,14 +4253,14 @@ state 258
     }               reduce using rule 101 (stmt -> RETURN ; .)
 
 
-state 259
+state 260
 
     (104) if_stmt -> IF disjunction . { stmt_list } else_stmt
 
-    {               shift and go to state 302
+    {               shift and go to state 303
 
 
-state 260
+state 261
 
     (102) var_stmt -> accessing = . disjunction
     (115) disjunction -> . conjunction OR conjunction
@@ -4238,18 +4300,19 @@ state 260
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4259,22 +4322,23 @@ state 260
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    accessing                      shift and go to state 249
-    disjunction                    shift and go to state 303
+    accessing                      shift and go to state 250
+    disjunction                    shift and go to state 304
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
     word                           shift and go to state 216
 
-state 261
+state 262
 
     (103) index_stmt -> naming [ . disjunction ] = disjunction
     (141) naming -> naming [ . disjunction ]
@@ -4315,18 +4379,19 @@ state 261
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4336,47 +4401,48 @@ state 261
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    naming                         shift and go to state 248
-    disjunction                    shift and go to state 304
+    naming                         shift and go to state 249
+    disjunction                    shift and go to state 305
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
-
-state 262
-
-    (150) atom -> [ arg_list . ]
-
-    ]               shift and go to state 305
-
 
 state 263
 
-    (159) arg_list -> disjunction .
-    (160) arg_list -> disjunction . , arg_list
+    (150) atom -> [ arg_list . ]
 
-    ]               reduce using rule 159 (arg_list -> disjunction .)
-    )               reduce using rule 159 (arg_list -> disjunction .)
-    ,               shift and go to state 306
+    ]               shift and go to state 306
 
 
 state 264
 
-    (161) arg_list -> epsilon .
+    (160) arg_list -> disjunction .
+    (161) arg_list -> disjunction . , arg_list
 
-    ]               reduce using rule 161 (arg_list -> epsilon .)
-    )               reduce using rule 161 (arg_list -> epsilon .)
+    ]               reduce using rule 160 (arg_list -> disjunction .)
+    )               reduce using rule 160 (arg_list -> disjunction .)
+    ,               shift and go to state 307
 
 
 state 265
+
+    (162) arg_list -> epsilon .
+
+    ]               reduce using rule 162 (arg_list -> epsilon .)
+    )               reduce using rule 162 (arg_list -> epsilon .)
+
+
+state 266
 
     (115) disjunction -> conjunction OR . conjunction
     (117) conjunction -> . negation AND negation
@@ -4414,18 +4480,19 @@ state 265
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4435,49 +4502,50 @@ state 265
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    conjunction                    shift and go to state 307
+    conjunction                    shift and go to state 308
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 266
+state 267
 
     (108) loop_stmt -> LOOP loop_init . , loop_condition , loop_set { stmt_list }
 
-    ,               shift and go to state 308
+    ,               shift and go to state 309
 
 
-state 267
+state 268
 
     (109) loop_init -> var_stmt .
 
     ,               reduce using rule 109 (loop_init -> var_stmt .)
 
 
-state 268
+state 269
 
     (110) loop_init -> epsilon .
 
     ,               reduce using rule 110 (loop_init -> epsilon .)
 
 
-state 269
+state 270
 
     (102) var_stmt -> accessing . = disjunction
 
-    =               shift and go to state 260
+    =               shift and go to state 261
 
 
-state 270
+state 271
 
     (154) word -> ID .
 
@@ -4506,7 +4574,7 @@ state 270
     }               reduce using rule 154 (word -> ID .)
 
 
-state 271
+state 272
 
     (153) accessing -> word . . accessing
     (152) accessing -> . word
@@ -4514,15 +4582,17 @@ state 271
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    ID              shift and go to state 270
+    ID              shift and go to state 271
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
     word                           shift and go to state 216
-    accessing                      shift and go to state 309
+    accessing                      shift and go to state 310
 
-state 272
+state 273
 
     (143) naming -> KEYS ( . naming )
     (141) naming -> . naming [ disjunction ]
@@ -4541,44 +4611,46 @@ state 272
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (157) word -> . WORLD
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
 
     KEYS            shift and go to state 217
     ID              shift and go to state 219
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
 
-    naming                         shift and go to state 310
-    accessing                      shift and go to state 249
-    atom                           shift and go to state 311
+    naming                         shift and go to state 311
+    accessing                      shift and go to state 250
+    atom                           shift and go to state 312
     word                           shift and go to state 216
-    bool                           shift and go to state 225
+    bool                           shift and go to state 226
 
-state 273
+state 274
 
     (149) atom -> ( expr . )
     (128) expr -> expr . + term
     (129) expr -> expr . - term
 
-    )               shift and go to state 312
-    +               shift and go to state 284
-    -               shift and go to state 285
+    )               shift and go to state 313
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 274
+state 275
 
     (144) naming -> ID ( . arg_list )
-    (159) arg_list -> . disjunction
-    (160) arg_list -> . disjunction , arg_list
-    (161) arg_list -> . epsilon
+    (160) arg_list -> . disjunction
+    (161) arg_list -> . disjunction , arg_list
+    (162) arg_list -> . epsilon
     (115) disjunction -> . conjunction OR conjunction
     (116) disjunction -> . conjunction
     (2) epsilon -> .
@@ -4617,19 +4689,20 @@ state 274
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     )               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4639,24 +4712,25 @@ state 274
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    arg_list                       shift and go to state 313
-    disjunction                    shift and go to state 263
-    epsilon                        shift and go to state 264
+    arg_list                       shift and go to state 314
+    disjunction                    shift and go to state 264
+    epsilon                        shift and go to state 265
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 275
+state 276
 
     (138) power -> atom ^ . factor
     (136) factor -> . - factor
@@ -4675,17 +4749,18 @@ state 275
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4695,16 +4770,17 @@ state 275
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    atom                           shift and go to state 247
-    factor                         shift and go to state 314
-    power                          shift and go to state 232
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    atom                           shift and go to state 248
+    factor                         shift and go to state 315
+    power                          shift and go to state 233
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 276
+state 277
 
     (139) power -> atom @ . factor
     (136) factor -> . - factor
@@ -4723,17 +4799,18 @@ state 276
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4743,16 +4820,17 @@ state 276
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    atom                           shift and go to state 247
-    factor                         shift and go to state 315
-    power                          shift and go to state 232
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    atom                           shift and go to state 248
+    factor                         shift and go to state 316
+    power                          shift and go to state 233
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 277
+state 278
 
     (117) conjunction -> negation AND . negation
     (119) negation -> . NOT comparison
@@ -4788,18 +4866,19 @@ state 277
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4809,20 +4888,21 @@ state 277
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    negation                       shift and go to state 316
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    negation                       shift and go to state 317
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 278
+state 279
 
     (121) comparison -> expr EQ . expr
     (128) expr -> . expr + term
@@ -4849,17 +4929,18 @@ state 278
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4869,18 +4950,19 @@ state 278
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    expr                           shift and go to state 317
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    expr                           shift and go to state 318
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 279
+state 280
 
     (122) comparison -> expr NEQ . expr
     (128) expr -> . expr + term
@@ -4907,17 +4989,18 @@ state 279
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4927,18 +5010,19 @@ state 279
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    expr                           shift and go to state 318
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    expr                           shift and go to state 319
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 280
+state 281
 
     (123) comparison -> expr GE . expr
     (128) expr -> . expr + term
@@ -4965,17 +5049,18 @@ state 280
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -4985,18 +5070,19 @@ state 280
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    expr                           shift and go to state 319
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    expr                           shift and go to state 320
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 281
+state 282
 
     (124) comparison -> expr LE . expr
     (128) expr -> . expr + term
@@ -5023,17 +5109,18 @@ state 281
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5043,18 +5130,19 @@ state 281
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    expr                           shift and go to state 320
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    expr                           shift and go to state 321
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 282
+state 283
 
     (125) comparison -> expr > . expr
     (128) expr -> . expr + term
@@ -5081,17 +5169,18 @@ state 282
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5101,18 +5190,19 @@ state 282
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    expr                           shift and go to state 321
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    expr                           shift and go to state 322
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 283
+state 284
 
     (126) comparison -> expr < . expr
     (128) expr -> . expr + term
@@ -5139,17 +5229,18 @@ state 283
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5159,18 +5250,19 @@ state 283
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    expr                           shift and go to state 322
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    expr                           shift and go to state 323
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 284
+state 285
 
     (128) expr -> expr + . term
     (131) term -> . term * factor
@@ -5194,17 +5286,18 @@ state 284
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5214,17 +5307,18 @@ state 284
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    term                           shift and go to state 323
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    term                           shift and go to state 324
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 285
+state 286
 
     (129) expr -> expr - . term
     (131) term -> . term * factor
@@ -5248,17 +5342,18 @@ state 285
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5268,17 +5363,18 @@ state 285
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    term                           shift and go to state 324
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    term                           shift and go to state 325
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 286
+state 287
 
     (119) negation -> NOT comparison .
 
@@ -5293,7 +5389,7 @@ state 286
     }               reduce using rule 119 (negation -> NOT comparison .)
 
 
-state 287
+state 288
 
     (131) term -> term * . factor
     (136) factor -> . - factor
@@ -5312,17 +5408,18 @@ state 287
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5332,16 +5429,17 @@ state 287
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    factor                         shift and go to state 325
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    factor                         shift and go to state 326
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 288
+state 289
 
     (132) term -> term / . factor
     (136) factor -> . - factor
@@ -5360,17 +5458,18 @@ state 288
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5380,16 +5479,17 @@ state 288
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    factor                         shift and go to state 326
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    factor                         shift and go to state 327
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 289
+state 290
 
     (133) term -> term % . factor
     (136) factor -> . - factor
@@ -5408,17 +5508,18 @@ state 289
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5428,16 +5529,17 @@ state 289
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    factor                         shift and go to state 327
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    factor                         shift and go to state 328
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 290
+state 291
 
     (134) term -> term INTDIV . factor
     (136) factor -> . - factor
@@ -5456,17 +5558,18 @@ state 290
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5476,16 +5579,17 @@ state 290
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    factor                         shift and go to state 328
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    factor                         shift and go to state 329
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 291
+state 292
 
     (136) factor -> - factor .
 
@@ -5512,7 +5616,7 @@ state 291
     }               reduce using rule 136 (factor -> - factor .)
 
 
-state 292
+state 293
 
     (66) worldsize -> INFINITE { worldsizeprop worldsizeprop } .
 
@@ -5521,27 +5625,27 @@ state 292
     }               reduce using rule 66 (worldsize -> INFINITE { worldsizeprop worldsizeprop } .)
 
 
-state 293
+state 294
 
     (75) terrainprop -> ID AT { NUMBER . terrainposn_list }
     (76) terrainposn_list -> . NUMBER terrainposn_list
     (77) terrainposn_list -> . epsilon
     (2) epsilon -> .
 
-    NUMBER          shift and go to state 329
+    NUMBER          shift and go to state 330
     }               reduce using rule 2 (epsilon -> .)
 
-    terrainposn_list               shift and go to state 330
-    epsilon                        shift and go to state 331
+    terrainposn_list               shift and go to state 331
+    epsilon                        shift and go to state 332
 
-state 294
+state 295
 
     (47) decide_stmt -> DECIDE ORGANISM TIME { stmt_list } .
 
     }               reduce using rule 47 (decide_stmt -> DECIDE ORGANISM TIME { stmt_list } .)
 
 
-state 295
+state 296
 
     (88) func_stmt -> FUNC ID = param_list { stmt_list } .
 
@@ -5549,14 +5653,14 @@ state 295
     DECIDE          reduce using rule 88 (func_stmt -> FUNC ID = param_list { stmt_list } .)
 
 
-state 296
+state 297
 
     (78) sim_stmt -> SIMULATION { simprop simprop simprop simprop simprop } .
 
     $end            reduce using rule 78 (sim_stmt -> SIMULATION { simprop simprop simprop simprop simprop } .)
 
 
-state 297
+state 298
 
     (151) atom -> { keyarg_list } .
 
@@ -5586,13 +5690,13 @@ state 297
     }               reduce using rule 151 (atom -> { keyarg_list } .)
 
 
-state 298
+state 299
 
-    (163) keyarg_list -> keyarg , . keyarg_list
-    (162) keyarg_list -> . keyarg
-    (163) keyarg_list -> . keyarg , keyarg_list
-    (164) keyarg_list -> . epsilon
-    (165) keyarg -> . disjunction = disjunction
+    (164) keyarg_list -> keyarg , . keyarg_list
+    (163) keyarg_list -> . keyarg
+    (164) keyarg_list -> . keyarg , keyarg_list
+    (165) keyarg_list -> . epsilon
+    (166) keyarg -> . disjunction = disjunction
     (2) epsilon -> .
     (115) disjunction -> . conjunction OR conjunction
     (116) disjunction -> . conjunction
@@ -5631,19 +5735,20 @@ state 298
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     }               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5653,27 +5758,28 @@ state 298
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    keyarg                         shift and go to state 244
-    keyarg_list                    shift and go to state 332
-    epsilon                        shift and go to state 245
-    disjunction                    shift and go to state 246
+    keyarg                         shift and go to state 245
+    keyarg_list                    shift and go to state 333
+    epsilon                        shift and go to state 246
+    disjunction                    shift and go to state 247
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 299
+state 300
 
-    (165) keyarg -> disjunction = . disjunction
+    (166) keyarg -> disjunction = . disjunction
     (115) disjunction -> . conjunction OR conjunction
     (116) disjunction -> . conjunction
     (117) conjunction -> . negation AND negation
@@ -5711,18 +5817,19 @@ state 299
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5732,22 +5839,23 @@ state 299
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    disjunction                    shift and go to state 333
+    disjunction                    shift and go to state 334
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 300
+state 301
 
     (141) naming -> naming [ . disjunction ]
     (115) disjunction -> . conjunction OR conjunction
@@ -5787,18 +5895,19 @@ state 300
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -5808,22 +5917,23 @@ state 300
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    naming                         shift and go to state 248
-    disjunction                    shift and go to state 334
+    naming                         shift and go to state 249
+    disjunction                    shift and go to state 335
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 301
+state 302
 
     (100) stmt -> RETURN disjunction ; .
 
@@ -5836,6 +5946,7 @@ state 301
     ID              reduce using rule 100 (stmt -> RETURN disjunction ; .)
     ORGANISM        reduce using rule 100 (stmt -> RETURN disjunction ; .)
     SIMULATION      reduce using rule 100 (stmt -> RETURN disjunction ; .)
+    WORLD           reduce using rule 100 (stmt -> RETURN disjunction ; .)
     NUMBER          reduce using rule 100 (stmt -> RETURN disjunction ; .)
     STRING          reduce using rule 100 (stmt -> RETURN disjunction ; .)
     (               reduce using rule 100 (stmt -> RETURN disjunction ; .)
@@ -5848,7 +5959,7 @@ state 301
     }               reduce using rule 100 (stmt -> RETURN disjunction ; .)
 
 
-state 302
+state 303
 
     (104) if_stmt -> IF disjunction { . stmt_list } else_stmt
     (91) stmt_list -> . stmt stmt_list
@@ -5881,6 +5992,7 @@ state 302
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
     (146) atom -> . NUMBER
     (147) atom -> . STRING
     (148) atom -> . bool
@@ -5889,8 +6001,8 @@ state 302
     (151) atom -> . { keyarg_list }
     (119) negation -> . NOT comparison
     (120) negation -> . comparison
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (121) comparison -> . expr EQ expr
     (122) comparison -> . expr NEQ expr
     (123) comparison -> . expr GE expr
@@ -5922,18 +6034,19 @@ state 302
     ID              shift and go to state 219
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    WORLD           shift and go to state 223
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
-    NOT             shift and go to state 227
+    NOT             shift and go to state 228
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
-    -               shift and go to state 230
+    -               shift and go to state 231
 
     disjunction                    shift and go to state 205
-    stmt_list                      shift and go to state 335
+    stmt_list                      shift and go to state 336
     stmt                           shift and go to state 200
     epsilon                        shift and go to state 201
     if_stmt                        shift and go to state 202
@@ -5946,14 +6059,14 @@ state 302
     word                           shift and go to state 216
     atom                           shift and go to state 220
     negation                       shift and go to state 221
-    bool                           shift and go to state 225
-    expr                           shift and go to state 226
-    comparison                     shift and go to state 228
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
+    bool                           shift and go to state 226
+    expr                           shift and go to state 227
+    comparison                     shift and go to state 229
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
 
-state 303
+state 304
 
     (102) var_stmt -> accessing = disjunction .
 
@@ -5962,15 +6075,15 @@ state 303
     {               reduce using rule 102 (var_stmt -> accessing = disjunction .)
 
 
-state 304
+state 305
 
     (103) index_stmt -> naming [ disjunction . ] = disjunction
     (141) naming -> naming [ disjunction . ]
 
-    ]               shift and go to state 336
+    ]               shift and go to state 337
 
 
-state 305
+state 306
 
     (150) atom -> [ arg_list ] .
 
@@ -6000,12 +6113,12 @@ state 305
     }               reduce using rule 150 (atom -> [ arg_list ] .)
 
 
-state 306
+state 307
 
-    (160) arg_list -> disjunction , . arg_list
-    (159) arg_list -> . disjunction
-    (160) arg_list -> . disjunction , arg_list
-    (161) arg_list -> . epsilon
+    (161) arg_list -> disjunction , . arg_list
+    (160) arg_list -> . disjunction
+    (161) arg_list -> . disjunction , arg_list
+    (162) arg_list -> . epsilon
     (115) disjunction -> . conjunction OR conjunction
     (116) disjunction -> . conjunction
     (2) epsilon -> .
@@ -6044,20 +6157,21 @@ state 306
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     ]               reduce using rule 2 (epsilon -> .)
     )               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -6067,24 +6181,25 @@ state 306
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    disjunction                    shift and go to state 263
-    arg_list                       shift and go to state 337
-    epsilon                        shift and go to state 264
+    disjunction                    shift and go to state 264
+    arg_list                       shift and go to state 338
+    epsilon                        shift and go to state 265
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 307
+state 308
 
     (115) disjunction -> conjunction OR conjunction .
 
@@ -6097,7 +6212,7 @@ state 307
     }               reduce using rule 115 (disjunction -> conjunction OR conjunction .)
 
 
-state 308
+state 309
 
     (108) loop_stmt -> LOOP loop_init , . loop_condition , loop_set { stmt_list }
     (113) loop_condition -> . disjunction
@@ -6140,19 +6255,20 @@ state 308
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     ,               reduce using rule 2 (epsilon -> .)
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -6162,24 +6278,25 @@ state 308
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    loop_condition                 shift and go to state 338
-    disjunction                    shift and go to state 339
-    epsilon                        shift and go to state 340
+    loop_condition                 shift and go to state 339
+    disjunction                    shift and go to state 340
+    epsilon                        shift and go to state 341
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    naming                         shift and go to state 248
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    naming                         shift and go to state 249
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 309
+state 310
 
     (153) accessing -> word . accessing .
 
@@ -6207,16 +6324,16 @@ state 309
     }               reduce using rule 153 (accessing -> word . accessing .)
 
 
-state 310
+state 311
 
     (143) naming -> KEYS ( naming . )
     (141) naming -> naming . [ disjunction ]
 
-    )               shift and go to state 341
-    [               shift and go to state 300
+    )               shift and go to state 342
+    [               shift and go to state 301
 
 
-state 311
+state 312
 
     (145) naming -> atom .
 
@@ -6224,7 +6341,7 @@ state 311
     [               reduce using rule 145 (naming -> atom .)
 
 
-state 312
+state 313
 
     (149) atom -> ( expr ) .
 
@@ -6254,14 +6371,14 @@ state 312
     }               reduce using rule 149 (atom -> ( expr ) .)
 
 
-state 313
+state 314
 
     (144) naming -> ID ( arg_list . )
 
-    )               shift and go to state 342
+    )               shift and go to state 343
 
 
-state 314
+state 315
 
     (138) power -> atom ^ factor .
 
@@ -6288,7 +6405,7 @@ state 314
     }               reduce using rule 138 (power -> atom ^ factor .)
 
 
-state 315
+state 316
 
     (139) power -> atom @ factor .
 
@@ -6315,7 +6432,7 @@ state 315
     }               reduce using rule 139 (power -> atom @ factor .)
 
 
-state 316
+state 317
 
     (117) conjunction -> negation AND negation .
 
@@ -6329,7 +6446,7 @@ state 316
     }               reduce using rule 117 (conjunction -> negation AND negation .)
 
 
-state 317
+state 318
 
     (121) comparison -> expr EQ expr .
     (128) expr -> expr . + term
@@ -6344,11 +6461,11 @@ state 317
     ]               reduce using rule 121 (comparison -> expr EQ expr .)
     )               reduce using rule 121 (comparison -> expr EQ expr .)
     }               reduce using rule 121 (comparison -> expr EQ expr .)
-    +               shift and go to state 284
-    -               shift and go to state 285
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 318
+state 319
 
     (122) comparison -> expr NEQ expr .
     (128) expr -> expr . + term
@@ -6363,11 +6480,11 @@ state 318
     ]               reduce using rule 122 (comparison -> expr NEQ expr .)
     )               reduce using rule 122 (comparison -> expr NEQ expr .)
     }               reduce using rule 122 (comparison -> expr NEQ expr .)
-    +               shift and go to state 284
-    -               shift and go to state 285
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 319
+state 320
 
     (123) comparison -> expr GE expr .
     (128) expr -> expr . + term
@@ -6382,11 +6499,11 @@ state 319
     ]               reduce using rule 123 (comparison -> expr GE expr .)
     )               reduce using rule 123 (comparison -> expr GE expr .)
     }               reduce using rule 123 (comparison -> expr GE expr .)
-    +               shift and go to state 284
-    -               shift and go to state 285
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 320
+state 321
 
     (124) comparison -> expr LE expr .
     (128) expr -> expr . + term
@@ -6401,11 +6518,11 @@ state 320
     ]               reduce using rule 124 (comparison -> expr LE expr .)
     )               reduce using rule 124 (comparison -> expr LE expr .)
     }               reduce using rule 124 (comparison -> expr LE expr .)
-    +               shift and go to state 284
-    -               shift and go to state 285
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 321
+state 322
 
     (125) comparison -> expr > expr .
     (128) expr -> expr . + term
@@ -6420,11 +6537,11 @@ state 321
     ]               reduce using rule 125 (comparison -> expr > expr .)
     )               reduce using rule 125 (comparison -> expr > expr .)
     }               reduce using rule 125 (comparison -> expr > expr .)
-    +               shift and go to state 284
-    -               shift and go to state 285
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 322
+state 323
 
     (126) comparison -> expr < expr .
     (128) expr -> expr . + term
@@ -6439,11 +6556,11 @@ state 322
     ]               reduce using rule 126 (comparison -> expr < expr .)
     )               reduce using rule 126 (comparison -> expr < expr .)
     }               reduce using rule 126 (comparison -> expr < expr .)
-    +               shift and go to state 284
-    -               shift and go to state 285
+    +               shift and go to state 285
+    -               shift and go to state 286
 
 
-state 323
+state 324
 
     (128) expr -> expr + term .
     (131) term -> term . * factor
@@ -6468,13 +6585,13 @@ state 323
     ]               reduce using rule 128 (expr -> expr + term .)
     )               reduce using rule 128 (expr -> expr + term .)
     }               reduce using rule 128 (expr -> expr + term .)
-    *               shift and go to state 287
-    /               shift and go to state 288
-    %               shift and go to state 289
-    INTDIV          shift and go to state 290
+    *               shift and go to state 288
+    /               shift and go to state 289
+    %               shift and go to state 290
+    INTDIV          shift and go to state 291
 
 
-state 324
+state 325
 
     (129) expr -> expr - term .
     (131) term -> term . * factor
@@ -6499,13 +6616,13 @@ state 324
     ]               reduce using rule 129 (expr -> expr - term .)
     )               reduce using rule 129 (expr -> expr - term .)
     }               reduce using rule 129 (expr -> expr - term .)
-    *               shift and go to state 287
-    /               shift and go to state 288
-    %               shift and go to state 289
-    INTDIV          shift and go to state 290
+    *               shift and go to state 288
+    /               shift and go to state 289
+    %               shift and go to state 290
+    INTDIV          shift and go to state 291
 
 
-state 325
+state 326
 
     (131) term -> term * factor .
 
@@ -6532,7 +6649,7 @@ state 325
     }               reduce using rule 131 (term -> term * factor .)
 
 
-state 326
+state 327
 
     (132) term -> term / factor .
 
@@ -6559,7 +6676,7 @@ state 326
     }               reduce using rule 132 (term -> term / factor .)
 
 
-state 327
+state 328
 
     (133) term -> term % factor .
 
@@ -6586,7 +6703,7 @@ state 327
     }               reduce using rule 133 (term -> term % factor .)
 
 
-state 328
+state 329
 
     (134) term -> term INTDIV factor .
 
@@ -6613,68 +6730,68 @@ state 328
     }               reduce using rule 134 (term -> term INTDIV factor .)
 
 
-state 329
+state 330
 
     (76) terrainposn_list -> NUMBER . terrainposn_list
     (76) terrainposn_list -> . NUMBER terrainposn_list
     (77) terrainposn_list -> . epsilon
     (2) epsilon -> .
 
-    NUMBER          shift and go to state 329
+    NUMBER          shift and go to state 330
     }               reduce using rule 2 (epsilon -> .)
 
-    terrainposn_list               shift and go to state 343
-    epsilon                        shift and go to state 331
+    terrainposn_list               shift and go to state 344
+    epsilon                        shift and go to state 332
 
-state 330
+state 331
 
     (75) terrainprop -> ID AT { NUMBER terrainposn_list . }
 
-    }               shift and go to state 344
+    }               shift and go to state 345
 
 
-state 331
+state 332
 
     (77) terrainposn_list -> epsilon .
 
     }               reduce using rule 77 (terrainposn_list -> epsilon .)
 
 
-state 332
-
-    (163) keyarg_list -> keyarg , keyarg_list .
-
-    }               reduce using rule 163 (keyarg_list -> keyarg , keyarg_list .)
-
-
 state 333
 
-    (165) keyarg -> disjunction = disjunction .
+    (164) keyarg_list -> keyarg , keyarg_list .
 
-    ,               reduce using rule 165 (keyarg -> disjunction = disjunction .)
-    }               reduce using rule 165 (keyarg -> disjunction = disjunction .)
+    }               reduce using rule 164 (keyarg_list -> keyarg , keyarg_list .)
 
 
 state 334
 
-    (141) naming -> naming [ disjunction . ]
+    (166) keyarg -> disjunction = disjunction .
 
-    ]               shift and go to state 345
+    ,               reduce using rule 166 (keyarg -> disjunction = disjunction .)
+    }               reduce using rule 166 (keyarg -> disjunction = disjunction .)
 
 
 state 335
 
-    (104) if_stmt -> IF disjunction { stmt_list . } else_stmt
+    (141) naming -> naming [ disjunction . ]
 
-    }               shift and go to state 346
+    ]               shift and go to state 346
 
 
 state 336
 
+    (104) if_stmt -> IF disjunction { stmt_list . } else_stmt
+
+    }               shift and go to state 347
+
+
+state 337
+
     (103) index_stmt -> naming [ disjunction ] . = disjunction
     (141) naming -> naming [ disjunction ] .
 
-    =               shift and go to state 347
+    =               shift and go to state 348
     [               reduce using rule 141 (naming -> naming [ disjunction ] .)
     *               reduce using rule 141 (naming -> naming [ disjunction ] .)
     /               reduce using rule 141 (naming -> naming [ disjunction ] .)
@@ -6693,36 +6810,36 @@ state 336
     ;               reduce using rule 141 (naming -> naming [ disjunction ] .)
 
 
-state 337
-
-    (160) arg_list -> disjunction , arg_list .
-
-    ]               reduce using rule 160 (arg_list -> disjunction , arg_list .)
-    )               reduce using rule 160 (arg_list -> disjunction , arg_list .)
-
-
 state 338
 
-    (108) loop_stmt -> LOOP loop_init , loop_condition . , loop_set { stmt_list }
+    (161) arg_list -> disjunction , arg_list .
 
-    ,               shift and go to state 348
+    ]               reduce using rule 161 (arg_list -> disjunction , arg_list .)
+    )               reduce using rule 161 (arg_list -> disjunction , arg_list .)
 
 
 state 339
+
+    (108) loop_stmt -> LOOP loop_init , loop_condition . , loop_set { stmt_list }
+
+    ,               shift and go to state 349
+
+
+state 340
 
     (113) loop_condition -> disjunction .
 
     ,               reduce using rule 113 (loop_condition -> disjunction .)
 
 
-state 340
+state 341
 
     (114) loop_condition -> epsilon .
 
     ,               reduce using rule 114 (loop_condition -> epsilon .)
 
 
-state 341
+state 342
 
     (143) naming -> KEYS ( naming ) .
 
@@ -6750,7 +6867,7 @@ state 341
     }               reduce using rule 143 (naming -> KEYS ( naming ) .)
 
 
-state 342
+state 343
 
     (144) naming -> ID ( arg_list ) .
 
@@ -6778,14 +6895,14 @@ state 342
     }               reduce using rule 144 (naming -> ID ( arg_list ) .)
 
 
-state 343
+state 344
 
     (76) terrainposn_list -> NUMBER terrainposn_list .
 
     }               reduce using rule 76 (terrainposn_list -> NUMBER terrainposn_list .)
 
 
-state 344
+state 345
 
     (75) terrainprop -> ID AT { NUMBER terrainposn_list } .
 
@@ -6794,7 +6911,7 @@ state 344
     }               reduce using rule 75 (terrainprop -> ID AT { NUMBER terrainposn_list } .)
 
 
-state 345
+state 346
 
     (141) naming -> naming [ disjunction ] .
 
@@ -6822,7 +6939,7 @@ state 345
     }               reduce using rule 141 (naming -> naming [ disjunction ] .)
 
 
-state 346
+state 347
 
     (104) if_stmt -> IF disjunction { stmt_list } . else_stmt
     (105) else_stmt -> . ELSE if_stmt
@@ -6830,7 +6947,7 @@ state 346
     (107) else_stmt -> . epsilon
     (2) epsilon -> .
 
-    ELSE            shift and go to state 350
+    ELSE            shift and go to state 351
     CONTINUE        reduce using rule 2 (epsilon -> .)
     BREAK           reduce using rule 2 (epsilon -> .)
     RETURN          reduce using rule 2 (epsilon -> .)
@@ -6840,6 +6957,7 @@ state 346
     ID              reduce using rule 2 (epsilon -> .)
     ORGANISM        reduce using rule 2 (epsilon -> .)
     SIMULATION      reduce using rule 2 (epsilon -> .)
+    WORLD           reduce using rule 2 (epsilon -> .)
     NUMBER          reduce using rule 2 (epsilon -> .)
     STRING          reduce using rule 2 (epsilon -> .)
     (               reduce using rule 2 (epsilon -> .)
@@ -6851,10 +6969,10 @@ state 346
     -               reduce using rule 2 (epsilon -> .)
     }               reduce using rule 2 (epsilon -> .)
 
-    else_stmt                      shift and go to state 349
-    epsilon                        shift and go to state 351
+    else_stmt                      shift and go to state 350
+    epsilon                        shift and go to state 352
 
-state 347
+state 348
 
     (103) index_stmt -> naming [ disjunction ] = . disjunction
     (115) disjunction -> . conjunction OR conjunction
@@ -6894,18 +7012,19 @@ state 347
     (143) naming -> . KEYS ( naming )
     (144) naming -> . ID ( arg_list )
     (145) naming -> . atom
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (152) accessing -> . word
     (153) accessing -> . word . accessing
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
-    NOT             shift and go to state 227
-    -               shift and go to state 230
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    NOT             shift and go to state 228
+    -               shift and go to state 231
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
@@ -6915,22 +7034,23 @@ state 347
     FALSE           shift and go to state 103
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    naming                         shift and go to state 248
-    disjunction                    shift and go to state 352
+    naming                         shift and go to state 249
+    disjunction                    shift and go to state 353
     conjunction                    shift and go to state 214
     negation                       shift and go to state 221
-    comparison                     shift and go to state 228
-    expr                           shift and go to state 226
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-    atom                           shift and go to state 247
-    bool                           shift and go to state 225
-    accessing                      shift and go to state 249
+    comparison                     shift and go to state 229
+    expr                           shift and go to state 227
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
+    atom                           shift and go to state 248
+    bool                           shift and go to state 226
+    accessing                      shift and go to state 250
     word                           shift and go to state 216
 
-state 348
+state 349
 
     (108) loop_stmt -> LOOP loop_init , loop_condition , . loop_set { stmt_list }
     (111) loop_set -> . var_stmt
@@ -6942,19 +7062,21 @@ state 348
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
 
     {               reduce using rule 2 (epsilon -> .)
-    ID              shift and go to state 270
+    ID              shift and go to state 271
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
+    WORLD           shift and go to state 223
 
-    loop_set                       shift and go to state 353
-    var_stmt                       shift and go to state 354
-    epsilon                        shift and go to state 355
-    accessing                      shift and go to state 269
+    loop_set                       shift and go to state 354
+    var_stmt                       shift and go to state 355
+    epsilon                        shift and go to state 356
+    accessing                      shift and go to state 270
     word                           shift and go to state 216
 
-state 349
+state 350
 
     (104) if_stmt -> IF disjunction { stmt_list } else_stmt .
 
@@ -6967,6 +7089,7 @@ state 349
     ID              reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
     ORGANISM        reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
     SIMULATION      reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
+    WORLD           reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
     NUMBER          reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
     STRING          reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
     (               reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
@@ -6979,18 +7102,18 @@ state 349
     }               reduce using rule 104 (if_stmt -> IF disjunction { stmt_list } else_stmt .)
 
 
-state 350
+state 351
 
     (105) else_stmt -> ELSE . if_stmt
     (106) else_stmt -> ELSE . { stmt_list }
     (104) if_stmt -> . IF disjunction { stmt_list } else_stmt
 
-    {               shift and go to state 357
+    {               shift and go to state 358
     IF              shift and go to state 210
 
-    if_stmt                        shift and go to state 356
+    if_stmt                        shift and go to state 357
 
-state 351
+state 352
 
     (107) else_stmt -> epsilon .
 
@@ -7003,6 +7126,7 @@ state 351
     ID              reduce using rule 107 (else_stmt -> epsilon .)
     ORGANISM        reduce using rule 107 (else_stmt -> epsilon .)
     SIMULATION      reduce using rule 107 (else_stmt -> epsilon .)
+    WORLD           reduce using rule 107 (else_stmt -> epsilon .)
     NUMBER          reduce using rule 107 (else_stmt -> epsilon .)
     STRING          reduce using rule 107 (else_stmt -> epsilon .)
     (               reduce using rule 107 (else_stmt -> epsilon .)
@@ -7015,35 +7139,35 @@ state 351
     }               reduce using rule 107 (else_stmt -> epsilon .)
 
 
-state 352
+state 353
 
     (103) index_stmt -> naming [ disjunction ] = disjunction .
 
     ;               reduce using rule 103 (index_stmt -> naming [ disjunction ] = disjunction .)
 
 
-state 353
+state 354
 
     (108) loop_stmt -> LOOP loop_init , loop_condition , loop_set . { stmt_list }
 
-    {               shift and go to state 358
+    {               shift and go to state 359
 
 
-state 354
+state 355
 
     (111) loop_set -> var_stmt .
 
     {               reduce using rule 111 (loop_set -> var_stmt .)
 
 
-state 355
+state 356
 
     (112) loop_set -> epsilon .
 
     {               reduce using rule 112 (loop_set -> epsilon .)
 
 
-state 356
+state 357
 
     (105) else_stmt -> ELSE if_stmt .
 
@@ -7056,6 +7180,7 @@ state 356
     ID              reduce using rule 105 (else_stmt -> ELSE if_stmt .)
     ORGANISM        reduce using rule 105 (else_stmt -> ELSE if_stmt .)
     SIMULATION      reduce using rule 105 (else_stmt -> ELSE if_stmt .)
+    WORLD           reduce using rule 105 (else_stmt -> ELSE if_stmt .)
     NUMBER          reduce using rule 105 (else_stmt -> ELSE if_stmt .)
     STRING          reduce using rule 105 (else_stmt -> ELSE if_stmt .)
     (               reduce using rule 105 (else_stmt -> ELSE if_stmt .)
@@ -7068,7 +7193,7 @@ state 356
     }               reduce using rule 105 (else_stmt -> ELSE if_stmt .)
 
 
-state 357
+state 358
 
     (106) else_stmt -> ELSE { . stmt_list }
     (91) stmt_list -> . stmt stmt_list
@@ -7101,6 +7226,7 @@ state 357
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
     (146) atom -> . NUMBER
     (147) atom -> . STRING
     (148) atom -> . bool
@@ -7109,8 +7235,8 @@ state 357
     (151) atom -> . { keyarg_list }
     (119) negation -> . NOT comparison
     (120) negation -> . comparison
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (121) comparison -> . expr EQ expr
     (122) comparison -> . expr NEQ expr
     (123) comparison -> . expr GE expr
@@ -7142,17 +7268,18 @@ state 357
     ID              shift and go to state 219
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    WORLD           shift and go to state 223
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
-    NOT             shift and go to state 227
+    NOT             shift and go to state 228
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
-    -               shift and go to state 230
+    -               shift and go to state 231
 
-    stmt_list                      shift and go to state 359
+    stmt_list                      shift and go to state 360
     stmt                           shift and go to state 200
     epsilon                        shift and go to state 201
     if_stmt                        shift and go to state 202
@@ -7166,14 +7293,14 @@ state 357
     word                           shift and go to state 216
     atom                           shift and go to state 220
     negation                       shift and go to state 221
-    bool                           shift and go to state 225
-    expr                           shift and go to state 226
-    comparison                     shift and go to state 228
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
+    bool                           shift and go to state 226
+    expr                           shift and go to state 227
+    comparison                     shift and go to state 229
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
 
-state 358
+state 359
 
     (108) loop_stmt -> LOOP loop_init , loop_condition , loop_set { . stmt_list }
     (91) stmt_list -> . stmt stmt_list
@@ -7206,6 +7333,7 @@ state 358
     (154) word -> . ID
     (155) word -> . ORGANISM
     (156) word -> . SIMULATION
+    (157) word -> . WORLD
     (146) atom -> . NUMBER
     (147) atom -> . STRING
     (148) atom -> . bool
@@ -7214,8 +7342,8 @@ state 358
     (151) atom -> . { keyarg_list }
     (119) negation -> . NOT comparison
     (120) negation -> . comparison
-    (157) bool -> . TRUE
-    (158) bool -> . FALSE
+    (158) bool -> . TRUE
+    (159) bool -> . FALSE
     (121) comparison -> . expr EQ expr
     (122) comparison -> . expr NEQ expr
     (123) comparison -> . expr GE expr
@@ -7247,17 +7375,18 @@ state 358
     ID              shift and go to state 219
     ORGANISM        shift and go to state 222
     SIMULATION      shift and go to state 197
-    NUMBER          shift and go to state 223
-    STRING          shift and go to state 224
+    WORLD           shift and go to state 223
+    NUMBER          shift and go to state 224
+    STRING          shift and go to state 225
     (               shift and go to state 218
     [               shift and go to state 213
     {               shift and go to state 198
-    NOT             shift and go to state 227
+    NOT             shift and go to state 228
     TRUE            shift and go to state 102
     FALSE           shift and go to state 103
-    -               shift and go to state 230
+    -               shift and go to state 231
 
-    stmt_list                      shift and go to state 360
+    stmt_list                      shift and go to state 361
     stmt                           shift and go to state 200
     epsilon                        shift and go to state 201
     if_stmt                        shift and go to state 202
@@ -7271,28 +7400,28 @@ state 358
     word                           shift and go to state 216
     atom                           shift and go to state 220
     negation                       shift and go to state 221
-    bool                           shift and go to state 225
-    expr                           shift and go to state 226
-    comparison                     shift and go to state 228
-    term                           shift and go to state 229
-    factor                         shift and go to state 231
-    power                          shift and go to state 232
-
-state 359
-
-    (106) else_stmt -> ELSE { stmt_list . }
-
-    }               shift and go to state 361
-
+    bool                           shift and go to state 226
+    expr                           shift and go to state 227
+    comparison                     shift and go to state 229
+    term                           shift and go to state 230
+    factor                         shift and go to state 232
+    power                          shift and go to state 233
 
 state 360
 
-    (108) loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list . }
+    (106) else_stmt -> ELSE { stmt_list . }
 
     }               shift and go to state 362
 
 
 state 361
+
+    (108) loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list . }
+
+    }               shift and go to state 363
+
+
+state 362
 
     (106) else_stmt -> ELSE { stmt_list } .
 
@@ -7305,6 +7434,7 @@ state 361
     ID              reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
     ORGANISM        reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
     SIMULATION      reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
+    WORLD           reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
     NUMBER          reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
     STRING          reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
     (               reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
@@ -7317,7 +7447,7 @@ state 361
     }               reduce using rule 106 (else_stmt -> ELSE { stmt_list } .)
 
 
-state 362
+state 363
 
     (108) loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .
 
@@ -7330,6 +7460,7 @@ state 362
     ID              reduce using rule 108 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .)
     ORGANISM        reduce using rule 108 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .)
     SIMULATION      reduce using rule 108 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .)
+    WORLD           reduce using rule 108 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .)
     NUMBER          reduce using rule 108 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .)
     STRING          reduce using rule 108 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .)
     (               reduce using rule 108 (loop_stmt -> LOOP loop_init , loop_condition , loop_set { stmt_list } .)

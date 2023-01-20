@@ -564,7 +564,8 @@ def get_parser(*args, **kwargs):
     def p_word(p):
         '''word : ID
                 | ORGANISM
-                | SIMULATION'''
+                | SIMULATION
+                | WORLD'''
         p[0] = p[1]
     
     def p_bool(p):
