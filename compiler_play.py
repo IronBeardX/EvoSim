@@ -4,23 +4,30 @@ from src.compiler.context import Context
 
 
 lexer = get_lexer(debug=True)
-parser = get_parser(debug=True, start="test_world")
-
+parser = get_parser(debug=True, start="test")
 context = Context()
-text = '''
-world {
-    size infinite { width 1920 height 1080 }
-    terrain {
-        aaa
-        default bbb
-        ccc at {1 2 3}
-        ddd
-        eee at {4 5}
-        fff
+
+data = '''
+gene vision
+gene health aaa {
+    value 5 in {0 10}
+    mutation {
+        chance 0.5
+        step 1
     }
 }
+gene fins bbb {
+    value 3 in {2 4} mutation {
+        chance 0.6 step 4
+    }
+}
+gene attack ccc { cost 10 }
 '''
 
-expr = parser.parse(text, lexer=lexer)
+context.set_var('gene', {})
 
-print(expr)
+stmts = parser.parse(data, lexer=lexer)
+for node in stmts:
+    node.evaluate(context)
+
+print(context.variables)

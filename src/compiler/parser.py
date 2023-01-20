@@ -29,7 +29,7 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : organism_stmt"
+        "test : gene_stmt_list"
         p[0] = p[1]
 
     # handle errors
