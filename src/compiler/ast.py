@@ -284,7 +284,7 @@ class OrganismNode(Node):
             def __init__(self, dna_chain, representation="O", species="default"):
                 super().__init__(dna_chain, representation)
             
-        fac_list.append((lambda: NewOrganism(dna_chain, species = NewOrganism), self.positions))
+        fac_list.append((lambda: NewOrganism(dna_chain, representation = representation, species = NewOrganism), self.positions))
 
 
 class WorldNode(Node):
