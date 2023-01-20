@@ -103,19 +103,28 @@ entity_org_stmt_list =>
     epsilon
 
 entity_stmt =>
-    ENTITY { entityprop entityprop }
+    ENTITY { entityprop entityprop entityprop }
 
 entityprop =>
     COEXISTENCE bool
     REPR ID
+    AT { position position_list }
 
 organism_stmt =>
-    ORGANISM { orgprop orgprop }
+    ORGANISM { orgprop orgprop orgprop orgprop }
 
 orgprop =>
     REPR ID
     DNA ID
     BEHAVIOR ID
+    AT { position position_list }
+
+position_list =>
+    position position_list
+    epsilon
+
+position =>
+    ( NUMBER NUMBER )
 
 
 world_stmt =>

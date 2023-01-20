@@ -29,7 +29,7 @@ def get_parser(*args, **kwargs):
         pass
 
     def p_test(p):
-        "test : world_stmt"
+        "test : organism_stmt"
         p[0] = p[1]
 
     # handle errors
@@ -164,8 +164,8 @@ def get_parser(*args, **kwargs):
         p[0] = []
 
     def p_entity_stmt(p):
-        "entity_stmt : ENTITY '{' entityprop entityprop '}'"
-        p[0] = EntityNode({**p[3], **p[4]})
+        "entity_stmt : ENTITY '{' entityprop entityprop entityprop '}'"
+        p[0] = EntityNode({**p[3], **p[4], **p[5]})
 
     def p_entityprop_coex(p):
         "entityprop : COEXISTENCE bool"
@@ -175,9 +175,13 @@ def get_parser(*args, **kwargs):
         "entityprop : REPR ID"
         p[0] = {'representation': p[2]}
     
+    def p_entityprop_position(p):
+        "entityprop : AT '{' position position_list '}'"
+        p[0] = {'positions': [p[3], *p[4]]}
+    
     def p_organism_stmt(p):
-        "organism_stmt : ORGANISM '{' orgprop orgprop orgprop '}'"
-        p[0] = OrganismNode({**p[3], **p[4], **p[5]})
+        "organism_stmt : ORGANISM '{' orgprop orgprop orgprop orgprop '}'"
+        p[0] = OrganismNode({**p[3], **p[4], **p[5], **p[6]})
 
     def p_orgprop_dna(p):
         '''orgprop : DNA ID
@@ -187,6 +191,22 @@ def get_parser(*args, **kwargs):
     def p_orgprop_repr(p):
         "orgprop : REPR ID"
         p[0] = {'representation': p[2]}
+    
+    def p_orgprop_position(p):
+        "orgprop : AT '{' position position_list '}'"
+        p[0] = {'positions': [p[3], *p[4]]}
+
+    def p_position_list(p):
+        "position_list : position position_list"
+        p[0] = [p[1], *p[2]]
+    
+    def p_position_list_epsilon(p):
+        "position_list : epsilon"
+        p[0] = []
+    
+    def p_position(p):
+        "position : '(' NUMBER NUMBER ')'"
+        p[0] = (parse_number(p[2]), parse_number(p[3]))
     
     # world stmt productions
     def p_world(p):
