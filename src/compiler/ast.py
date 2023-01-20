@@ -7,7 +7,8 @@ from src.compiler.error import (
     VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR,
     BAD_LIST_INDEXER_ERROR,
     KEY_NOT_IN_DICT_ERROR, BAD_INDEXER_ERROR,
-    NOT_INDEXABLE_ERROR, INDEX_ASSIGNMENT_ERROR
+    NOT_INDEXABLE_ERROR, INDEX_ASSIGNMENT_ERROR,
+    NOT_A_DICT_ERROR
 )
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
@@ -524,6 +525,17 @@ class VariableSettingNode(Node):
                 setattr(v, last, value)
             except:
                 raise PROP_NOT_IN_VAR_ERROR('.'.join(names), last)
+
+class KeysNode(Node):
+    def __init__(self, dictlike_node):
+        self.dict_node = dictlike_node
+    
+    def evaluate(self, context: Context):
+        d = self.dict_node.evaluate(context)
+        if isinstance(d, dict):
+            return [key for key in d.keys()]
+        
+        raise NOT_A_DICT_ERROR(d)
 
 
 class ListNode(Node):

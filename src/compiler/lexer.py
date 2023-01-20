@@ -65,7 +65,8 @@ reserved = {
     'behavior'          : 'BEHAVIOR',
     'decide'            : 'DECIDE',
     'time'              : 'TIME',
-    'organism'          : 'ORGANISM'
+    'organism'          : 'ORGANISM',
+    'keys'              : 'KEYS'
 }
 
 tokens = (

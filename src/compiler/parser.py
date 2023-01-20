@@ -6,7 +6,7 @@ from src.compiler.util import parse_number, nth_root, token_column
 from src.compiler.error import EvoSimSyntaxError
 from src.compiler.ast import (
     ValueNode, UnaryOpNode, BinaryOpNode, VariableNode,
-    ListNode, DictNode, IndexNode,
+    ListNode, DictNode, IndexNode, KeysNode,
     WorldNode, SimulationNode, EntityNode, OrganismNode, BehaviorNode,
     PhyGeneNode, PerceptionGeneNode, ActionGeneNode, DNAChainNode,
     IfNode, ElseNode,
@@ -515,6 +515,10 @@ def get_parser(*args, **kwargs):
     def p_naming_accessing(p):
         "naming : accessing"
         p[0] = VariableNode(p[1])
+    
+    def p_naming_keys(p):
+        "naming : KEYS '(' naming ')'"
+        p[0] = KeysNode(p[3])
 
     def p_naming_func(p):
         "naming : ID '(' arg_list ')'"

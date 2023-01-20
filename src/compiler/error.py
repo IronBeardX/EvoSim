@@ -45,6 +45,10 @@ INDEX_ASSIGNMENT_ERROR = lambda string: EvoSimVariableError(
     f"'{string}' string do not support index assignment"
 )
 
+NOT_A_DICT_ERROR = lambda store: EvoSimVariableError(
+    f"'{store}' is not a dictionary"
+)
+
 
 class EvoSimFunctionError(EvoSimError):
     def __init__(self, message):

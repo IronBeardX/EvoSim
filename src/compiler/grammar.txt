@@ -8,7 +8,7 @@ reserved:
     SIMULATION EPISODES STOP MAX_ROUNDS IF ELSE GENE HEALTH HUNGER LEGS EYES ARMS 
     HORNS SMELL FINS NOSE MOUTH SMELLING VISION MOVE EAT REPRODUCE ATTACK DEFEND
     PICK SWIM VALUE IN MUTATION CHANCE STEP LOOP CONTINUE BREAK ACTIONS_TIME AVAILABLE_COMMANDS
-    FUNC RETURN DNA COST ENTITY COEXISTENCE REPR ORGANISM BEHAVIOR DECIDE TIME
+    FUNC RETURN DNA COST ENTITY COEXISTENCE REPR ORGANISM BEHAVIOR DECIDE TIME KEYS
 
 tokens:
     INTDIV EQ NEQ GE LE NUMBER STRING ID
@@ -162,7 +162,7 @@ terrainposn_list =>
 
 
 sim_stmt =>
-    SIMULATION => { simprop simprop simprop simprop simprop }
+    SIMULATION { simprop simprop simprop simprop simprop }
 
 simprop =>
     EPISODES NUMBER
@@ -286,6 +286,7 @@ power =>
 naming =>
     naming [ disjunction ]
     accessing
+    KEYS ( naming )
     ID ( arg_list )
     atom
 
