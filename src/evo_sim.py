@@ -4,6 +4,7 @@ from .utils import *
 from colorama import init as colorama_init
 from colorama import Fore
 from colorama import Style
+import time
 
 
 class EvoSim:
@@ -109,6 +110,7 @@ class EvoSim:
                         self.visualization_fun(action)
 
     def gol_visualizer(self):
+        print(chr(27) + "[2J")
         print("\n")
         for i in range(self.world.world_rep().shape[0]):
             for j in range(self.world.world_rep().shape[1]):
@@ -128,6 +130,8 @@ class EvoSim:
                     print(self.world.world_rep()[i, j], end=" ")
             print("\n")
         print("\n \n")
+        print(chr(27) + "[2J")
+        time.sleep(1)
 
     def visualization_fun(self, action=None, banished=None):
         if action:

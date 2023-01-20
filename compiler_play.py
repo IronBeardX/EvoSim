@@ -26,7 +26,7 @@ world {
 
 simulation {
     episodes 1
-    max_rounds 2
+    max_rounds 20
     actions_time 1
     available_commands {}
     stop simulation {
