@@ -52,32 +52,39 @@ class ProgramNode(Node):
         for node in self.entity_org_nodes:
             node.evaluate(context)
 
-        # TODO: handle world & sim nodes
-        '''
-            props looks like: {'size': Tuple, 'terrain': list[tuples[3]]}
-
-            'size' is (True, {'width': -1, 'height': -1}) if infinite
-            else is (False, {'width': number, 'height': number})
-
-            'terrain' is a list of Tuple (string, boolean, list)
-            the string is the name of the terrain
-            the boolean represents if it's default or not
-            the list of numbers are the positions (empty if terrain is default)
-        '''
         world_props = self.world_node.evaluate(context)
-        '''
-            props looks like: {'episodes': number, 'max_rounds': number, 'stop': FunctionNode, 'actions_time': number, 'available_commands': dict{string, callable}}
-        '''
+        # Process terrain from world_props
+        terrain_types = {}
+        terrain_distribution = {}
+
+        for terrain in world_props['terrain']:
+            terrain_types[terrain[0][0]] = terrain[0]
+            if terrain[1]:
+                terrain['default'] = terrain_types[terrain[0][0]]
+            for position in terrain[2]:
+                terrain_distribution[position] = terrain_types[terrain[0][0]]
+
         sim_props = self.sim_node.evaluate(context)
 
-        # TODO: process terrain
         simulation = EvoSim(
+            world_props['size'][1]['height'],
+            world_props['size'][1]['width'],
+            terrain_types,
+            terrain_distribution,
+            finite = world_props['size'][0],
+            episodes_total = sim_props['episodes'],
+            max_rounds_per_episode = sim_props['max_rounds'],
+            # TODO: Capture stop function in the node
+            stop_condition = sim_props['stop'],
+            available_commands = sim_props['available_commands'],
+            visualization = True,
+            actions_time = sim_props['actions_time']
         )
-
-
-
-        # TODO: run simulation
-
+        
+        # Add entity factories
+        for ent_fact in context.get_var("ent_facts"):
+            simulation.add_entity_gen(ent_fact)
+        
 
 class PerceptionGeneNode(Node):
     TYPES = {
