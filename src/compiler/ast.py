@@ -1,6 +1,7 @@
 from src.compiler.context import Context
 from src.compiler.util import Signal, BREAK, ValueSignal
 from src.evo_entity import *
+from src.evo_sim import *
 from src.compiler.error import (
     PARAMS_ERROR, FUNCTION_NOT_FOUND_ERROR, NOT_A_FUNCTION_ERROR,
     VAR_NOT_FOUND_ERROR, PROP_NOT_IN_VAR_ERROR,
@@ -52,10 +53,39 @@ class ProgramNode(Node):
         for node in self.entity_org_nodes:
             node.evaluate(context)
 
-        # TODO: handle world & sim nodes
+        world_props = self.world_node.evaluate(context)
+        # Process terrain from world_props
+        terrain_types = {}
+        terrain_distribution = {}
 
-        # TODO: run simulation
+        for terrain in world_props['terrain']:
+            terrain_types[terrain[0][0]] = terrain[0]
+            if terrain[1]:
+                terrain['default'] = terrain_types[terrain[0][0]]
+            for position in terrain[2]:
+                terrain_distribution[position] = terrain_types[terrain[0][0]]
 
+        sim_props = self.sim_node.evaluate(context)
+
+        simulation = EvoSim(
+            world_props['size'][1]['height'],
+            world_props['size'][1]['width'],
+            terrain_types,
+            terrain_distribution,
+            finite = world_props['size'][0],
+            episodes_total = sim_props['episodes'],
+            max_rounds_per_episode = sim_props['max_rounds'],
+            # TODO: Capture stop function in the node
+            stop_condition = sim_props['stop'],
+            available_commands = sim_props['available_commands'],
+            visualization = True,
+            actions_time = sim_props['actions_time']
+        )
+        
+        # Add entity factories
+        for ent_fact in context.get_var("ent_facts"):
+            simulation.add_entity_gen(ent_fact)
+        
 
 class PerceptionGeneNode(Node):
     TYPES = {
