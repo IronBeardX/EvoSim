@@ -99,7 +99,7 @@ class EvoSim:
                     continue
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
-                actions = entity.decide_action(day, time=self.actions_time)
+                actions = entity.decide_action( time=self.actions_time)
                 for action in actions:
                     action["entity"] = entity_id
                     self.execute_action(action)
