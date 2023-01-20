@@ -13,12 +13,29 @@ class EvoSimSyntaxError(EvoSimError):
         )
 
 
+class EvoSimTypeError(EvoSimError):
+    def __init__(self, variable_name, expected_type):
+        super().__init__(f'variable {variable_name} must have type {expected_type}')
+    
+
 class EvoSimVariableError(EvoSimError):
     def __init__(self, message):
         super().__init__(message)
 
 VAR_NOT_FOUND_ERROR = lambda name: EvoSimVariableError(
     f"'{name}' variable doesn't exist"
+)
+
+INVALID_GENE_VALUE_ERROR = lambda value: EvoSimVariableError(
+    f"'{value}' is an valid value for gene"
+)
+
+INVALID_GENE_STEP_ERROR = lambda value: EvoSimVariableError(
+    f"'{value}' is an valid step for gene."
+)
+
+MUTATION_CHANCE_ERROR = lambda value: EvoSimVariableError(
+    f'Mutation chance must be a number between 0 and 1, not "{value}"'
 )
 
 PROP_NOT_IN_VAR_ERROR = lambda var_name, name: EvoSimVariableError(

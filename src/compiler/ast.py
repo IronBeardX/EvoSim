@@ -8,7 +8,8 @@ from src.compiler.error import (
     BAD_LIST_INDEXER_ERROR,
     KEY_NOT_IN_DICT_ERROR, BAD_INDEXER_ERROR,
     NOT_INDEXABLE_ERROR, INDEX_ASSIGNMENT_ERROR,
-    NOT_A_DICT_ERROR
+    NOT_A_DICT_ERROR,
+    INVALID_GENE_STEP_ERROR, INVALID_GENE_VALUE_ERROR, MUTATION_CHANCE_ERROR
 )
 from src.genetics import (
     Smelling, VisionRadial, Move, Eat, Reproduce,
@@ -163,11 +164,11 @@ class PhyGeneNode(Node):
         props_names = {'name', 'value', 'mutation', 'class'}
 
         if props['value'][0] < props['value'][1]['min'] or props['value'][0] > props['value'][1]['max']:
-            raise ValueError('Invalid value for gene')
+            raise INVALID_GENE_VALUE_ERROR(props['value'][0])
         if props['mutation']['step'] <= 0:
-            raise ValueError('Gene step should be grater than 0')
+            raise INVALID_GENE_STEP_ERROR(props['mutation']['step'])
         if props['mutation']['chance'] < 0 or props['mutation']['chance'] > 1:
-            raise ValueError('Mutation chance should be between 0 and 1')
+            raise MUTATION_CHANCE_ERROR(props['mutation']['chance'])
 
         value = props['value'][0]
         value_extras = props['value'][1]
