@@ -580,6 +580,4 @@ def get_parser(*args, **kwargs):
         "test_world : world_stmt"
         p[0] = p[1]
 
-    def p_test_
-
     return yacc.yacc(*args, **kwargs)
