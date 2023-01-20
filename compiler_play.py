@@ -29,7 +29,11 @@ gene move ccc { cost 10 }
 dna ddd {aaa vision}
 dna eee {dna ddd bbb ccc}
 
-behavior ggg
+behavior ggg {
+    decide organism time {
+        return [{'command' = 'move north'}];
+    }
+}
 
 entity {
     coexistence false
