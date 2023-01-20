@@ -75,16 +75,19 @@ class ProgramNode(Node):
             finite = world_props['size'][0],
             episodes_total = sim_props['episodes'],
             max_rounds_per_episode = sim_props['max_rounds'],
-            # TODO: Capture stop function in the node
             stop_condition = sim_props['stop'],
             available_commands = sim_props['available_commands'],
             visualization = True,
             actions_time = sim_props['actions_time']
         )
-        
+        factories = context.get_var('ent_facts')
+        ent_distributions = []
         # Add entity factories
-        for ent_fact in context.get_var("ent_facts"):
-            simulation.add_entity_gen(ent_fact)
+        for i in range(len(factories)):
+            simulation.add_entity_gen(factories[i][0])
+            ent_distributions.append(i, factories[i][1])
+
+        simulation.run(ent_distributions)
         
 
 class PerceptionGeneNode(Node):
@@ -233,18 +236,20 @@ class EntityNode(Node):
         DELETE_THIS = '''
         'representation':str
         'coexistence':bool
+        'positions':list[tuple[2]]
         '''
 
         #checking if all props are in props
-        if not ('representation' in props and 'coexistence' in props):
+        if not ('representation' in props and 'coexistence' in props and 'positions' in props):
             raise ValueError('Entity must have representation and coexistence')
 
+        self.positions = props['positions']
         self.factory = lambda: Entity(props['representation'], props['coexistence'])
         
 
     def evaluate(self, context: Context):
         fac_list = context.get_var('ent_facts')
-        fac_list.append(self.factory)
+        fac_list.append((self.factory, self.positions))
 
 
 class OrganismNode(Node):
@@ -253,13 +258,15 @@ class OrganismNode(Node):
         'representation':str
         'dna':str
         'behavior':str
+        'positions':list[tuple[2]]
         '''
-        if not('representation' in props or 'dna' in props or 'behavior' in props):
+        if not('representation' in props and 'dna' in props and 'behavior' in props and 'positions' in props):
             raise ValueError('Organism must have representation and dna_chain')
         
         self.representation = props['representation']
         self.dna_chain = props['dna']
         self.behavior = props['behavior']
+        self.positions = props['positions']
 
 
     def evaluate(self, context: Context):
@@ -273,7 +280,7 @@ class OrganismNode(Node):
             def __init__(self):
                 super().__init__(dna_chain, representation)
             
-        fac_list.append(lambda: NewOrganism())
+        fac_list.append((lambda: NewOrganism(), self.positions))
 
 
 class WorldNode(Node):
@@ -290,19 +297,6 @@ class WorldNode(Node):
             the list of numbers are the positions (empty if terrain is default)
         '''
 
-        #TODO: averiguar q pasa y arreglar
-        #Traceback (most recent call last):
-        #    File "/home/yeyon/Uni/EvoSim/compiler_play.py", line 17, in <module>
-        #      expr = parser.parse(text, lexer=lexer)
-        #             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        #    File "/home/yeyon/Uni/EvoSim/src/compiler/ply/yacc.py", line 409, in parse
-        #      p.callable(pslice)
-        #    File "/home/yeyon/Uni/EvoSim/src/compiler/parser.py", line 194, in p_world
-        #      p[0] = WorldNode({**p[3], **p[4]})
-        #             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        #    File "/home/yeyon/Uni/EvoSim/src/compiler/ast.py", line 270, in __init__
-        #      raise PARAMS_ERROR('World', 'size', 'width or height')
-        #src.compiler.error.EvoSimFunctionError: function 'World' expects size parameters and received width or height arguments when called
 
         # Checking if all properties are in the dictionary:
         if not 'size' in props or not 'terrain' in props:
@@ -347,6 +341,9 @@ class SimulationNode(Node):
         self.evo_props = props
 
     def evaluate(self, context: Context):
+        child_context = context.create_child()
+        stop_fn = lambda sim: self.evo_props['stop'].call(child_context, [sim])
+        self.evo_props['stop'] = stop_fn
         return self.evo_props
 
 
