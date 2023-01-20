@@ -31,6 +31,7 @@ class EvoSim:
         self.episodes_total = episodes_total
         self.max_rounds = max_rounds_per_episode
         self.stop_condition = stop_condition
+        self.day = 0
         # TODO: this should be imported
         default_commands = {"floor": self.floor,
                             "smell": self.smell,
@@ -56,6 +57,7 @@ class EvoSim:
 
     def run_episode(self):
         for day in range(self.max_rounds):
+            self.day = day
             # Checking stop condition if defined
             if self.stop_condition is not None:
                 if self.stop_condition(self):
