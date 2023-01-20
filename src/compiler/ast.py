@@ -224,11 +224,14 @@ class BehaviorNode(Node):
         for node in self.func_nodes:
             node.evaluate(child_context)
 
-        class NewBehavior(Behavior):
-            def decide_action(self, time = 1):
-                return self.decide_node.call(child_context, [self, time])
+        if self.decide_node:
+            class NewBehavior(RandomBehavior):
+                def decide_action(self, time = 1):
+                    return self.decide_node.call(child_context, [self, time])
         
-        behavior_dict[self.name] = NewBehavior
+            behavior_dict[self.name] = NewBehavior
+        else:
+            behavior_dict[self.name] = RandomBehavior
 
 
 class EntityNode(Node):
