@@ -69,12 +69,14 @@ world {
 }
 
 simulation {
-    episodes 10
+    episodes 1
     max_rounds 10
     actions_time 10
     available_commands {}
     stop simulation {
-        return simulation.day == 2;
+        var = simulation.dest;
+        var();
+        return true;
     }
 }
 '''

@@ -21,7 +21,6 @@ simulation {
     available_commands {}
     stop simulation {
         loop i = 0, i < simulation.world.world_map.shape[0], i = i+1{
-            
             entities_dict = keys(simulation.entities)
         }
     }

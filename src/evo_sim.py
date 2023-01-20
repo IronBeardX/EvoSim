@@ -380,3 +380,6 @@ class EvoSim:
             self.entities[entity.get_entity_id()] = entity
         self.world.place_entity(entity.get_entity_id(), world_position,
                                 entity.rep, entity.coexistence)
+
+    def dest(self):
+        print("hi")
