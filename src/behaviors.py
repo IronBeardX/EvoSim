@@ -58,34 +58,41 @@ class RandomBehavior(Behavior):
             match action["name"]:
                 # TODO: the actions in each case should be in methods for easier usage
                 case "move north":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move north"})
                 case "move south":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move south"})
                 case "move east":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move east"})
                 case "move west":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move west"})
                 case "eat":
                     random_ent = self.rand_ent()
                     if random_ent != "none":
-                        self.physical_properties["hunger"] -= action["cost"]
+                        if 'hunger' in self.physical_properties:
+                            self.physical_properties["hunger"] -= action["cost"]
                         action_time += self.physical_properties["mouth"]
                         actions.append(
                             {"command": "eat", "parameters": [random_ent]})
                 case "reproduce":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += 5
                     actions.append({"command": "reproduce"})
                 case "duplicate":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += 5
                     actions.append({"command": "duplicate"})
                 case "attack":
@@ -96,7 +103,8 @@ class RandomBehavior(Behavior):
                             if attack < self.physical_properties[damage_dealer]:
                                 attack = self.physical_properties[damage_dealer]
                                 body_part = damage_dealer
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties[body_part]
                     objective = self.rand_ent()
                     actions.append(
@@ -109,30 +117,36 @@ class RandomBehavior(Behavior):
                             if defense < self.physical_properties[defense_dealer]:
                                 defense = self.physical_properties[defense_dealer]
                                 body_part = defense_dealer
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties[body_part]
                     self.physical_properties["defending"] = True
                 case "pick":
                     random_ent = self.rand_ent()
                     if random_ent != "none":
-                        self.physical_properties["hunger"] -= action["cost"]
+                        if 'hunger' in self.physical_properties:
+                            self.physical_properties["hunger"] -= action["cost"]
                         action_time += self.physical_properties["arms"]
                         actions.append(
                             {"command": "pick", "parameters": [random_ent]})
                 case "swim north":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim north"})
                 case "swim south":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim south"})
                 case "swim east":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim east"})
                 case "swim west":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim west"})
                 case _:
