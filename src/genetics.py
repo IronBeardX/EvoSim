@@ -159,9 +159,6 @@ class VisionRadial(PerceptionGene):
     def __init__(self):
         super().__init__("vision")
 
-    def perceive(self):
-        pass
-
     def get_property(self):
         return [
             "vision"
@@ -169,93 +166,92 @@ class VisionRadial(PerceptionGene):
 
 # [ ]Action Genes
 # These genes gives the organism action abilities
+# TODO: Add cost to actions constructor as an argument
 
 
 class ActionGene:
-    def __init__(self, name, gen_type="action"):
+    def __init__(self, name, cost = 10, gen_type="action"):
         self.name = name
+        self.cost = cost
         self.gen_type = gen_type
-
-    def gen_act(self):
-        pass
 
     def get_property(self):
         pass
 
 
 class Move(ActionGene):
-    def __init__(self):
-        super().__init__("move")
+    def __init__(self, cost = 10):
+        super().__init__("move", cost = cost)
 
     def get_property(self):
         return [
-            {"name": "move north", "cost": 10},
-            {"name": "move south", "cost": 10},
-            {"name": "move east", "cost": 10},
-            {"name": "move west", "cost": 10}
+            {"name": "move north", "cost": self.cost},
+            {"name": "move south", "cost": self.cost},
+            {"name": "move east", "cost": self.cost},
+            {"name": "move west", "cost": self.cost}
         ]
 
 
 class Eat(ActionGene):
-    def __init__(self):
-        super().__init__("eat")
+    def __init__(self, cost = 10):
+        super().__init__("eat", cost)
 
     def get_property(self):
         return [
-            {"name": "eat", "cost": 10}
+            {"name": "eat", "cost": self.cost}
         ]
 
 
 class Reproduce(ActionGene):
-    def __init__(self):
-        super().__init__("reproduce")
+    def __init__(self, cost = 10):
+        super().__init__("reproduce", cost)
 
     def get_property(self):
         return [
-            {"name": "reproduce", "cost": 10}
+            {"name": "reproduce", "cost": self.cost}
         ]
 
 
 class Attack(ActionGene):
-    def __init__(self):
-        super().__init__("attack")
+    def __init__(self, cost = 10):
+        super().__init__("attack", cost)
 
     def get_property(self):
         return [
-            {"name": "attack", "cost": 10}
+            {"name": "attack", "cost": self.cost}
         ]
 
 
 class Defend(ActionGene):
-    def __init__(self):
-        super().__init__("defend")
+    def __init__(self, cost = 10):
+        super().__init__("defend", cost)
 
     def get_property(self):
         return [
-            {"name": "defend", "cost": 10}
+            {"name": "defend", "cost": self.cost}
         ]
 
 
 class Pick(ActionGene):
-    def __init__(self):
-        super().__init__("pick")
+    def __init__(self, cost = 10):
+        super().__init__("pick", cost)
 
     def get_property(self):
         return [
-            {"name": "pick", "cost": 10}
+            {"name": "pick", "cost": self.cost}
         ]
 
 
 class Swimming(ActionGene):
-    def __init__(self):
-        super().__init__("swimming")
+    def __init__(self, cost = 10):
+        super().__init__("swimming", cost)
 
     def get_property(self):
         return [
-            {"name": "swim north", "cost": 10},
-            {"name": "swim south", "cost": 10},
-            {"name": "swim east", "cost": 10},
-            {"name": "swim west", "cost": 10}
+            {"name": "swim north", "cost": self.cost},
+            {"name": "swim south", "cost": self.cost},
+            {"name": "swim east", "cost": self.cost},
+            {"name": "swim west", "cost": self.costI}
         ]
 
 

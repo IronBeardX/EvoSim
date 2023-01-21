@@ -34,13 +34,41 @@ class World():
         except:
             return False
 
+    def __get_positions_in_radius(self, entity_position, radius):
+        positions = []
+        for i in range(entity_position[0] - radius, entity_position[0] + radius + 1):
+            for j in range(entity_position[1] - radius, entity_position[1] + radius + 1):
+                if i >= 0 and j >= 0 and i < self.world_map.shape[0] and j < self.world_map.shape[1]:
+                    positions.append((i, j))
+                if self.finite:
+                    if i < 0:
+                        i = self.world_map.shape[0] - 1
+                    if j < 0:
+                        j = self.world_map.shape[1] - 1
+                    if i >= self.world_map.shape[0]:
+                        i = 0
+                    if j >= self.world_map.shape[1]:
+                        j = 0
+                    positions.append((i, j))
+        return positions
+
+    def get_entities_around_position(self, position):
+        position = (position[0], position[1])
+        entities_in_radius = []
+        valid_pos = self.__get_positions_in_radius(position, 1)
+        for entity in self.entities:
+            if self.entities[entity].position in valid_pos and self.entities[entity].position != position:
+                entities_in_radius.append(
+                    (entity, self.entities[entity].position))
+        return entities_in_radius
+
     def get_entity_by_position(self, position):
         '''
         This method returns the entities that occupies the given position.
         '''
         entities = []
         for i in self.entities.keys():
-            if self.entities[i].position == position:
+            if self.entities[i].position[0] == position[0] and self.entities[i].position[1] == position[1]:
                 entities.append(i)
         return entities
 

@@ -4,7 +4,7 @@ import math
 
 class Behavior:
     def decide_action(self, day, time):
-        pass
+        raise NotImplementedError()
 
 
 class RandomBehavior(Behavior):
@@ -48,41 +48,51 @@ class RandomBehavior(Behavior):
                     return
             self.knowledge.append(new_info)
 
-    def decide_action(self, day, time=10):
+    def decide_action(self, time=10):
         actions = []
         action_time = 0
+        if len(self.actions) == 0:
+            return []
         while action_time < time:
             action = random.choice(self.actions)
             match action["name"]:
+                # TODO: the actions in each case should be in methods for easier usage
                 case "move north":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move north"})
                 case "move south":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move south"})
                 case "move east":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move east"})
                 case "move west":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["legs"]
                     actions.append({"command": "move west"})
                 case "eat":
                     random_ent = self.rand_ent()
                     if random_ent != "none":
-                        self.physical_properties["hunger"] -= action["cost"]
+                        if 'hunger' in self.physical_properties:
+                            self.physical_properties["hunger"] -= action["cost"]
                         action_time += self.physical_properties["mouth"]
                         actions.append(
                             {"command": "eat", "parameters": [random_ent]})
                 case "reproduce":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += 5
                     actions.append({"command": "reproduce"})
                 case "duplicate":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += 5
                     actions.append({"command": "duplicate"})
                 case "attack":
@@ -93,7 +103,8 @@ class RandomBehavior(Behavior):
                             if attack < self.physical_properties[damage_dealer]:
                                 attack = self.physical_properties[damage_dealer]
                                 body_part = damage_dealer
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties[body_part]
                     objective = self.rand_ent()
                     actions.append(
@@ -106,30 +117,36 @@ class RandomBehavior(Behavior):
                             if defense < self.physical_properties[defense_dealer]:
                                 defense = self.physical_properties[defense_dealer]
                                 body_part = defense_dealer
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties[body_part]
                     self.physical_properties["defending"] = True
                 case "pick":
                     random_ent = self.rand_ent()
                     if random_ent != "none":
-                        self.physical_properties["hunger"] -= action["cost"]
+                        if 'hunger' in self.physical_properties:
+                            self.physical_properties["hunger"] -= action["cost"]
                         action_time += self.physical_properties["arms"]
                         actions.append(
                             {"command": "pick", "parameters": [random_ent]})
                 case "swim north":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim north"})
                 case "swim south":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim south"})
                 case "swim east":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim east"})
                 case "swim west":
-                    self.physical_properties["hunger"] -= action["cost"]
+                    if 'hunger' in self.physical_properties:
+                        self.physical_properties["hunger"] -= action["cost"]
                     action_time += self.physical_properties["fins"]
                     actions.append({"command": "swim west"})
                 case _:
@@ -213,6 +230,7 @@ class RandomBehavior(Behavior):
         return non_edible_ents
 
     def _fuzzy_goal_selector(self, goal):
+        # TODO: return the priority with the new normalized valor
         current_goal = "none"
         normalized_goal_vector = []
         total = 0
@@ -245,7 +263,7 @@ class OpportunisticBehavior(RandomBehavior):
 
         actions = []
 
-        # First we will determine our current goal from reproduction or food.
+        # First we will determine our current goal from reproduction, food, fighting or exploring
 
         # Checking how hungry are we
         hungry_level = None
@@ -279,6 +297,7 @@ class OpportunisticBehavior(RandomBehavior):
         for entity in self._non_edible_ent_in_knowledge():
             any_entity = True
             entities_in_sight.append(entity)
+            # TODO: check if "reproductive" is the correct key
             if entity["reproductive"] == True:
                 reproductive_entity = True
             if "storage" in entity:
@@ -306,18 +325,20 @@ class OpportunisticBehavior(RandomBehavior):
             goal.append({"goal": "food", "priority": 20 - stored_food * 20})
         elif hungry_level == "full":
             goal.append({"goal": "food", "priority": 1 - stored_food})
+        # TODO: think about time between reproductions
         # reproduction urgency will depend on how much time has passed since the simulation started (day)
         # the more time it passes, the more the urgency will increase
 
         # If we are not hungry we will try to reproduce
         if hungry_level != "famished" and hungry_level != "very hungry":
-            goal.append({"goal": "reproduction", "priority": day})
+            goal.append({"goal": "reproduction", "priority": 1 + day})
 
         # With the goal list we will determine the most urgent goal using fuzzy logic
         current_goal = "none" if len(
             goal) <= 0 else self._fuzzy_goal_selector(goal)
         # Now we will determine the best action to achieve our current goal using simulated annealing with the priority of the goal as the temperature
         # and the reward of each action as the energy
+        # TODO: remove after finished
         actions.extend(self._simulated_annealing(entities_with_food, current_goal, day, any_food,
                        food_in_sight, any_entity, entities_in_sight, reproductive_entity, time, 10))
         return actions
@@ -363,8 +384,6 @@ class OpportunisticBehavior(RandomBehavior):
                     actions, value, new_pos = self._get_state_food(
                         time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight)
                     initial_state = (value, new_pos)
-            case _:
-                return []
             # Now we will generate a new state and actions list:
             # If the new state is better than the initial state we will accept it
             # If the new state is worse than the initial state we will accept it with a probability depending on the temperature
@@ -383,22 +402,22 @@ class OpportunisticBehavior(RandomBehavior):
                 case "reproduction":
                     if "eye" in self.physical_properties.keys():
                         actions, value, new_pos = self._get_state_reproduction(
-                            time, any_entity, entities_in_sight, reproductive_entity, surroundings, previous_state= new_state, iteration = i)
+                            time, any_entity, entities_in_sight, reproductive_entity, surroundings, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
                     else:
                         actions, value, new_pos = self._get_state_reproduction(
-                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state= new_state, iteration = i)
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
                 case "food":
                     if "eye" in self.physical_properties.keys():
                         actions, value, new_pos = self._get_state_food(
-                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings, previous_state= new_state, iteration = i)
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
                     else:
                         actions, value, new_pos = self._get_state_food(
-                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state= new_state, iteration = i)
+                            time, entities_with_food, any_food, food_in_sight, any_entity, entities_in_sight, previous_state=new_state, iteration=i)
                         new_state = (value, new_pos)
-            
+
             # if the new state value is -1 it means that the state is not valid
             if new_state[0] == -1:
                 continue
@@ -417,8 +436,7 @@ class OpportunisticBehavior(RandomBehavior):
             temperature -= 1
         return actions
 
-
-    def _get_state_food(self, time, ent_w_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings=None, previous_state=None, iteration = 0):
+    def _get_state_food(self, time, ent_w_food, any_food, food_in_sight, any_entity, entities_in_sight, surroundings=None, previous_state=None, iteration=0):
         # This method will return a list of actions to get food
         # If there is food in sight it will return a list of actions to get to the food
         # If there is no food in sight it will return a list of actions to explore the surroundings
@@ -523,7 +541,8 @@ class OpportunisticBehavior(RandomBehavior):
             if any_food and len(self.physical_properties["storage"]) == 0:
                 # If there is food in sight we will try to get to it
                 # We will get the i-st closest food
-                closest_food = self._order_by_proximity(food_in_sight)[iteration]
+                closest_food = self._order_by_proximity(food_in_sight)[
+                    iteration]
 
                 # Now we will get the actions to get to the food
                 action_time, current_pos, actions = self._get_actions_to_position(
@@ -607,7 +626,7 @@ class OpportunisticBehavior(RandomBehavior):
                     entities_in_sight, entities_in_sight_pos, current_pos, self.physical_properties["eye"])
                 return actions, state_value, action_time
 
-    def _get_state_reproduction(self, time, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None, iteration = 0):
+    def _get_state_reproduction(self, time, any_entity, entities_in_sight, reproductive_entity, surroundings=None, previous_state=None, iteration=0):
         entities_in_sight_pos = self._curate_entities_positions(
             entities_in_sight)
         # getting position from the knowledge
@@ -617,11 +636,10 @@ class OpportunisticBehavior(RandomBehavior):
                 current_pos = info["position"]
                 break
 
-        
         if any_entity and reproductive_entity:
             # If there is an entity in sight we will try to get to it
             # We will get the closest reproductive entity
-            ordered_entities = self._order_by_proximity(entities_in_sight) 
+            ordered_entities = self._order_by_proximity(entities_in_sight)
             i = 0
             closest_ent = None
             for ent in ordered_entities:
@@ -630,6 +648,7 @@ class OpportunisticBehavior(RandomBehavior):
                     if i == iteration:
                         closest_ent = ent
                         break
+                    # TODO check how we are comparing the values
             if not closest_ent:
                 return [], -1, 0
             # Now we will get the actions to get to the entity
@@ -776,3 +795,22 @@ class OpportunisticBehavior(RandomBehavior):
         else:
             return pos
 
+
+class GluttonyBehavior(Behavior):
+    def decide_action(self, perceptions, day, time=10):
+        pass
+
+
+class FighterBehavior(Behavior):
+    def decide_action(self, perceptions, day, time=10):
+        pass
+
+
+class LoverBehavior(Behavior):
+    def decide_action(self, perceptions, day, time=10):
+        pass
+
+
+class ExplorerBehavior(Behavior):
+    def decide_action(self, perceptions, day, time=10):
+        pass

@@ -20,4 +20,78 @@ En el proyecto utilizaremos inteligencia artificial como parte de los comportami
 
 ## Compilación
 
-Para la parte de compilación diseñaremos un DSL que facilite el control de la simulación, desde el establecimiento del estado inicial, el diseño de distintos organismos, acceso sencillo a los algoritmos de inteligencia artificial que tendremos implementados y la definición de las reglas de interacción entre los organismos, asi como características del ambiente y la implementación de funciones que permitan modelar event.
+### Arquitectura del Compilador
+
+#### Dominio del DSL
+
+El dominio de aplicación de nuestro DSL es la creación de nuevos organismos en entornos (mundos) personalizados donde estos se desarrollarán por medio de nuestro motor de simulación EvoSim. Para lograr esto, nuestro DSL tiene sintaxis especializada en la creación estas entidades. En concreto este permite la creación de genes, ADN (secuencia de genes), Behaviors, Organismos (tiene un ADN y un Behavior), Mundo y Simulación.
+
+#### Sintaxis
+
+Como el objetivo de nuestro DSL es simplificar el trabajo de construir una simulación en EvoSim se hizo necesario remover características de lenguajes de propósito general que no eran necesarios para nuestro problema como por ejemplo la creación de clases, pero se mantuvieron algunas características como la creación de funciones dentro de las cuales se pueden ejecutar instrucciones de control de flujo y se pueden crear variables. Vale aclarar que estas funciones solo pueden estar presentes en objetos especiales del DSL que se verán más adelante en el documento.
+Al nuestra simulación de EvoSim tener un conjunto finito de objetos que se pueden crear, hace que en nuestro DSL sea posible tener sintaxis específica para estos. Las entidades que permite crear nuestro DSL son:
+- Genes
+- ADN
+- Behaviors
+- Organismos
+- Mundo
+- Simulación
+
+Comenzaremos hablando de las entidades de nuestra simulación y como estas se crean con la sintaxis de nuestro lenguaje para luego explicar como se pueden crear funciones (y en donde) con controles de flujo y con la posibilidad de crear variables temporales.
+
+##### Entidades
+
+###### Genes
+
+Los genes de nuestra simulación son de 3 tipos:
+- Físicos
+- Sensoriales
+- De acción
+
+Los genes son utilizados por otra estructura que se verá más adelante en el documento, el ADN. El objetivo fundamental de los genes es describir las características del organismo. Los genes físicos describen sus capacidades físicas del organismo (si tiene piernas podrá desplazarse, si tiene ojos podrá ver, etc.). Los genes sensoriales definen lo que puede percibir del mundo. Hay genes sensoriales que solo los puede tener un organismo si tiene un gen físico que lo permita (el sensor de la vista solo lo puede tener el organismo que tenga ojos, etc.). Los genes de acción son para definir cuales acciones puede realizar el organismo en el mundo donde se encuentre.
+
+En nuestro DSL se distinguen 2 tipos de genes: los que tienen parámetros personalizables y los que no.
+
+Si el gen es modificable se pudiera crear uno de la siguiente forma:
+```
+gene eyes aaa {
+    value 2 in {1 4}
+    mutation {
+        chance 0.75
+        step 2
+    }
+}
+```
+El fragmento de código anterior define un gen modificable de tipo `eye` con un identificador único `aaa`. Sus parámetros modificables son un `value` que se define con valor $2$ pero que pudiera estar en un rango entre 1 y $4$. También tiene un parámetro `mutation` que se inicializa con los valores 0.75 para `chance` y 2 para `step`.
+
+Si el gen no es modificable se pudiera crear uno de la siguiente forma:
+```
+gene vision
+```
+Aquí se definió un gen de tipo `vision` que al no tener ningún parámetro hace que no sea necesario agregarle un identificador.
+
+> [!NOTE]
+> Los genes disponibles para usarse en el DSL dependen del motor de simulación EvoSim
+
+###### ADN
+
+El ADN es la información que necesita un organismo para existir en nuestra simulación y este es formado por una secuencia de genes
+
+Un ADN se puede crear de la siguiente forma:
+
+```
+dna ddd {aaa vision}
+```
+
+o de la siguiente forma si un ADN quiere agregar los genes de otro adentro de si mismo:
+
+```
+dna eee {dna ddd bbb ccc}
+```
+
+#### Funciones
+
+##### Instrucciones de Control
+
+##### Variables
+

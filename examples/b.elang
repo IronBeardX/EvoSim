@@ -1,0 +1,69 @@
+gene eyes aaa {
+    value 2 in {1 4}
+    mutation {
+        chance 0.75
+        step 2
+    }
+}
+gene vision
+
+gene legs bbb {
+    value 5 in {0 10}
+    mutation {
+        chance 0.5
+        step 1
+    }
+}
+gene move ccc { cost 10 }
+
+dna ddd {aaa vision}
+dna eee {dna ddd bbb ccc}
+
+behavior ggg {
+    decide organism time {
+        return [{'command' = 'move north'}];
+    }
+}
+
+entity {
+    coexistence false
+    repr hhh
+    at {(1 3) (4 5)}
+}
+
+organism {
+    dna ddd
+    behavior ggg
+    repr iii
+    at {(6 14) (9 9) (5 0)}
+}
+
+organism {
+    dna eee
+    behavior ggg
+    repr jjj
+    at {(15 15)}
+}
+
+world {
+    size {
+        width 20
+        height 20
+    }
+    terrain {
+        default sand
+        dirt
+        grass
+        water
+    }
+}
+
+simulation {
+    episodes 10
+    max_rounds 10
+    actions_time 10
+    available_commands {}
+    stop simulation {
+        return simulation.day == 2;
+    }
+}

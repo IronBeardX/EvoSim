@@ -143,3 +143,17 @@ class DirectedGraph:
 
         return available_nodes
 
+<<<<<<< HEAD
+=======
+
+class ArtificialIntelligence():
+    def __init__(self) -> None:
+        pass
+
+
+def select_from_options(options: tuple) -> Callable:
+    '''
+    Returns selection value from the options tuple or a random value from it
+    '''
+    return lambda x = -1: random.choice(options) if x == -1 else options[x]
+>>>>>>> evosim-compiler

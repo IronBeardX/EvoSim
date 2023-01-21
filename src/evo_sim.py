@@ -4,6 +4,7 @@ from .utils import *
 from colorama import init as colorama_init
 from colorama import Fore
 from colorama import Style
+import time
 
 
 class EvoSim:
@@ -31,6 +32,8 @@ class EvoSim:
         self.episodes_total = episodes_total
         self.max_rounds = max_rounds_per_episode
         self.stop_condition = stop_condition
+        self.day = 0
+        # TODO: this should be imported
         default_commands = {"floor": self.floor,
                             "smell": self.smell,
                             "see": self.see,
@@ -55,6 +58,7 @@ class EvoSim:
 
     def run_episode(self):
         for day in range(self.max_rounds):
+            self.day = day
             # Checking stop condition if defined
             if self.stop_condition is not None:
                 if self.stop_condition(self):
@@ -68,6 +72,7 @@ class EvoSim:
             # Executing entities actions
             for entity_id in list(self.intelligent_entities.keys()):
                 entity = self.intelligent_entities[entity_id]
+                # TODO: perceptions should be before pass time in intelligent entities
                 # Executing perception actions:
                 perception_list = []
                 if "floor" in self.available_commands:
@@ -97,12 +102,34 @@ class EvoSim:
                     continue
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
-                actions = entity.decide_action(day, time=self.actions_time)
+                actions = entity.decide_action(time=self.actions_time)
                 for action in actions:
                     action["entity"] = entity_id
                     self.execute_action(action)
                     if self.visualization:
                         self.visualization_fun(action)
+
+    def gol_visualizer(self):
+        print("\n")
+        for i in range(self.world.world_rep().shape[0]):
+            for j in range(self.world.world_rep().shape[1]):
+                if self.world.world_rep()[i, j] == "R":
+                    print(
+                        f"{Fore.YELLOW}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
+                elif self.world.world_rep()[i, j] == "W":
+                    print(
+                        f"{Fore.BLUE}{self.world.world_rep()[i, j]}{Style.RESET_ALL}", end=" ")
+                elif self.world.world_rep()[i, j] == "F":
+                    print(
+                        f"{Fore.RED}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
+                elif self.world.world_rep()[i, j] == "P":
+                    print(
+                        f"{Fore.RED}{self.world.world_rep()[i,j]}{Style.RESET_ALL}", end=" ")
+                else:
+                    print(self.world.world_rep()[i, j], end=" ")
+            print()
+        print("\n \n")
+        time.sleep(1)
 
     def visualization_fun(self, action=None, banished=None):
         if action:
@@ -155,7 +182,7 @@ class EvoSim:
         return (position, self.world.get_pos_terrain(position))
 
     def smell(self, ent_id, day, r):
-        entities_list = self.__entities_in_radius(ent_id, r)
+        entities_list = self.entities_in_radius(ent_id, r)
         ent = self.intelligent_entities[ent_id]
         species = ent.species
         perception_list = []
@@ -176,7 +203,7 @@ class EvoSim:
         return perception_list
 
     def see(self, ent_id, day, r):
-        entities_list = self.__entities_in_radius(ent_id, r)
+        entities_list = self.entities_in_radius(ent_id, r)
         ent = self.intelligent_entities[ent_id]
         species = ent.species
         perception_list = []
@@ -212,7 +239,7 @@ class EvoSim:
             {"surroundings": self.world.terrain_r(ent_id, r)})
         return perception_list
 
-    def __entities_in_radius(self, ent_id, r):
+    def entities_in_radius(self, ent_id, r):
         entities_id_list = [(other_id, pos, distance)
                             for other_id, pos, distance in self.world.see_r(ent_id, r)]
         entities = []
@@ -223,6 +250,35 @@ class EvoSim:
                 entities.append(
                     (self.intelligent_entities[ent_id], pos, distance))
         return entities
+
+    def entities_in_radius(self, ent_id, r):
+        entities_id_list = [(other_id, pos, distance)
+                            for other_id, pos, distance in self.world.see_r(ent_id, r)]
+        entities = []
+        for ent_id, pos, distance in entities_id_list:
+            if ent_id in self.entities:
+                entities.append((self.entities[ent_id], pos, distance))
+            elif ent_id in self.intelligent_entities:
+                entities.append(
+                    (self.intelligent_entities[ent_id], pos, distance))
+        return entities
+
+    def entities_around_position(self, position):
+        aux = len(self.world.get_entities_around_position(position))
+        return aux
+
+    def entities_in_position(self, position):
+        aux = len(self.world.get_entity_by_position(position))
+        return aux
+
+    def kill_in_position(self, position):
+        entities_id = self.world.get_entity_by_position(position)
+        if len(entities_id) > 0:
+            self.entities.pop(entities_id[0])
+            self.world.remove_entity(entities_id[0])
+
+    def create_in_position(self, position):
+        self.instantiate_entity(0, (position[0], position[1]))
 
     def attack(self, ent_id, other_id, value):
         # Check if the ids are correct:
@@ -330,7 +386,7 @@ class EvoSim:
             for i in range(len(actor_dna)):
                 new_dna_chain.append(
                     actor_dna[i] if random.random() < ages[0] else other_dna[i])
-            return species(new_dna_chain, species = species)
+            return species(new_dna_chain, species=species)
 
         self.instantiate_entity(-1, new_pos, generator)
 
@@ -376,3 +432,6 @@ class EvoSim:
             self.entities[entity.get_entity_id()] = entity
         self.world.place_entity(entity.get_entity_id(), world_position,
                                 entity.rep, entity.coexistence)
+
+    def dest(self):
+        print("hi")
