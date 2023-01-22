@@ -194,7 +194,6 @@ class DNAChainNode(Node):
             
             dna_element looks like:
             {   
-                TODO: Remove class from props
                 {"type": "gene", "name": string} |
                 {"type": "dna", "name": string}
         '''
@@ -333,8 +332,6 @@ class SimulationNode(Node):
             props looks like: {'episodes': number, 'max_rounds': number, 'stop': FunctionNode, 'actions_time': number, 'available_commands': dict{string, callable}}
         '''
 
-        #en 'stop' hay un FunctionNode q recibe a la propia simulacion, so:
-        #TODO: hacer cambios pertinentes
 
         if not isinstance(props['episodes'], int):
             raise ValueError('Number of episodes must be an integer')

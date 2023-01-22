@@ -31,6 +31,25 @@ class PhysicalGene:
         return self.__class__(self.mutation_chance, self.min, self.max, self.value, self.mutation_step)
 
 
+class ActionGene:
+    def __init__(self, name, cost=10, gen_type="action"):
+        self.name = name
+        self.cost = cost
+        self.gen_type = gen_type
+
+    def get_property(self):
+        pass
+
+
+class PerceptionGene:
+    def __init__(self, name, gen_type="perception"):
+        self.name = name
+        self.gen_type = gen_type
+
+    def get_property(self):
+        pass
+
+
 # [ ] Physical Genes
 # These genes gives the organism physical properties
 class Health(PhysicalGene):
@@ -136,15 +155,6 @@ class Mouth(PhysicalGene):
 # Perception functions take modifiers from the physical traits of the organism
 
 
-class PerceptionGene:
-    def __init__(self, name, gen_type="perception"):
-        self.name = name
-        self.gen_type = gen_type
-
-    def get_property(self):
-        pass
-
-
 class Smelling(PerceptionGene):
     def __init__(self):
         super().__init__("smelling")
@@ -169,19 +179,9 @@ class VisionRadial(PerceptionGene):
 # TODO: Add cost to actions constructor as an argument
 
 
-class ActionGene:
-    def __init__(self, name, cost = 10, gen_type="action"):
-        self.name = name
-        self.cost = cost
-        self.gen_type = gen_type
-
-    def get_property(self):
-        pass
-
-
 class Move(ActionGene):
-    def __init__(self, cost = 10):
-        super().__init__("move", cost = cost)
+    def __init__(self, cost=10):
+        super().__init__("move", cost=cost)
 
     def get_property(self):
         return [
@@ -193,7 +193,7 @@ class Move(ActionGene):
 
 
 class Eat(ActionGene):
-    def __init__(self, cost = 10):
+    def __init__(self, cost=10):
         super().__init__("eat", cost)
 
     def get_property(self):
@@ -203,7 +203,7 @@ class Eat(ActionGene):
 
 
 class Reproduce(ActionGene):
-    def __init__(self, cost = 10):
+    def __init__(self, cost=10):
         super().__init__("reproduce", cost)
 
     def get_property(self):
@@ -213,7 +213,7 @@ class Reproduce(ActionGene):
 
 
 class Attack(ActionGene):
-    def __init__(self, cost = 10):
+    def __init__(self, cost=10):
         super().__init__("attack", cost)
 
     def get_property(self):
@@ -223,7 +223,7 @@ class Attack(ActionGene):
 
 
 class Defend(ActionGene):
-    def __init__(self, cost = 10):
+    def __init__(self, cost=10):
         super().__init__("defend", cost)
 
     def get_property(self):
@@ -233,7 +233,7 @@ class Defend(ActionGene):
 
 
 class Pick(ActionGene):
-    def __init__(self, cost = 10):
+    def __init__(self, cost=10):
         super().__init__("pick", cost)
 
     def get_property(self):
@@ -243,7 +243,7 @@ class Pick(ActionGene):
 
 
 class Swimming(ActionGene):
-    def __init__(self, cost = 10):
+    def __init__(self, cost=10):
         super().__init__("swimming", cost)
 
     def get_property(self):
@@ -251,7 +251,7 @@ class Swimming(ActionGene):
             {"name": "swim north", "cost": self.cost},
             {"name": "swim south", "cost": self.cost},
             {"name": "swim east", "cost": self.cost},
-            {"name": "swim west", "cost": self.costI}
+            {"name": "swim west", "cost": self.cost}
         ]
 
 

@@ -11,13 +11,39 @@ class World():
     and movements of things
     '''
 
-    def __init__(self, world_map, terrain_types, finite=False):
+    def __init__(self, world_map, terrain_types, world_actions = {}, finite=False, events = None):
+        # The map of the world
         self.world_map = world_map
+        # If the world is finite
         self.finite = finite
+        # The types of terrain existing in the world, this should be a dictionary {<representation>: <name>}
         self.terrain_types = terrain_types
-        self.event_list = []
-        self.entities = {}
+        # A dictionary containing events that can occur in the world
+        self.events = {} if not events else events
+        # A dictionary containing the entities in the world
+        self.entities = {} 
+        # World actions
+        self.world_actions = world_actions
 
+    def execute_action(self, action):
+        '''
+        This method executes the given action in the world.
+        '''
+        command = action["command"]
+        if command not in list(self.world_actions.keys()):
+            raise Exception("Command not recognized")
+        if "entity" in action:
+            entity_id = action["entity"]
+            if entity_id not in self.entities:
+                raise Exception("Invalid entity")
+
+        if "parameters" in action:
+            parameters = action["parameters"]
+            self.world_actions[command](entity_id)(*parameters)
+        else:
+            self.world_actions[command](entity_id)
+
+    # TODO: From here there will be the declarations of methods that every world should implement
     def get_entity_info(self, entity_id):
         '''
         This method returns the information about the entity with the given id.
@@ -28,97 +54,53 @@ class World():
         '''
         This method returns True if the given position is valid, False otherwise.
         '''
-        try:
-            self.world_map[position[0], position[1]]
-            return True
-        except:
-            return False
+        raise NotImplementedError()
 
-    def __get_positions_in_radius(self, entity_position, radius):
-        positions = []
-        for i in range(entity_position[0] - radius, entity_position[0] + radius + 1):
-            for j in range(entity_position[1] - radius, entity_position[1] + radius + 1):
-                if i >= 0 and j >= 0 and i < self.world_map.shape[0] and j < self.world_map.shape[1]:
-                    positions.append((i, j))
-                if self.finite:
-                    if i < 0:
-                        i = self.world_map.shape[0] - 1
-                    if j < 0:
-                        j = self.world_map.shape[1] - 1
-                    if i >= self.world_map.shape[0]:
-                        i = 0
-                    if j >= self.world_map.shape[1]:
-                        j = 0
-                    positions.append((i, j))
-        return positions
-
-    def get_entities_around_position(self, position):
-        position = (position[0], position[1])
-        entities_in_radius = []
-        valid_pos = self.__get_positions_in_radius(position, 1)
-        for entity in self.entities:
-            if self.entities[entity].position in valid_pos and self.entities[entity].position != position:
-                entities_in_radius.append(
-                    (entity, self.entities[entity].position))
-        return entities_in_radius
-
-    def get_entity_by_position(self, position):
+    def get_entities_in_position(self, position):
         '''
         This method returns the entities that occupies the given position.
         '''
-        entities = []
-        for i in self.entities.keys():
-            if self.entities[i].position[0] == position[0] and self.entities[i].position[1] == position[1]:
-                entities.append(i)
-        return entities
+        raise NotImplementedError()
 
     def get_terrain_type(self, position):
         '''
         This method returns the terrain type of the given position.
         '''
-        if not self.valid_position(position):
-            return "unknown"
-        return self.terrain_types[self.world_map[position[0], position[1]]]
+        raise NotImplementedError()
 
+    def place_entity(self, entity_id, entity_representation, position):
+        raise NotImplementedError()
+
+    def remove_entity(self, entity_id, entity_representation, position):
+        raise NotImplementedError()
+    
+    def __str__(self):
+        raise NotImplementedError()
+
+    @property
+    def world_shape(self):
+        '''
+        Returns the shape of the world in a tuple
+        '''
+        raise NotImplementedError()
 
 class MapEntityInfo:
     '''
     This is an utility class for containerizing entities properties needed for world functions 
     '''
 
-    def __init__(self, position, can_coexist, string_rep):
+    def __init__(self, position, can_coexist, string_rep, priority):
         self.position = position
         self.can_coexist = can_coexist
         self.representation = string_rep
+        self.priority = priority
 
 
 class EvoWorld(
     World,
-    MoveNorth,
-    MoveSouth,
-    MoveEast,
-    MoveWest,
-    SwimNorth,
-    SwimSouth,
-    SwimEast,
-    SwimWest,
-    SeeRadius,
-    ManhatanDistance,
-    TerrainRadius
+    WorldActions
 ):
-    def __init__(self, height, width, terrain_types, terrain_dist, finite, world_actions = None):
-
-        # Initialize the world map
-        world_map = np.empty((height, width), dtype=str)
-        for i in range(height):
-            for j in range(width):
-                if (i, j) in terrain_dist:
-                    world_map[i, j] = terrain_dist[(i, j)]
-                elif "default" in terrain_types:
-                    world_map[i, j] = terrain_types["default"]
-                else:
-                    world_map[i, j] = random.choice(list(terrain_types.keys()))
-
+    def __init__(self, height, width, terrain_types, terrain_dist, finite, world_actions = None, events = None):
         default_world_actions = {
             "move north": self.move_n,
             "move south": self.move_s,
@@ -132,64 +114,34 @@ class EvoWorld(
         }
 
         # This dictionary contains the commands that the world can interpret and the corresponding functions
-        self.world_actions = default_world_actions if world_actions is None else default_world_actions.extend(world_actions)
+        world_actions = default_world_actions if world_actions is None else default_world_actions.extend(
+            world_actions)
+        
+        class WorldTile:
+            def __init__(self, terrain):
+                self.terrain_rep = terrain
+                self.entities = []
 
-        super().__init__(world_map, terrain_types, finite)
+            def add_entity(self, entity_id):
+                self.entities.append(entity_id)
 
-    def execute_action(self, action):
-        '''
-        This method executes the given action in the world.
-        '''
-        command = action["command"]
-        if command not in list(self.world_actions.keys()):
-            return
-            # raise Exception("Invalid command")
-        if "entity" in action:
-            entity_id = action["entity"]
-            if entity_id not in self.entities:
-                raise Exception("Invalid entity")
-        if "parameters" in action:
-            parameters = action["parameters"]
-            self.world_actions[command](entity_id)(*parameters)
-        else:
-            self.world_actions[command](entity_id)
+            def remove_entity(entity_id):
+                return self.entities.pop(entity_id)
 
-    def __str__(self) -> str:
-        # This methods returns a string representation of the world
-        terrain_copy = self.world_map.copy()
-        for entity in self.entities.keys():
-            entity_position = self.entities[entity].position
-            terrain_copy[entity_position[0], entity_position[1]
-                         ] = self.entities[entity].representation
-        string_rep = ""
-        for i in range(terrain_copy.shape[0]):
-            for j in range(terrain_copy.shape[1]):
-                string_rep += terrain_copy[i, j] + " "
-            string_rep += "\n"
-        return string_rep + "\n \n"
+            def get_terrain():
+                return self.terrain_rep
 
-    def world_rep(self):
-        terrain_copy = self.world_map.copy()
-        for entity in self.entities.keys():
-            entity_position = self.entities[entity].position
-            terrain_copy[entity_position[0], entity_position[1]
-                         ] = self.entities[entity].representation
-        return terrain_copy
+        # TODO: Remake this so the world map is made of WorldTiles
+        # Initialize the world map
+        world_map = np.empty((height, width), dtype=str)
+        for i in range(height):
+            for j in range(width):
+                if (i, j) in terrain_dist:
+                    world_map[i, j] = terrain_dist[(i, j)]
+                elif "default" in terrain_types:
+                    world_map[i, j] = terrain_types["default"]
+                else:
+                    world_map[i, j] = random.choice(list(terrain_types.keys()))
 
-    def place_entity(self, id, position, representation, coexistence=False):
-        entity_information = MapEntityInfo(
-            position, coexistence, representation)
 
-        self.entities[id] = entity_information
-
-    def remove_entity(self, entity_id):
-        del self.entities[entity_id]
-
-    def get_random_position(self):
-        '''
-        This method returns a random position in the world.
-        '''
-        return (np.random.randint(0, self.world_map.shape[0]), np.random.randint(0, self.world_map.shape[1]))
-
-    def get_pos_terrain(self, position):
-        return self.terrain_types[self.world_map[position]]
+        super().__init__(world_map, terrain_types, world_actions, finite, events)

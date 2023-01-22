@@ -24,6 +24,7 @@ class RandomBehavior(Behavior):
         return perceptions
 
     def update_knowledge(self, new_knowledge):
+        # TODO: Make so knowledge updates correctly
         for information in new_knowledge:
             self.update_info(information)
 
@@ -151,7 +152,6 @@ class RandomBehavior(Behavior):
                     actions.append({"command": "swim west"})
                 case _:
                     raise Exception("Action not found")
-        self.knowledge = []
         return actions
 
     def rand_ent(self):
@@ -255,6 +255,7 @@ class RandomBehavior(Behavior):
 
 class OpportunisticBehavior(RandomBehavior):
 
+    # TODO: Remake this but better
     def decide_action(self, day, time=10):
         # This will be a behavior that will try to take the food, and eat it when far from other entities
         # this will be implemented with an algorithm similar to Simulated annealing(but not exactly) that will try to find the best path to the food
@@ -795,22 +796,3 @@ class OpportunisticBehavior(RandomBehavior):
         else:
             return pos
 
-
-class GluttonyBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
-
-
-class FighterBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
-
-
-class LoverBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass
-
-
-class ExplorerBehavior(Behavior):
-    def decide_action(self, perceptions, day, time=10):
-        pass

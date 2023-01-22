@@ -603,7 +603,6 @@ def get_parser(*args, **kwargs):
 
 
     # TEST PRODUCTIONS FOR PARSING
-    #[ ]
     def p_test_world_stmt(p):
         "test_world : world_stmt"
         p[0] = p[1]

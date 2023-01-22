@@ -1,4 +1,5 @@
-class MoveNorth:
+class WorldActions:
+    # TODO: Remake this with the new world characteristics
     def move_n(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -24,8 +25,6 @@ class MoveNorth:
         self.entities[entity_id].position = north_pos
         return True
 
-
-class MoveSouth:
     def move_s(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -51,8 +50,6 @@ class MoveSouth:
         self.entities[entity_id].position = south_pos
         return True
 
-
-class MoveEast:
     def move_e(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -78,8 +75,6 @@ class MoveEast:
         self.entities[entity_id].position = east_pos
         return True
 
-
-class MoveWest:
     def move_w(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -105,8 +100,6 @@ class MoveWest:
         self.entities[entity_id].position = west_pos
         return True
 
-
-class SwimNorth:
     def swim_n(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -132,8 +125,6 @@ class SwimNorth:
         self.entities[entity_id].position = north_pos
         return True
 
-
-class SwimSouth:
     def swim_s(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -159,8 +150,6 @@ class SwimSouth:
         self.entities[entity_id].position = south_pos
         return True
 
-
-class SwimEast:
     def swim_e(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -171,9 +160,9 @@ class SwimEast:
             return False
 
         # check if the entity is in a finite world
-        if east_pos[0] >= self.world_map.shape[1]:
+        if east_pos[1] >= self.world_map.shape[1]:
             if not self.finite:
-                east_pos = (0, entity_pos[1])
+                east_pos = (entity_pos[0], 0)
             else:
                 return False
 
@@ -186,8 +175,6 @@ class SwimEast:
         self.entities[entity_id].position = east_pos
         return True
 
-
-class SwimWest:
     def swim_w(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -198,9 +185,9 @@ class SwimWest:
             return False
 
         # check if the entity is in a finite world
-        if west_pos[0] < 0:
+        if west_pos[1] < 0:
             if not self.finite:
-                west_pos = (entity_pos[0], self.world_map.shape[1])
+                west_pos = (entity_pos[0], self.world_map.shape[1] - 1)
             else:
                 return False
 
@@ -212,9 +199,6 @@ class SwimWest:
 
         self.entities[entity_id].position = west_pos
         return True
-
-
-class SeeRadius:
 
     def see_r(self, entity_id, radius):
         # get entity position from its id
@@ -248,8 +232,6 @@ class SeeRadius:
                     positions.append((i, j))
         return positions
 
-
-class TerrainRadius:
     def terrain_r(self, entity_id, radius):
         entity_position = self.entities[entity_id].position
         positions_in_radius = self.__get_positions_in_radius(
@@ -265,34 +247,12 @@ class TerrainRadius:
         # # self.terrain_types["rep"]
         return terrain_in_radius
 
-    def __get_positions_in_radius(self, entity_position, radius):
-        positions = []
-        for i in range(entity_position[0] - radius, entity_position[0] + radius + 1):
-            for j in range(entity_position[1] - radius, entity_position[1] + radius + 1):
-                if i >= 0 and j >= 0 and i < self.world_map.shape[0] and j < self.world_map.shape[1]:
-                    positions.append((i, j))
-                if self.finite:
-                    if i < 0:
-                        i = self.world_map.shape[0] - 1
-                    if j < 0:
-                        j = self.world_map.shape[1] - 1
-                    if i >= self.world_map.shape[0]:
-                        i = 0
-                    if j >= self.world_map.shape[1]:
-                        j = 0
-                    positions.append((i, j))
-        return positions
-
-
-class ManhatanDistance:
-
     def distance(self, entity_id, other_entity_id):
         # This should return a correct value if the world is not finite
         entity_position = self.entities[entity_id].position
         other_entity_position = self.entities[other_entity_id].position
         if self.finite:
             return abs(entity_position[0] - other_entity_position[0]) + abs(entity_position[1] - other_entity_position[1])
-        # TODO: check this
         else:
             # Check if the distance is shorter if we go through the other side of the world
             if abs(entity_position[0] - other_entity_position[0]) > self.world_map.shape[0] / 2:
