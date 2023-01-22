@@ -1,5 +1,6 @@
 class WorldActions:
     # TODO: Remake this with the new world characteristics
+    # Moves the entity with id entity_id one position north if its not currently standing on water
     def move_n(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -25,6 +26,7 @@ class WorldActions:
         self.entities[entity_id].position = north_pos
         return True
 
+    # Moves the entity with id entity_id one position south if its not currently standing on water
     def move_s(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -50,6 +52,7 @@ class WorldActions:
         self.entities[entity_id].position = south_pos
         return True
 
+    # Moves the entity with id entity_id one position east if its not currently standing on water
     def move_e(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -75,6 +78,7 @@ class WorldActions:
         self.entities[entity_id].position = east_pos
         return True
 
+    # Moves the entity with id entity_id one position west if its not currently standing on water
     def move_w(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -100,6 +104,7 @@ class WorldActions:
         self.entities[entity_id].position = west_pos
         return True
 
+    # Moves the entity with id entity_id one position north if its currently standing on water
     def swim_n(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -125,6 +130,7 @@ class WorldActions:
         self.entities[entity_id].position = north_pos
         return True
 
+    # Moves the entity with id entity_id one position south if its currently standing on water
     def swim_s(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -150,6 +156,7 @@ class WorldActions:
         self.entities[entity_id].position = south_pos
         return True
 
+    # Moves the entity with id entity_id one position east if its currently standing on water
     def swim_e(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -175,6 +182,7 @@ class WorldActions:
         self.entities[entity_id].position = east_pos
         return True
 
+    # Moves the entity with id entity_id one position west if its currently standing on water
     def swim_w(self, entity_id):
         # get entity position from its id
         entity_pos = self.entities[entity_id].position
@@ -200,6 +208,7 @@ class WorldActions:
         self.entities[entity_id].position = west_pos
         return True
 
+    # Returns a list with the ids of all entities in the radius
     def see_r(self, entity_id, radius):
         # get entity position from its id
         entity_position = self.entities[entity_id].position
@@ -213,7 +222,6 @@ class WorldActions:
 
         return entities_in_radius
 
-    # Also see what happens if the world is finite
     def __get_positions_in_radius(self, entity_position, radius):
         positions = []
         for i in range(entity_position[0] - radius, entity_position[0] + radius + 1):
@@ -232,6 +240,19 @@ class WorldActions:
                     positions.append((i, j))
         return positions
 
+    '''
+    Returns a portion of the map with shape (2*radius + 1, 2*radius + 1) centered in the entity
+    note: if the world is not finite this is not an exact copy of the map:
+    _e_
+    ___
+    ___
+    should return:
+    ___
+    _e_
+    ___
+    note 2 also check that the map is not repeated:
+    with radius 2 the returning portion of the map for the previous case should be the same
+    '''
     def terrain_r(self, entity_id, radius):
         entity_position = self.entities[entity_id].position
         positions_in_radius = self.__get_positions_in_radius(
@@ -247,6 +268,7 @@ class WorldActions:
         # # self.terrain_types["rep"]
         return terrain_in_radius
 
+    # Returns the manhattan distance between two entities
     def distance(self, entity_id, other_entity_id):
         # This should return a correct value if the world is not finite
         entity_position = self.entities[entity_id].position
