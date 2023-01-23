@@ -3,7 +3,7 @@ from typing import Callable
 from curses.ascii import isdigit
 import numpy as np
 import random
-
+from .evo_entity import Entity
 
 class World():
     '''
@@ -11,7 +11,7 @@ class World():
     and movements of things
     '''
 
-    def __init__(self, world_map, terrain_types, world_actions = {}, finite=False, events = None):
+    def __init__(self, world_map, terrain_types, world_actions={}, finite=False, events=None):
         # The map of the world
         self.world_map = world_map
         # If the world is finite
@@ -21,7 +21,7 @@ class World():
         # A dictionary containing events that can occur in the world
         self.events = {} if not events else events
         # A dictionary containing the entities in the world
-        self.entities = {} 
+        self.entities = {}
         # World actions
         self.world_actions = world_actions
 
@@ -68,13 +68,10 @@ class World():
         '''
         raise NotImplementedError()
 
-    def place_entity(self, entity_id, entity_representation, position):
+    def place_entity(self, entity, position):
         raise NotImplementedError()
 
     def remove_entity(self, entity_id, entity_representation, position):
-        raise NotImplementedError()
-    
-    def __str__(self):
         raise NotImplementedError()
 
     @property
@@ -84,23 +81,38 @@ class World():
         '''
         raise NotImplementedError()
 
+
 class MapEntityInfo:
     '''
     This is an utility class for containerizing entities properties needed for world functions 
     '''
 
-    def __init__(self, position, can_coexist, string_rep, priority):
+    def __init__(self, entity, position):
+        self.entity = entity
         self.position = position
-        self.can_coexist = can_coexist
-        self.representation = string_rep
-        self.priority = priority
+        # self.priority = priority
+
+class WorldTile:
+    def __init__(self, terrain_rep, terrain_name):
+        self.terrain_rep = terrain_rep
+        self.terrain_name = terrain_name
+        self.entities = []
+
+    def add_entity(self, entity_id):
+        self.entities.append(entity_id)
+
+    def remove_entity(self, entity_id):
+        return self.entities.pop(entity_id)
+
+    def get_terrain(self):
+        return self.terrain_rep
 
 
 class EvoWorld(
     World,
     WorldActions
 ):
-    def __init__(self, height, width, terrain_types, terrain_dist, finite, world_actions = None, events = None):
+    def __init__(self, height, width, terrain_types, terrain_dist, finite, world_actions=None, events=None):
         default_world_actions = {
             "move north": self.move_n,
             "move south": self.move_s,
@@ -116,32 +128,67 @@ class EvoWorld(
         # This dictionary contains the commands that the world can interpret and the corresponding functions
         world_actions = default_world_actions if world_actions is None else default_world_actions.extend(
             world_actions)
-        
-        class WorldTile:
-            def __init__(self, terrain):
-                self.terrain_rep = terrain
-                self.entities = []
-
-            def add_entity(self, entity_id):
-                self.entities.append(entity_id)
-
-            def remove_entity(entity_id):
-                return self.entities.pop(entity_id)
-
-            def get_terrain():
-                return self.terrain_rep
 
         # TODO: Remake this so the world map is made of WorldTiles
         # Initialize the world map
-        world_map = np.empty((height, width), dtype=str)
+        world_map = np.empty((height, width), dtype=type(WorldTile))
         for i in range(height):
             for j in range(width):
                 if (i, j) in terrain_dist:
-                    world_map[i, j] = terrain_dist[(i, j)]
+                    world_map[i, j] = WorldTile(terrain_rep=terrain_dist[(i, j)], terrain_name='None')
                 elif "default" in terrain_types:
-                    world_map[i, j] = terrain_types["default"]
+                    world_map[i, j] = WorldTile(terrain_rep=terrain_types["default"], terrain_name='default')
                 else:
-                    world_map[i, j] = random.choice(list(terrain_types.keys()))
-
+                    key = random.choice(list(terrain_types.keys()))
+                    world_map[i, j] = WorldTile(terrain_rep=key, terrain_name=terrain_types[key]) # La llave seria algo como G y el valor Grass
 
         super().__init__(world_map, terrain_types, world_actions, finite, events)
+
+    def get_terrain_type(self, position):
+        x, y = position
+        return self.world_map[x, y].terrain_name
+
+    def get_entities_in_position(self, position):
+        x, y = position
+        entities = self.world_map[x,y].entities # world_map is a map of WorldTiles
+        # return all MapEntityInfo from this entities
+        return [self.entities[entity.get_entity_id()] for entity in entities]
+        # return [entity for entity in entities if entity.get_entity_id() in self.entities]
+
+    def valid_position(self, position):
+        row_max, col_max = self.world_map.shape
+        x, y = position
+        return x in range(row_max) and y in range(col_max)
+
+    def place_entity(self, entity: Entity, position):
+        if not self.valid_position(position):
+            raise Exception('The position is out of range')
+        x, y = position
+        world_tile = self.world_map[x, y]
+        map = self.world_map
+        if not entity in world_tile.entities:
+            world_tile.entities.append(entity)
+        self.entities[entity.get_entity_id()] = MapEntityInfo(entity, position)
+
+    def remove_entity(self, entity_id):
+        entityInfo = self.entities[entity_id]
+        entity = entityInfo.entity
+        x, y = entityInfo.position
+        world_tile = self.world_map[x, y]
+        map = self.world_map
+        try:
+            world_tile.entities.remove(entity)
+            self.entities.pop(entity_id)
+        except:
+            print('The entity to remove does not appear in the WorldTile')
+        print('All alright')
+
+    def __str__(self) -> str:
+        map = self.world_map
+        if len(map.shape) != 2:
+            raise Exception('Debe tener 2 dimensiones')
+        for i in range(map.shape[0]):
+            row = ''
+            for j in range(map.shape[1]):
+                row += f'{map[i, j]} '
+            print(row)

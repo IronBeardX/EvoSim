@@ -96,6 +96,7 @@ class EvoSim(SimActions):
                     self.banished_entities[entity_id] = self.intelligent_entities.pop(
                         entity_id)
                     self.world.remove_entity(entity_id)
+                    self.entities.pop(entity_id)
                     # print : entity_id, "was banished"
                     if self.visualization:
                         self.visualization_fun(banished=entity_id)
@@ -159,14 +160,14 @@ class EvoSim(SimActions):
         return aux
 
     def entities_in_position(self, position):
-        aux = len(self.world.get_entity_by_position(position))
+        aux = len(self.world.get_entities_in_position(position))
         return aux
 
     def kill_in_position(self, position):
-        entities_id = self.world.get_entity_by_position(position)
-        if len(entities_id) > 0:
-            self.entities.pop(entities_id[0])
-            self.world.remove_entity(entities_id[0])
+        entities = self.world.get_entities_in_position(position)
+        if len(entities) > 0:
+            self.entities.pop(entities[0])
+            self.world.remove_entity(entities[0])
 
     def create_in_position(self, position):
         self.instantiate_entity(0, (position[0], position[1]))
@@ -180,7 +181,7 @@ class EvoSim(SimActions):
         posible_options += [(other_pos[0] + 1, other_pos[1]), (other_pos[0] - 1, other_pos[1]),
                             (other_pos[0], other_pos[1] + 1), (other_pos[0], other_pos[1] - 1)]
         for option in posible_options:
-            if self.world.valid_position(option) and len(self.world.get_entity_by_position(option)):
+            if self.world.valid_position(option) and len(self.world.get_entities_in_position(option)):
                 return option
         return None
 
@@ -202,8 +203,7 @@ class EvoSim(SimActions):
         if generator != None:
             entity = generator()
             self.intelligent_entities[entity.get_entity_id()] = entity
-            self.world.place_entity(entity.get_entity_id(), world_position,
-                                    entity.rep, entity.coexistence)
+            self.world.place_entity(entity, world_position)
             return
 
         entity = self.entities_gen[entity_gen_position]()
@@ -211,5 +211,4 @@ class EvoSim(SimActions):
             self.intelligent_entities[entity.get_entity_id()] = entity
         else:
             self.entities[entity.get_entity_id()] = entity
-        self.world.place_entity(entity.get_entity_id(), world_position,
-                                entity.rep, entity.coexistence)
+        self.world.place_entity(entity, world_position)

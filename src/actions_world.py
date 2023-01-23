@@ -18,9 +18,9 @@ class WorldActions:
                 return False
 
         # Check if the entity can coexist with another entities
-        north_entities = self.get_entity_by_position(north_pos)
-        north_entities = [self.entities[x].can_coexist for x in north_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in north_entities]):
+        north_entities = self.get_entities_in_position(north_pos)
+        north_entities = [entityInfo.entity.coexistence for entityInfo in north_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in north_entities]):
             return False
 
         self.entities[entity_id].position = north_pos
@@ -44,9 +44,9 @@ class WorldActions:
                 return False
 
         # Check if the entity can coexist with another entities
-        south_entities = self.get_entity_by_position(south_pos)
-        south_entities = [self.entities[x].can_coexist for x in south_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in south_entities]):
+        south_entities = self.get_entities_in_position(south_pos)
+        south_entities = [entityInfo.entity.coexistence for entityInfo in south_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in south_entities]):
             return False
 
         self.entities[entity_id].position = south_pos
@@ -70,9 +70,9 @@ class WorldActions:
                 return False
 
         # Check if the entity can coexist with another entities
-        east_entities = self.get_entity_by_position(east_pos)
-        east_entities = [self.entities[x].can_coexist for x in east_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in east_entities]):
+        east_entities = self.get_entities_in_position(east_pos)
+        east_entities = [entityInfo.entity.coexistence for entityInfo in east_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in east_entities]):
             return False
 
         self.entities[entity_id].position = east_pos
@@ -96,9 +96,10 @@ class WorldActions:
                 return False
 
         # Check if the entity can coexist with another entities
-        west_entities = self.get_entity_by_position(west_pos)
-        west_entities = [self.entities[x].can_coexist for x in west_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in west_entities]):
+        west_entities = self.get_entities_in_position(west_pos)
+        # west_entities = [entityInfo.can_coexist f for entityInfo in west_entities]
+        west_entities = [entityInfo.entity.coexistence for entityInfo in west_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in west_entities]):
             return False
 
         self.entities[entity_id].position = west_pos
@@ -122,9 +123,9 @@ class WorldActions:
                 return False
 
         # Check if the entity can coexist with another entities
-        north_entities = self.get_entity_by_position(north_pos)
-        north_entities = [self.entities[x].can_coexist for x in north_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in north_entities]):
+        north_entities = self.get_entities_in_position(north_pos)
+        north_entities = [entityInfo.entity.coexistence for entityInfo in north_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in north_entities]):
             return False
 
         self.entities[entity_id].position = north_pos
@@ -148,9 +149,9 @@ class WorldActions:
                 return False
 
         # Check if the entity can can_coexist with another entities
-        south_entities = self.get_entity_by_position(south_pos)
-        south_entities = [self.entities[x].can_coexist for x in south_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in south_entities]):
+        south_entities = self.get_entities_in_position(south_pos)
+        south_entities = [entityInfo.entity.coexistence for entityInfo in south_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in south_entities]):
             return False
 
         self.entities[entity_id].position = south_pos
@@ -174,9 +175,9 @@ class WorldActions:
                 return False
 
         # Check if the entity can can_coexist with another entities
-        east_entities = self.get_entity_by_position(east_pos)
-        east_entities = [self.entities[x].can_coexist for x in east_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in east_entities]):
+        east_entities = self.get_entities_in_position(east_pos)
+        east_entities = [entityInfo.entity.coexistence for entityInfo in east_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in east_entities]):
             return False
 
         self.entities[entity_id].position = east_pos
@@ -200,9 +201,9 @@ class WorldActions:
                 return False
 
         # Check if the entity can can_coexist with another entities
-        west_entities = self.get_entity_by_position(west_pos)
-        west_entities = [self.entities[x].can_coexist for x in west_entities]
-        if self.entities[entity_id].can_coexist == False and any([not x for x in west_entities]):
+        west_entities = self.get_entities_in_position(west_pos)
+        west_entities = [entityInfo.entity.coexistence for entityInfo in west_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in west_entities]):
             return False
 
         self.entities[entity_id].position = west_pos
@@ -259,8 +260,8 @@ class WorldActions:
             entity_position, radius)
         terrain_in_radius = {}
         for pos in positions_in_radius:
-            rep = self.world_map[pos]
-            terrain_in_radius[pos] = self.terrain_types[rep]
+            worldTile = self.world_map[pos]
+            terrain_in_radius[pos] = self.terrain_types[worldTile.get_terrain()]
 
         # terrain_in_radius = [self.world_map[pos] for pos in terrain_in_radius]
         #  # self.world_map["position"]

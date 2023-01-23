@@ -18,6 +18,11 @@ class Entity:
         self.coexistence = coexistence
         self.rep = representation
 
+    def get_string_representation(self):
+        ''' Devuelve la representación en string del objeto.
+        '''
+        return self.rep
+
     def get_property_value(self, property):
         return (property, self.physical_properties[property] if property in self.physical_properties else None)
 

@@ -121,7 +121,7 @@ class SimActions:
 
     def floor(self, ent_id):
         position = self.world.entities[ent_id].position
-        return (position, self.world.get_pos_terrain(position))
+        return (position, self.world.get_terrain_type(position))
 
     def smell(self, ent_id, day, r):
         entities_list = self.entities_in_radius(ent_id, r)
