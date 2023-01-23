@@ -111,7 +111,7 @@ class DirectedGraph:
         Returns the data of the node with the given id.
         '''
         # Checking if the node exists
-        if node_id not in self._nodes:
+        if node_id not in self._nodes.keys():
             raise ValueError("Node with id {} does not exist".format(node_id))
 
         return self._nodes[node_id].data

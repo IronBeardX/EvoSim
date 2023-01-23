@@ -10,16 +10,16 @@ from src.genetics import *
 from src.utils import *
 
 # Initializing genes:
-HEALTH = Health()
-HUNGER = Hunger()
-LEGS = Legs()
-EYE = Eye()
-ARMS = Arms()
-HORNS = Horns()
-SMELL = Smell()
-FINS = Fins()
-NOSE = Nose()
-MOUTH = Mouth()
+HEALTH = Health(min_val= 0, max_val= 4)
+HUNGER = Hunger(min_val= 0, max_val= 4)
+LEGS = Legs(min_val= 0, max_val= 4)
+EYE = Eye(min_val= 0, max_val= 4)
+ARMS = Arms(min_val= 0, max_val= 4)
+HORNS = Horns(min_val= 0, max_val= 4)
+SMELL = Smell(min_val= 0, max_val= 4)
+FINS = Fins(min_val= 0, max_val= 4)
+NOSE = Nose(min_val= 0, max_val= 4)
+MOUTH = Mouth(min_val= 0, max_val= 4)
 SMELLING = Smelling()
 VISIONRADIAL = VisionRadial()
 MOVE = Move()
@@ -45,6 +45,32 @@ POOL.add_dependency("attack", "horns")
 POOL.add_dependency("smelling", "nose")
 POOL.add_dependency("vision", "eye")
 POOL.add_dependency("swimming", "fins")
+print(POOL)
 
-available = POOL.graph.get_available_nodes(["move", 'attack'])
-print(available)
+# Generating two species:
+dna_chain1 = ['health', 'hunger', 'reproduce', 'legs', 'smell', 'move']
+dna_chain2 = ['health', 'hunger', 'reproduce', 'fins', 'smell', 'swimming']
+invalid_chain = ['move']
+
+species1 = Species('walker', RandomOrg, dna_chain1, POOL, 6, "W")
+species2 = Species('swimmer', RandomOrg, dna_chain2, POOL, 6, "S")
+# invalid_species = Species('invalid', RandomOrg, invalid_chain, POOL, 10, "I")
+# Generating some organisms
+org1 = species1.get_organism()
+org1.pass_time()
+org2 = species2.get_organism()
+
+org3 = species1.get_organism()
+org3.pass_time()
+org3.pass_time()
+org4 = species2.get_organism()
+
+#making them reproduce:
+org5 = species1.reproduction(org1, org3)
+org6 = species2.reproduction(org2, org4)
+
+# errororg = species1.reproduction(org1, org2)
+
+new_species = mix(species1, species2, 10, 20)
+print()
+pass
