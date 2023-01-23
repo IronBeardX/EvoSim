@@ -1,0 +1,324 @@
+[lexer]
+
+literals:
+    + - * / % ( ) ^ @ < > { } = , . [ ] '
+
+reserved:
+    OR AND NOT TRUE FALSE WORLD WIDTH HEIGHT INFINITE DEFAULT AT SIZE TERRAIN
+    SIMULATION EPISODES STOP MAX_ROUNDS IF ELSE GENE HEALTH HUNGER LEGS EYES ARMS 
+    HORNS SMELL FINS NOSE MOUTH SMELLING VISION MOVE EAT REPRODUCE ATTACK DEFEND
+    PICK SWIM VALUE IN MUTATION CHANCE STEP LOOP CONTINUE BREAK ACTIONS_TIME AVAILABLE_COMMANDS
+    FUNC RETURN DNA COST ENTITY COEXISTENCE REPR ORGANISM BEHAVIOR DECIDE TIME
+
+tokens:
+    INTDIV EQ NEQ GE LE NUMBER STRING ID
+
+
+[parser]
+
+program =>
+    gene_stmt_list dna_stmt_list behavior_stmt_list entity_org_stmt_list world_stmt newline sim_stmt maybe_nl
+
+
+gene_stmt_list =>
+    gene_stmt gene_stmt_list
+    epsilon
+
+gene_stmt =>
+    GENE phygene_stmt
+    GENE percpgene
+    GENE actgene_stmt
+
+percpgene =>
+    SMELLING
+    VISION
+
+actgene_stmt =>
+    actgene ID { COST NUMBER }
+
+actgene =>
+    MOVE
+    EAT
+    REPRODUCE
+    ATTACK
+    DEFEND
+    PICK
+    SWIM
+
+phygene_stmt =>
+    phygene ID { phygeneprop phygeneprop }
+
+phygene =>
+    HEALTH
+    HUNGER
+    LEGS
+    EYES
+    ARMS
+    HORNS
+    SMELL
+    FINS
+    NOSE
+    MOUTH
+
+phygeneprop =>
+    VALUE NUMBER IN { NUMBER NUMBER }
+    MUTATION { mutationprop mutationprop }
+
+mutationprop =>
+    CHANCE NUMBER
+    STEP NUMBER
+
+
+dna_stmt_list =>
+    dna_stmt dna_stmt_list
+    epsilon
+
+dna_stmt =>
+    DNA ID { dna_elem_list }
+
+dna_elem_list =>
+    dna_elem dna_elem_list
+    epsilon
+
+dna_elem =>
+    SMELLING
+    VISION
+    ID
+    DNA ID
+
+
+behavior_stmt_list =>
+    behavior_stmt behavior_stmt_list
+    epsilon
+
+behavior_stmt =>
+    BEHAVIOR ID { func_stmt_list decide_stmt }
+    BEHAVIOR ID
+
+decide_stmt =>
+    DECIDE ORGANISM TIME { stmt_list }
+
+
+entity_org_stmt_list =>
+    entity_stmt entity_org_stmt_list
+    organism_stmt entity_org_stmt_list
+    epsilon
+
+entity_stmt =>
+    ENTITY { entityprop entityprop entityprop }
+
+entityprop =>
+    COEXISTENCE bool
+    REPR ID
+    AT { position position_list }
+
+organism_stmt =>
+    ORGANISM { orgprop orgprop orgprop orgprop }
+
+orgprop =>
+    REPR ID
+    DNA ID
+    BEHAVIOR ID
+    AT { position position_list }
+
+position_list =>
+    position position_list
+    epsilon
+
+position =>
+    ( NUMBER NUMBER )
+
+
+world_stmt =>
+    WORLD { worldprop worldprop }
+
+worldprop =>
+    SIZE worldsize
+    TERRAIN worldterrain
+
+worldsize =>
+    INFINITE { worldsizeprop worldsizeprop }
+    { worldsizeprop worldsizeprop } 
+
+worldsizeprop =>
+    HEIGHT NUMBER
+    WIDTH NUMBER
+
+worldterrain =>
+    { terrainprop_list }
+
+terrainprop_list =>
+    terrainprop terrainprop_list
+    epsilon
+
+terrainprop =>
+    DEFAULT ID
+    ID AT { NUMBER terrainposn_list }
+    ID
+
+terrainposn_list =>
+    NUMBER terrainposn_list
+    epsilon
+
+
+sim_stmt =>
+    SIMULATION => { simprop simprop simprop simprop simprop }
+
+simprop =>
+    EPISODES NUMBER
+    MAX_ROUNDS NUMBER
+    STOP SIMULATION { stmt_list }
+    ACTIONS_TIME NUMBER
+    AVAILABLE_COMMANDS { command_list }
+
+command_list =>
+    ID command_list
+    epsilon
+
+
+func_stmt_list =>
+    func_stmt func_stmt_list
+    epsilon
+
+func_stmt =>
+    FUNC ID = param_list { stmt_list }
+
+param_list =>
+    ID param_list
+    epsilon
+
+ret_stmt =>
+    RETURN disjunction
+    RETURN epsilon
+
+
+stmt_list =>
+    stmt stmt_list
+    epsilon
+
+stmt =>
+    if_stmt
+    var_stmt ;
+    index_stmt ;
+    loop_stmt ;
+    CONTINUE ;
+    BREAK ;
+    ret_stmt ;
+
+
+var_stmt =>
+    accessing = disjunction
+
+
+index_stmt =>
+    naming [ disjunction ] = disjunction
+
+
+loop_stmt =>
+    LOOP loop_init , loop_condition , loop_set { stmt_list }
+
+loop_condition =>
+    disjunction
+    epsilon
+
+loop_init =>
+    var_stmt
+    epsilon
+
+loop_set =>
+    var_stmt
+    epsilon
+
+
+if_stmt =>
+    IF disjunction { stmt_list } else_stmt
+
+else_stmt =>
+    ELSE if_stmt
+    ELSE { stmt_list }
+    epsilon
+
+
+disjunction =>
+    conjunction OR conjunction
+    conjunction
+
+conjunction =>
+    negation AND negation
+    negation
+
+negation =>
+    NOT comparison
+    comparison
+
+
+comparison =>
+    expr EQ expr
+    expr NEQ expr
+    expr GE expr
+    expr LE expr
+    expr < expr
+    expr > expr
+    expr
+
+
+expr =>
+    expr + term
+    expr - term
+    term
+
+term =>
+    term * factor
+    term / factor
+    term % factor
+    term INTDIV factor
+    factor
+
+factor =>
+    - factor
+    power
+
+power =>
+    atom ^ factor
+    atom @ factor
+    naming
+
+naming =>
+    naming [ disjunction ]
+    accessing
+    ID ( arg_list )
+    atom
+
+accessing =>
+    word
+    word . accessing
+
+word =>
+    SIMULATION
+    ORGANISM
+    ID
+
+atom =>
+    NUMBER
+    STRING
+    bool
+    ( expr )
+    [ arg_list ]
+    { keyarg_list }
+
+bool =>
+    TRUE
+    FALSE
+
+arg_list =>
+    disjunction
+    disjunction , arg_list
+    epsilon
+
+keyarg_list =>
+    keyarg
+    keyarg , keyarg_list
+    epsilon
+
+keyarg =>
+    disjunction = disjunction

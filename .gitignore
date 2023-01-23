@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Our custom folder of files for trying new things
+
+ignored_files/

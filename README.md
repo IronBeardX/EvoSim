@@ -5,7 +5,7 @@
 * Alejandro Yero Valdes C-311
 * Leismael Sosa Hernandez C-312
 * Eduardo Garcia Maleta C-311
-  
+
 ## Descripción del proyecto
 
 El proyecto consistirá en una simulación de organismos simples que pueden interactuar entre ellos y con el medio. el comportamiento de estos estará definido por una cadena genética y otras características básicas, como pueden ser el tamaño de la especie, el tiempo de vida o el costo biológico (la cantidad de nutrientes que necesita para sobrevivir), estas últimas pueden ser modificadas por la cadena de genes. Los genes de un organismos podrán ser definidos al inicio de la simulación y redefinidos luego por mutaciones o recombinación de genes entre miembros de una misma especie dependiendo de características como el tipo de reproducción y se elidirán de un conjunto predefinido. La piscina de genes la modelaremos como un grafo dirigido para simular dependencia de funcionalidades, por ejemplo, para poder diferenciar colores primero el organismo debe haber desarrollado visión. También dividiremos los genes en distintos tipos, por ejemplo mientras algunos genes pueden aportar características físicas para que el organismo interactúe con el medio, como audición o visión, otros pueden permitirle procesar información obtenida mediante estos últimos o determinar como el organismo tomara decisiones a partir de información obtenida. El objetivo del proyecto es observar el comportamiento de este tipo de sistemas y ver como se desarrollan las especies a partir de la interacción entre los organismos y el medio.
@@ -89,9 +89,55 @@ o de la siguiente forma si un ADN quiere agregar los genes de otro adentro de si
 dna eee {dna ddd bbb ccc}
 ```
 
-#### Funciones
+###### Behavior
+
+El mecanismo que ofrece el DSL para que los organismos puedan tomar decisiones es la creación de un Behavior.
+
+A la hora de crear un Behavior el usuario puede dejarlo vacío para que la entidad no tome decisión alguna.
+
+```
+behavior ggg
+```
+
+Aquí `ggg` es el identificador del Behavior.
+
+Si el usuario realmente quiere darle un comportamiento personalizado debe implementar dentro del Behavior una función especial reconocida por el motor de simulación. Esta función se llama `decide` y recibe 2 parámetros, un organismo y un tiempo. Recibe un organismo porque un Behavior puede ser compartido por varios organismos.
+
+```
+behavior ggg {
+    decide organism time {
+        return [{'command' = 'move north'}];
+    }
+}
+```
+
+##### Organism
+
+Un organismo es la entidad fundamental de la simulación y la forma que tiene proporciona nuestro DSL para implementar uno nuevo es la siguiente.
+
+```
+organism {
+    dna eee
+    behavior ggg
+    repr jjj
+    at {(15 15)}
+}
+```
+
+El fragmento anterior crea un nuevo tipo de organismo que presenta el ADN con identificador `eee`, el behavior con identificador `ggg` y que se representa en la simulación con `jjj`. Para decirle a la simulación en donde debe instanciar nuevos organismos de este tipo se define un conjunto de posiciones bidimensionales en `at`, es decir, del organismo del código anterior queremos solo 1 en la posición (15, 15).
+
+##### Funciones
+
+<!-- TODO -->
 
 ##### Instrucciones de Control
 
 ##### Variables
+
+Las variables solo pueden ser declaradas dentro del cuerpo de una función y su declaración es semejante a la del lenguaje Python.
+
+```
+x = 3
+y = "hola"
+```
 
