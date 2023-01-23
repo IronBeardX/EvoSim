@@ -1,25 +1,30 @@
 from uuid import uuid4
+from .utils import DirectedGraph as DG
 import random
 
 
-class PhysicalGene:
-    def __init__(self, name, mutation_chance=0.5, gen_type="physical", val_type="int", min_val=0, max_val=100, value=100, mutation_step=1):
+class Gene:
+    def __init__(self, name, gen_type):
         self.name = name
-        self.mutation_chance = mutation_chance
         self.gen_type = gen_type
-        self.val_type = val_type
+
+    def get_property(self):
+        raise NotImplementedError()
+
+
+class PhysicalGene(Gene):
+    def __init__(self, name, mutation_chance=0.5, min_val=0, max_val=100, value=100, mutation_step=1):
+        super().__init__(name, 'physical')
+        self.mutation_chance = mutation_chance
         self.value = value
         self.min = min_val
         self.max = max_val
         self.mutation_step = mutation_step
 
-    def get_property(self):
-        return (self.name, self.value)
-
     def mutate(self):
         new_val = self.value
         if random.random() < self.mutation_chance:
-            value += random.randint(-self.mutation_step, self.mutation_step)
+            value += random.choice(-self.mutation_step, self.mutation_step)
             if value < self.min:
                 value = self.min
             if value > self.max:
@@ -31,31 +36,22 @@ class PhysicalGene:
         return self.__class__(self.mutation_chance, self.min, self.max, self.value, self.mutation_step)
 
 
-class ActionGene:
-    def __init__(self, name, cost=10, gen_type="action"):
-        self.name = name
+class ActionGene(Gene):
+    def __init__(self, name, cost=10):
+        super().__init__(name, 'action')
         self.cost = cost
-        self.gen_type = gen_type
-
-    def get_property(self):
-        pass
 
 
-class PerceptionGene:
-    def __init__(self, name, gen_type="perception"):
-        self.name = name
-        self.gen_type = gen_type
-
-    def get_property(self):
-        pass
+class PerceptionGene(Gene):
+    def __init__(self, name):
+        super().__init__(name, 'perception')
 
 
 # [ ] Physical Genes
 # These genes gives the organism physical properties
 class Health(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=1, max_val=100, value=100, mutation_step=1):
-        super().__init__("health", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('health', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"health": self.value}]
@@ -63,8 +59,7 @@ class Health(PhysicalGene):
 
 class Hunger(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=1, max_val=100, value=50, mutation_step=1):
-        super().__init__("hunger", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('hunger', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{
@@ -75,8 +70,7 @@ class Hunger(PhysicalGene):
 
 class Legs(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=1, max_val=5, value=2, mutation_step=1):
-        super().__init__("legs", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('legs', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"legs": self.value}]
@@ -84,8 +78,7 @@ class Legs(PhysicalGene):
 
 class Eye(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=1, max_val=5, value=2, mutation_step=1):
-        super().__init__("eye", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('eye', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"eye": self.value}]
@@ -93,8 +86,7 @@ class Eye(PhysicalGene):
 
 class Arms(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=1, max_val=50, value=25, mutation_step=1):
-        super().__init__("arms", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('arms', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [
@@ -108,8 +100,7 @@ class Arms(PhysicalGene):
 
 class Horns(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=1, max_val=50, value=20, mutation_step=1):
-        super().__init__("horns", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('horns', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"horns_attack": self.value}]
@@ -117,8 +108,7 @@ class Horns(PhysicalGene):
 
 class Smell(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=1, max_val=5, value=2, mutation_step=1):
-        super().__init__("body_smell", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('smell', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"smell": self.value}]
@@ -126,8 +116,7 @@ class Smell(PhysicalGene):
 
 class Fins(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=4, value=2, mutation_step=1):
-        super().__init__("fins", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('fins', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"fins": self.value}]
@@ -135,8 +124,7 @@ class Fins(PhysicalGene):
 
 class Nose(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=4, value=2, mutation_step=1):
-        super().__init__("nose", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('nose', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"nose": self.value}]
@@ -144,8 +132,7 @@ class Nose(PhysicalGene):
 
 class Mouth(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=4, value=2, mutation_step=1):
-        super().__init__("mouth", mutation_chance, "physical",
-                         "int", min_val, max_val, value, mutation_step)
+        super().__init__('mouth', mutation_chance, min_val, max_val, value, mutation_step)
 
     def get_property(self):
         return [{"mouth": self.value}]
@@ -176,8 +163,6 @@ class VisionRadial(PerceptionGene):
 
 # [ ]Action Genes
 # These genes gives the organism action abilities
-# TODO: Add cost to actions constructor as an argument
-
 
 class Move(ActionGene):
     def __init__(self, cost=10):
@@ -263,3 +248,46 @@ Genes dependencies:
     Nose: Smell
     Eye: Vision
 '''
+
+
+class GeneticPool:
+    def __init__(self):
+        self.graph = DG()
+
+    def add_gen(self, gen):
+        self.graph.add_node(gen.name, gen)
+
+    def add_genes(self, gene_list):
+        for gene in gene_list:
+            self.add_gen(gene)
+
+    def remove_gen(self, gen):
+        self.graph.remove_node(gen.name)
+
+    def update_gen(self, gen):
+        self.graph.set_node_data(gen.name, gen)
+
+    def get_gen(self, gen_name):
+        return self.graph.get_node_data(gen_name)
+
+    def add_dependency(self, dependant_gen, other_gene):
+        self.graph.add_edge(dependant_gen, other_gene)
+
+    def validate_chain(self, dna_chain):
+        for dna in dna_chain:
+            if not self.graph.get_node(dna):
+                return False
+            neighbors = self.graph.get_neighbors(dna)
+
+            dependency = len(neighbors) == 0
+
+            for neighbor in neighbors:
+                if neighbor in dna_chain:
+                    dependency = True
+                    break
+            if not dependency:
+                return False
+        return True
+
+    def __str__(self):
+        return str(self.graph)

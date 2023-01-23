@@ -19,10 +19,13 @@ class DirectedGraph:
             self.id = id
             self.data = data
 
+        def __str__(self):
+            return self.id
+
     def __init__(self) -> None:
         ''''''
         self._nodes = {}
-        self._edges: dict[str, list[str]] = {}
+        self._edges = {}
 
     def get_neighbors(self, node_id: str) -> list[str]:
         '''
@@ -40,6 +43,7 @@ class DirectedGraph:
         '''
         return self._nodes[node_id] if node_id in self._nodes else None
 
+    #[ ] Why is data like that
     def add_node(self, node_id: str, data: dict[str, any]) -> None:
         '''
         Adds a node to the graph.
@@ -143,10 +147,35 @@ class DirectedGraph:
 
         return available_nodes
 
+    def __str__(self):
+        '''
+        Returns a string representation of the graph.
+        it should be printed as a matrix with the nodes as rows and columns
+        and the edges as 1s
+        and if an edge exists from the node x to the node y then the matrix[x][y] = 1
+        it should be formated in a way that it looks aligned
+        also th 1's should be aligned with the columnns and rows
+        '''
+        # Getting the longest node id
+        longest_id = 0
+        for node_id in self._nodes:
+            if len(node_id) > longest_id:
+                longest_id = len(node_id)
 
-class ArtificialIntelligence():
-    def __init__(self) -> None:
-        pass
+        # Creating the string
+        string = " " * (longest_id + 1)
+        for node_id in self._nodes:
+            string += node_id + " "
+        string += "\n\n\n"
+        for node_id in self._nodes:
+            string += node_id + " " * (longest_id - len(node_id) + 1)
+            for neighbor_id in self._nodes:
+                if neighbor_id in self._edges[node_id]:
+                    string += "1 "
+                else:
+                    string += "0 "
+            string += "\n\n\n"
+        return string
 
 
 def select_from_options(options: tuple) -> Callable:
