@@ -4,22 +4,29 @@ import random
 
 
 class Gene:
-    def __init__(self, name, gen_type):
+    def __init__(self, name, gen_type, genetic_cost=1):
+        self.genetic_cost = genetic_cost
         self.name = name
         self.gen_type = gen_type
 
-    def get_property(self):
+    def apply_gen(self):
         raise NotImplementedError()
 
 
 class PhysicalGene(Gene):
-    def __init__(self, name, mutation_chance=0.5, min_val=0, max_val=100, value=100, mutation_step=1):
-        super().__init__(name, 'physical')
+    def __init__(self, name, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value = None):
+        '''
+        [ ] los genes fisicos reciben un solo valor para facilitar otras implementacion y los efectos de este gen en el organismo se
+        deben definir tomando este valor en cuenta
+        '''
+        #TODO: Make validations 
+        super().__init__(name, 'physical', genetic_cost)
         self.mutation_chance = mutation_chance
-        self.value = value
         self.min = min_val
         self.max = max_val
         self.mutation_step = mutation_step
+        self.genetic_cost = genetic_cost
+        self.value = random.randint(min_val, max_val) if not value else value
 
     def mutate(self):
         new_val = self.value
@@ -31,7 +38,6 @@ class PhysicalGene(Gene):
                 value = self.max
         return __class__(self.name, self.mutation_chance, self.min, self.max, new_val, self.mutation_step)
 
-    @property
     def get_copy(self):
         return self.__class__(self.mutation_chance, self.min, self.max, self.value, self.mutation_step)
 
@@ -164,6 +170,7 @@ class VisionRadial(PerceptionGene):
 # [ ]Action Genes
 # These genes gives the organism action abilities
 
+
 class Move(ActionGene):
     def __init__(self, cost=10):
         super().__init__("move", cost=cost)
@@ -255,7 +262,8 @@ class GeneticPool:
         self.graph = DG()
 
     def add_gen(self, gen):
-        self.graph.add_node(gen.name, gen)
+        self.graph.add_node(
+            gen.name, {"gen": gen, "genetic_cost": gen.genetic_cost})
 
     def add_genes(self, gene_list):
         for gene in gene_list:
@@ -273,7 +281,8 @@ class GeneticPool:
     def add_dependency(self, dependant_gen, other_gene):
         self.graph.add_edge(dependant_gen, other_gene)
 
-    def validate_chain(self, dna_chain):
+    def validate_chain(self, dna_chain, genetic_potential):
+        genetic_cost = 0
         for dna in dna_chain:
             if not self.graph.get_node(dna):
                 return False
@@ -291,3 +300,6 @@ class GeneticPool:
 
     def __str__(self):
         return str(self.graph)
+
+    def __getitem__(self, item):
+        return self.graph.get_node_data(item)

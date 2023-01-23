@@ -9,7 +9,7 @@ from src.genetics import *
 # from src.meta_heuristics import *
 from src.utils import *
 
-#Initializing genes:
+# Initializing genes:
 HEALTH = Health()
 HUNGER = Hunger()
 LEGS = Legs()
@@ -30,12 +30,13 @@ DEFEND = Defend()
 PICK = Pick()
 SWIMMING = Swimming()
 
-#Initializing Genetic Pool:
+# Initializing Genetic Pool:
 POOL = GeneticPool()
 
-#Adding all genes to the genetic pool:
-POOL.add_genes([HEALTH, HUNGER, LEGS, EYE, ARMS, HORNS, SMELL, FINS, NOSE, MOUTH, SMELLING, VISIONRADIAL, MOVE, EAT, REPRODUCE, ATTACK, DEFEND, PICK, SWIMMING])
-#Adding some edges:
+# Adding all genes to the genetic pool:
+POOL.add_genes([HEALTH, HUNGER, LEGS, EYE, ARMS, HORNS, SMELL, FINS, NOSE, MOUTH,
+               SMELLING, VISIONRADIAL, MOVE, EAT, REPRODUCE, ATTACK, DEFEND, PICK, SWIMMING])
+# Adding some edges:
 POOL.add_dependency("move", "legs")
 POOL.add_dependency("pick", "arms")
 POOL.add_dependency("attack", "arms")

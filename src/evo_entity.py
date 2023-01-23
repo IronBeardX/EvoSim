@@ -2,6 +2,7 @@ from .utils import *
 from .genetics import *
 from .behaviors import *
 
+# TODO: implement knowledge as a class
 
 class Entity:
     '''
@@ -109,4 +110,55 @@ class RandomOrg(Organism, RandomBehavior):
 
 class OpportunisticOrg(Organism, OpportunisticBehavior):
     def __init__(self, dna_chain, representation="O", species="robber"):
-        super().__init__(dna_chain, representation=representation, species = species)
+        super().__init__(dna_chain, representation=representation, species=species)
+
+
+class Species:
+    def __init__(self, identifier, organism_class, dna_chain, genetic_pool, genetic_potential, representation="O"):
+        self.id = identifier
+        self.organism_class = organism_class
+        self.genetic_potential = genetic_potential
+        self.representation = representation
+        self.genetic_pool = genetic_pool
+        if not genetic_pool.validate_chain(dna_chain):
+            raise ValueError(
+                "The given dna chain is not valid for the given genetic pool")
+        self.dna_chain = dna_chain
+
+    def get_organism(self):
+        dna_chain = []
+        for gene in self.dna_chain:
+            dna_chain.append(GeneticPool[gene]["gene"].mutate())
+        return self.organism_class(self.dna_chain, self.representation, self.id)
+
+    def reproduction(self, organism, other_organism):
+        if organism.species != other_organism.species:
+            raise ValueError("The organisms must be of the same species")
+
+        new_dna_chain = []
+        organism1_dna = organism.dna_chain
+        organism2_dna = other_organism.dna_chain
+        organism1_age = organism.age
+        organism2_age = other_organism.age
+        age_sum = organism1_age + organism2_age
+
+        for i in range(len(organism1_dna)):
+            gene1 = organism1_dna[i]
+            gene2 = organism2_dna[i]
+            most_valuable = None
+            if random.randint(0, age_sum) < organism1_age:
+                most_valuable = gene1
+            else:
+                most_valuable = gene2
+            new_gene = most_valuable.mutate()
+            new_dna_chain.append(new_gene)
+        
+    
+        return self.organism_class(self.dna_chain, self.representation, self.id)
+
+    def mix(self, other_species, value, other_value):
+        if other_species.genetic_pool != self.genetic_pool:
+            raise ValueError("The species must have the same genetic pool")
+        
+        new_dna_chain = []
+        pass

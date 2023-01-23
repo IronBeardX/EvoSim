@@ -12,7 +12,7 @@ class DirectedGraph:
 
         '''
 
-        def __init__(self, id: str, data: dict[str, any]) -> None:
+        def __init__(self, id, data) -> None:
             '''
 
             '''
