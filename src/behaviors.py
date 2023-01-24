@@ -2,6 +2,7 @@ import random
 import math
 
 #TODO: Add init and knowledge to behaiours ?
+#TODO: Make ant colony for path finding ?
 class Behavior:
     def decide_action(self, day, time):
         raise NotImplementedError()
@@ -798,5 +799,40 @@ class OpportunisticBehavior(RandomBehavior):
 
 #TODO: Rename this class to something more appropriate
 class NewB(RandomBehavior):
+    #TODO: Maybe making an evaluator class ?
     def decide_action(self, time=10):
-        
+        pass
+    
+    def food_eval(self):
+        pass
+
+    def explore_eval(self):
+        pass
+
+    def reproduction_eval(self):
+        pass
+
+    def threat_eval(self):
+        pass
+
+    def flee_eval(self):
+        pass
+
+    def attack_eval(self):
+        pass
+
+
+# TODO: ESTOY COGIENDO ESTO COMO BLOCK DE NOTAS:
+'''
+PA CUANDO EL BRO LEISMAEL SE DESPIERTE:
+
+el objetivo de la simulacion va a ser un algo que va a recibir una funcion de evaluacion que da valor a especies dado un estado de la simulacion
+luego con ese valor se van a crear nuevas cadenas de adn para intentar maximizar esa funcion. En los adn se les va a asignar un valor a los genes
+dada la evaluacion de las especies(estas tienen asignadas unas cadenas, esto se parece a como se hace la retroalimentacion en SRI). La propia creacion
+de las cadenas de las nuevas especies es un problema de cumplimiento de restricciones y al estar maximizando una funcion estamos hablando de un problema de
+optimizacion (no lineal?) que estariamos resolviendo con IA, este algoritmo puede ser echandolos a pelear como estabamos hablando horita o puede ser algo como
+hill climbing si logramos definir una generacion de estado vecinos que sea buena>
+
+NOTA FOR SELF:
+Anyadir un factor de priorizacion que  se le va a multiplicar a las funciones del behaviour
+'''

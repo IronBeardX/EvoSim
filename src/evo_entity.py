@@ -50,6 +50,7 @@ class Organism(
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
+        #TODO: Save world and entity memory
         self.knowledge = []
         self.species = species
         self.age = 0
