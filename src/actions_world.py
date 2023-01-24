@@ -1,213 +1,66 @@
 class WorldActions:
+
+    def _move_to(self, entity_id, direction: tuple[int,int], allow_water: bool = False):
+        entity_pos = self.entities[entity_id].position
+        new_pos = (entity_pos[0] + direction[0], entity_pos[1] + direction[1])
+
+        if self.get_terrain_type(entity_pos) == "water":
+            return False if not allow_water else True
+        # Check if the entity is in a finite world
+        if self.finite:
+            return self.world_map.valid_position(new_pos)
+        else:
+            new_pos = (new_pos[0] % self.world_map.shape[0], new_pos[1] % self.world_map.shape[1])
+        # Check if the entity can coexist with another entities
+        new_entities = self.get_entities_in_position(new_pos)
+        new_entities = [entityInfo.entity.coexistence for entityInfo in new_entities]
+        if self.entities[entity_id].entity.coexistence == False and any([not x for x in new_entities]):
+            return False
+
+        # self.entities[entity_id].position = new_pos
+        self.move_entity(entity_id, new_pos)
+        return True
+
     # TODO: Remake this with the new world characteristics
     # Moves the entity with id entity_id one position north if its not currently standing on water
     def move_n(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        north_pos = (entity_pos[0] - 1, entity_pos[1])
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) == "water":
-            return False
-
-        # check if the entity is in a finite world
-        if north_pos[0] < 0:
-            if not self.finite:
-                north_pos = (self.world_map.shape[0]-1, entity_pos[1])
-            else:
-                return False
-
-        # Check if the entity can coexist with another entities
-        north_entities = self.get_entities_in_position(north_pos)
-        north_entities = [entityInfo.entity.coexistence for entityInfo in north_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in north_entities]):
-            return False
-
-        self.entities[entity_id].position = north_pos
-        return True
+        return self._move_to(entity_id, (-1, 0))
 
     # Moves the entity with id entity_id one position south if its not currently standing on water
     def move_s(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        south_pos = (entity_pos[0] + 1, entity_pos[1])
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) == "water":
-            return False
-
-        # check if the entity is in a finite world
-        if south_pos[0] >= self.world_map.shape[0]:
-            if not self.finite:
-                south_pos = (0, entity_pos[1])
-            else:
-                return False
-
-        # Check if the entity can coexist with another entities
-        south_entities = self.get_entities_in_position(south_pos)
-        south_entities = [entityInfo.entity.coexistence for entityInfo in south_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in south_entities]):
-            return False
-
-        self.entities[entity_id].position = south_pos
-        return True
+        return self._move_to(entity_id, (1, 0))
 
     # Moves the entity with id entity_id one position east if its not currently standing on water
     def move_e(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        east_pos = (entity_pos[0], entity_pos[1] + 1)
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) == "water":
-            return False
-
-        # check if the entity is in a finite world
-        if east_pos[1] >= self.world_map.shape[1]:
-            if not self.finite:
-                east_pos = (entity_pos[0], 0)
-            else:
-                return False
-
-        # Check if the entity can coexist with another entities
-        east_entities = self.get_entities_in_position(east_pos)
-        east_entities = [entityInfo.entity.coexistence for entityInfo in east_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in east_entities]):
-            return False
-
-        self.entities[entity_id].position = east_pos
-        return True
+        return self._move_to(entity_id, (0, 1))
 
     # Moves the entity with id entity_id one position west if its not currently standing on water
     def move_w(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        west_pos = (entity_pos[0], entity_pos[1] - 1)
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) == "water":
-            return False
-
-        # check if the entity is in a finite world
-        if west_pos[1] < 0:
-            if not self.finite:
-                west_pos = (entity_pos[0], self.world_map.shape[1]-1)
-            else:
-                return False
-
-        # Check if the entity can coexist with another entities
-        west_entities = self.get_entities_in_position(west_pos)
-        # west_entities = [entityInfo.can_coexist f for entityInfo in west_entities]
-        west_entities = [entityInfo.entity.coexistence for entityInfo in west_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in west_entities]):
-            return False
-
-        self.entities[entity_id].position = west_pos
-        return True
+        return self._move_to(entity_id, (0, -1))
 
     # Moves the entity with id entity_id one position north if its currently standing on water
     def swim_n(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        north_pos = (entity_pos[0] - 1, entity_pos[1])
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) != "water":
-            return False
-
-        # check if the entity is in a finite world
-        if north_pos[0] < 0:
-            if not self.finite:
-                north_pos = (self.world_map.shape[0]-1, entity_pos[1])
-            else:
-                return False
-
-        # Check if the entity can coexist with another entities
-        north_entities = self.get_entities_in_position(north_pos)
-        north_entities = [entityInfo.entity.coexistence for entityInfo in north_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in north_entities]):
-            return False
-
-        self.entities[entity_id].position = north_pos
-        return True
+        return self._move_to(entity_id, (-1, 0), allow_water=True)
 
     # Moves the entity with id entity_id one position south if its currently standing on water
     def swim_s(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        south_pos = (entity_pos[0] + 1, entity_pos[1])
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) != "water":
-            return False
-
-        # check if the entity is in a finite world
-        if south_pos[0] >= self.world_map.shape[0]:
-            if not self.finite:
-                south_pos = (0, entity_pos[1])
-            else:
-                return False
-
-        # Check if the entity can can_coexist with another entities
-        south_entities = self.get_entities_in_position(south_pos)
-        south_entities = [entityInfo.entity.coexistence for entityInfo in south_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in south_entities]):
-            return False
-
-        self.entities[entity_id].position = south_pos
-        return True
+        return self._move_to(entity_id, (1, 0), allow_water=True)
 
     # Moves the entity with id entity_id one position east if its currently standing on water
     def swim_e(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        east_pos = (entity_pos[0], entity_pos[1] + 1)
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) != "water":
-            return False
-
-        # check if the entity is in a finite world
-        if east_pos[1] >= self.world_map.shape[1]:
-            if not self.finite:
-                east_pos = (entity_pos[0], 0)
-            else:
-                return False
-
-        # Check if the entity can can_coexist with another entities
-        east_entities = self.get_entities_in_position(east_pos)
-        east_entities = [entityInfo.entity.coexistence for entityInfo in east_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in east_entities]):
-            return False
-
-        self.entities[entity_id].position = east_pos
-        return True
+        return self._move_to(entity_id, (0, 1), allow_water=True)
 
     # Moves the entity with id entity_id one position west if its currently standing on water
     def swim_w(self, entity_id):
         # get entity position from its id
-        entity_pos = self.entities[entity_id].position
-        west_pos = (entity_pos[0], entity_pos[1] - 1)
-
-        # check current position is terrain type water
-        if self.get_terrain_type(entity_pos) != "water":
-            return False
-
-        # check if the entity is in a finite world
-        if west_pos[1] < 0:
-            if not self.finite:
-                west_pos = (entity_pos[0], self.world_map.shape[1] - 1)
-            else:
-                return False
-
-        # Check if the entity can can_coexist with another entities
-        west_entities = self.get_entities_in_position(west_pos)
-        west_entities = [entityInfo.entity.coexistence for entityInfo in west_entities]
-        if self.entities[entity_id].entity.coexistence == False and any([not x for x in west_entities]):
-            return False
-
-        self.entities[entity_id].position = west_pos
-        return True
+        return self._move_to(entity_id, (0, -1), allow_water=True)
 
     # Returns a list with the ids of all entities in the radius
     def see_r(self, entity_id, radius):

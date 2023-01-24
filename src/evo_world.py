@@ -170,16 +170,26 @@ class EvoWorld(
             world_tile.entities.append(entity)
         self.entities[entity.get_entity_id()] = MapEntityInfo(entity, position)
 
-    def remove_entity(self, entity_id):
+    def move_entity(self, entity_id, position):
+        entityInfo = self.entities[entity_id]
+        if self.valid_position(position):
+            entityInfo.position = position
+            self.place_entity(entityInfo.entity, position)
+            self.remove_entity(entity_id, only_position=True)
+        else:
+            raise Exception('The position is out of range')
+
+    def remove_entity(self, entity_id, only_position=False):
         entityInfo = self.entities[entity_id]
         entity = entityInfo.entity
         x, y = entityInfo.position
         world_tile = self.world_map[x, y]
         map = self.world_map
         try:
-            self.entities.pop(entity_id)
+            if not only_position:
+                self.entities.pop(entity_id)
             world_tile.entities.remove(entity)
-            print('All alright')
+            # print('All alright')
         except:
             print('The entity to remove does not appear in the WorldTile')
 
