@@ -173,8 +173,8 @@ class EvoWorld(
     def move_entity(self, entity_id, position):
         entityInfo = self.entities[entity_id]
         if self.valid_position(position):
-            entityInfo.position = position
             self.place_entity(entityInfo.entity, position)
+            entityInfo.position = position
             self.remove_entity(entity_id, only_position=True)
         else:
             raise Exception('The position is out of range')
