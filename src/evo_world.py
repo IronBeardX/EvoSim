@@ -196,8 +196,13 @@ class EvoWorld(
         map = self.world_map
         if len(map.shape) != 2:
             raise Exception('Debe tener 2 dimensiones')
+        result = ''
         for i in range(map.shape[0]):
             row = ''
             for j in range(map.shape[1]):
-                row += f'{map[i, j]} '
-            print(row)
+                # row += f'{map[i, j].entities[0].get_string_representation()} '
+                m = map[i, j]
+                representation = m.entities[0].get_string_representation() if len(m.entities) > 0 else m.get_terrain()
+                row += f'{representation} '
+            result += row + '\n'
+        return result
