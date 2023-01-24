@@ -4,8 +4,8 @@ class WorldActions:
         entity_pos = self.entities[entity_id].position
         new_pos = (entity_pos[0] + direction[0], entity_pos[1] + direction[1])
 
-        if self.get_terrain_type(entity_pos) == "water":
-            return False if not allow_water else True
+        if self.get_terrain_type(entity_pos) == "water" and not allow_water:
+            return False
         # Check if the entity is in a finite world
         if self.finite:
             return self.world_map.valid_position(new_pos)
