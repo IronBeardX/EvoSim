@@ -6,40 +6,6 @@ from src.utils import *
 from random import randint
 
 
-def gen_basic_dna_chain():
-    return [Health(), Hunger(), Smell(), Mouth(), Eat()]
-
-
-def smeller_ext(dna):
-    return [Nose(), Smelling()]
-
-
-def watcher_ext(dna):
-    return [Eye(), VisionRadial()]
-
-
-def walker_ext(dna):
-    return [Legs(), Move()]
-
-
-def swimmer_ext(dna):
-    return [Fins(), Swimming()]
-
-
-def arms_ext(dna):
-    return [Arms(), Attack(), Pick()]
-
-
-def eater_ext(dna):
-    return [Mouth(), Eat()]
-
-
-def pick_ext(dna):
-    dna.extend(arms_ext(dna))
-    dna.extend(eater_ext(dna))
-    return dna
-
-
 def main():
     initial_dist = {}
     sim = EvoSim(10,

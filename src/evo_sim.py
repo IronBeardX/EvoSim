@@ -27,9 +27,8 @@ class EvoSim(SimActions):
         self.visualization = visualization
         self.entities_gen = []
         self.entities = {}
-        self.banished_entities = {}
+        self.banished_entities = []
         self.intelligent_entities = {}
-        self.dead_entities = {}
         self.episodes_total = episodes_total
         self.max_rounds = max_rounds_per_episode
         self.stop_condition = stop_condition
@@ -51,12 +50,11 @@ class EvoSim(SimActions):
             for entity_gen_position, world_position in gen_world_pos:
                 self.instantiate_entity(entity_gen_position, world_position)
 
-            self.run_episode()
+            self.run_episode(episode)
             self.entities = {}
             self.intelligent_entities = {}
-            self.dead_entities = {}
 
-    def run_episode(self):
+    def run_episode(self, episode):
         for day in range(self.max_rounds):
             self.day = day
             # Checking stop condition if defined
@@ -93,8 +91,11 @@ class EvoSim(SimActions):
                     perception_list)
 
                 if not entity.pass_time():
-                    self.banished_entities[entity_id] = self.intelligent_entities.pop(
-                        entity_id)
+                    self.banished_entities.append((
+                        day,
+                        episode,
+                        self.intelligent_entities.pop(entity_id)
+                    ))
                     self.world.remove_entity(entity_id)
                     # print : entity_id, "was banished"
                     if self.visualization:
