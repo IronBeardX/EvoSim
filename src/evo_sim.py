@@ -96,7 +96,6 @@ class EvoSim(SimActions):
                     self.banished_entities[entity_id] = self.intelligent_entities.pop(
                         entity_id)
                     self.world.remove_entity(entity_id)
-                    self.entities.pop(entity_id)
                     # print : entity_id, "was banished"
                     if self.visualization:
                         self.visualization_fun(banished=entity_id)
@@ -162,12 +161,6 @@ class EvoSim(SimActions):
     def entities_in_position(self, position):
         aux = len(self.world.get_entities_in_position(position))
         return aux
-
-    def kill_in_position(self, position):
-        entities = self.world.get_entities_in_position(position)
-        if len(entities) > 0:
-            self.entities.pop(entities[0])
-            self.world.remove_entity(entities[0])
 
     def create_in_position(self, position):
         self.instantiate_entity(0, (position[0], position[1]))

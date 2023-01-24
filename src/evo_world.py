@@ -177,11 +177,11 @@ class EvoWorld(
         world_tile = self.world_map[x, y]
         map = self.world_map
         try:
-            world_tile.entities.remove(entity)
             self.entities.pop(entity_id)
+            world_tile.entities.remove(entity)
+            print('All alright')
         except:
             print('The entity to remove does not appear in the WorldTile')
-        print('All alright')
 
     def __str__(self) -> str:
         map = self.world_map
