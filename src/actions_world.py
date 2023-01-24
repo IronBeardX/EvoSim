@@ -21,7 +21,6 @@ class WorldActions:
         self.move_entity(entity_id, new_pos)
         return True
 
-    # TODO: Remake this with the new world characteristics
     # Moves the entity with id entity_id one position north if its not currently standing on water
     def move_n(self, entity_id):
         # get entity position from its id

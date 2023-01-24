@@ -25,6 +25,7 @@ class EvoSim(SimActions):
         self.init_world(height, width, terrain_types, terrain_dist, finite)
         self.actions_time = actions_time
         self.visualization = visualization
+        # Here will be also the food generators
         self.species = {}
         self.entities = {}
         self.banished_entities = []
@@ -44,7 +45,7 @@ class EvoSim(SimActions):
         self.available_commands = default_commands if not available_commands else default_commands.update(
             available_commands)
 
-    #TODO: Divide run and run episode into more functions
+    # Previous Control Functions
     def run(self, gen_world_pos):
         for episode in range(self.episodes_total):
             self.world = self.world_gen()
@@ -113,6 +114,104 @@ class EvoSim(SimActions):
                     if self.visualization:
                         self.visualization_fn(action)
 
+    # Simulation Control Functions
+    def initialize_sim(self, entities_positioning):
+        self.world = self.world_gen()
+        for species, world_positions in entities_positioning:
+            for position in world_positions:
+                self.instantiate_entity(species, position)
+
+    def reset_sim(self):
+        self.entities = {}
+        self.intelligent_entities = {}
+        self.day = 0
+
+    def tick_sim(self):
+        self.day += 1
+        # Checking stop condition if defined
+        if self.stop_condition is not None:
+            if self.stop_condition(self):
+                return
+
+        # Time comes for us all ...
+        for entity_id in self.entities:
+            entity = self.entities[entity_id]
+            entity.pass_time()
+
+        # Executing entities actions
+        for entity_id in list(self.intelligent_entities.keys()):
+            entity = self.intelligent_entities[entity_id]
+            # Executing perception actions:
+            perception_list = []
+            if "floor" in self.available_commands:
+                position, floor = self.available_commands["floor"](
+                    entity_id)
+                perception_list.append(
+                    {"floor": floor, "position": position})
+            for action in entity.get_perceptions():
+                command = action["command"]
+                parameters = action["parameters"]
+                new_per = []
+                if command in self.available_commands:
+                    new_information = self.available_commands[command](
+                        entity_id, self.day, *parameters)
+                    for info in new_information:
+                        self.update_perception(info, perception_list)
+            self.intelligent_entities[entity_id].update_knowledge(
+                perception_list)
+
+            if not entity.pass_time():
+                self.banished_entities.append((
+                    self.day,
+                    self.intelligent_entities.pop(entity_id)
+                ))
+                self.world.remove_entity(entity_id)
+                # print : entity_id, "was banished"
+                if self.visualization:
+                    # self.visualization_fun(banished=entity_id)
+                    pass
+                continue
+            # The entity executes its action based on its world perception,
+            # which returns world and simulation actions to be executed
+            actions = entity.decide_action(time=self.actions_time)
+            for action in actions:
+                action["entity"] = entity_id
+                self.execute_action(action)
+                if self.visualization:
+                    self.visualization_fn(action)
+
+    # Information Extraction Functions
+    def get_entities(self):
+        return self.entities
+
+    def get_intelligent_entities(self):
+        return self.intelligent_entities
+
+    def get_banished_entities(self):
+        return self.banished_entities
+
+    def get_world(self):
+        return self.world
+
+    def get_all_live_from_species(self, species):
+        ents = []
+        for ent in self.intelligent_entities.values():
+            if ent.species() == species:
+                ents.append(ent)
+
+    def get_all_objects(self, type):
+        ents = []
+        for ent in self.entities.values():
+            if ent.type() == type:
+                ents.append(ent)
+
+    def get_all_dead_from_species(self, species):
+        ents = []
+        for ent in self.banished_entities:
+            if ent.species() == species:
+                ents.append(ent)
+
+    # Utility Functions
     def visualization_fn(self, action):
         print(action['command'] + ':' + action['entity'])
         print(self.world)
@@ -190,7 +289,7 @@ class EvoSim(SimActions):
     def execute_action(self, action):
         if action["command"] in list(self.available_commands.keys()):
             if action['command'] == 'reproduce':
-                #TODO: Fix These actions
+                # TODO: Fix These actions
                 return
             self.available_commands[action["command"]](
                 action["entity"], *action["parameters"])
@@ -218,3 +317,5 @@ class EvoSim(SimActions):
         else:
             self.entities[entity.get_entity_id()] = entity
         self.world.place_entity(entity, world_position)
+
+    #TODO: Implement a better visualization

@@ -43,7 +43,6 @@ class World():
         else:
             self.world_actions[command](entity_id)
 
-    # TODO: From here there will be the declarations of methods that every world should implement
     def get_entity_info(self, entity_id):
         '''
         This method returns the information about the entity with the given id.
@@ -129,7 +128,6 @@ class EvoWorld(
         world_actions = default_world_actions if world_actions is None else default_world_actions.extend(
             world_actions)
 
-        # TODO: Remake this so the world map is made of WorldTiles
         # Initialize the world map
         world_map = np.empty((height, width), dtype=type(WorldTile))
         for i in range(height):

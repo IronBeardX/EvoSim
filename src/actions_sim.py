@@ -9,6 +9,7 @@ import time
 
 
 class SimActions:
+    # TODO: Update this
     def attack(self, ent_id, other_id, value):
         # Check if the ids are correct:
         if (ent_id not in self.intelligent_entities) or (other_id not in self.intelligent_entities):

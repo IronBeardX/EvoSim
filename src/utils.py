@@ -43,8 +43,7 @@ class DirectedGraph:
         '''
         return self._nodes[node_id] if node_id in self._nodes else None
 
-    #[ ] Why is data like that
-    def add_node(self, node_id: str, data: dict[str, any]) -> None:
+    def add_node(self, node_id, data) -> None:
         '''
         Adds a node to the graph.
         '''
