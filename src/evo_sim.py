@@ -27,6 +27,8 @@ class EvoSim(SimActions):
         self.visualization = visualization
         # Here will be also the food generators
         self.species = {}
+        self.object_types = {}
+        #TODO: Change entities for objects
         self.entities = {}
         self.banished_entities = []
         self.intelligent_entities = {}
@@ -136,6 +138,7 @@ class EvoSim(SimActions):
         # Time comes for us all ...
         for entity_id in self.entities:
             entity = self.entities[entity_id]
+            #TODO: Change this for trees and other entities
             entity.pass_time()
 
         # Executing entities actions
@@ -303,6 +306,9 @@ class EvoSim(SimActions):
     def add_species(self, species):
         # self.entities_gen.append((species.name, species))
         self.species[species.id] = species
+
+    def add_object_type(self, object_type):
+        self.object_types[object_type.id] = object_type
 
     def instantiate_entity(self, species, world_position, generator=None):
         if generator != None:

@@ -19,7 +19,7 @@ class PhysicalGene(Gene):
         [ ] los genes fisicos reciben un solo valor para facilitar otras implementacion y los efectos de este gen en el organismo se
         deben definir tomando este valor en cuenta.
         '''
-        # TODO: hacer las validaciones, tambien hacer que el costo 
+        # TODO: hacer las validaciones, tambien hacer que el costo
         self.mutation_chance = mutation_chance
         self.min = min_val
         self.max = max_val
@@ -40,23 +40,26 @@ class PhysicalGene(Gene):
     def get_copy(self):
         return self.__class__(self.mutation_chance, self.min, self.max, self.mutation_step, self.genetic_cost, self.value)
 
-#TODO: añadir el costo genetico a las inicializaciones de los genes de accion y percepcion 
+# TODO: añadir el costo genetico a las inicializaciones de los genes de accion y percepcion
+
+
 class ActionGene(Gene):
-    def __init__(self, name, cost=10, genetic_cost = 1):
+    def __init__(self, name, cost=10, genetic_cost=1):
         super().__init__(name, 'action')
         self.cost = cost
         self.genetic_cost = genetic_cost
 
 
 class PerceptionGene(Gene):
-    def __init__(self, name, genetic_cost = 1):
+    def __init__(self, name, genetic_cost=1):
         super().__init__(name, 'perception')
 
 
 # [ ] Physical Genes
 class Health(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('health', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('health', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"health": self.value}]
@@ -64,7 +67,8 @@ class Health(PhysicalGene):
 
 class Hunger(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('hunger', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('hunger', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{
@@ -75,7 +79,8 @@ class Hunger(PhysicalGene):
 
 class Legs(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('legs', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('legs', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"legs": self.value}]
@@ -83,7 +88,8 @@ class Legs(PhysicalGene):
 
 class Eye(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('eye', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('eye', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"eye": self.value}]
@@ -91,7 +97,8 @@ class Eye(PhysicalGene):
 
 class Arms(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('arms', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('arms', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [
@@ -105,7 +112,8 @@ class Arms(PhysicalGene):
 
 class Horns(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('horns', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('horns', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"horns_attack": self.value}]
@@ -113,7 +121,8 @@ class Horns(PhysicalGene):
 
 class Smell(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('smell', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('smell', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"smell": self.value}]
@@ -121,7 +130,8 @@ class Smell(PhysicalGene):
 
 class Fins(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('fins', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('fins', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"fins": self.value}]
@@ -129,7 +139,8 @@ class Fins(PhysicalGene):
 
 class Nose(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('nose', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('nose', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"nose": self.value}]
@@ -137,7 +148,8 @@ class Nose(PhysicalGene):
 
 class Mouth(PhysicalGene):
     def __init__(self, mutation_chance=0.5, min_val=0, max_val=100, mutation_step=1, genetic_cost=1, value=None):
-        super().__init__('mouth', mutation_chance, min_val, max_val, mutation_step, genetic_cost, value)
+        super().__init__('mouth', mutation_chance, min_val,
+                         max_val, mutation_step, genetic_cost, value)
 
     def get_property(self):
         return [{"mouth": self.value}]
@@ -286,7 +298,7 @@ class GeneticPool:
         for dna in dna_chain:
             if not self.graph.get_node(dna):
                 return False
-                
+
             neighbors = self.graph.get_neighbors(dna)
 
             dependency = len(neighbors) == 0
@@ -297,8 +309,9 @@ class GeneticPool:
                     break
             if not dependency:
                 return False
-            
-            current_genetic_cost += self.graph.get_node_data(dna)["genetic_cost"]
+
+            current_genetic_cost += self.graph.get_node_data(dna)[
+                "genetic_cost"]
         return current_genetic_cost <= genetic_potential
 
     def __str__(self):

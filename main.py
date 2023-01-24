@@ -44,13 +44,16 @@ POOL.add_dependency("swimming", "fins")
 
 dna_chain1 = ['health', 'hunger', 'reproduce', 'legs', 'smell', 'move']
 dna_chain2 = ['health', 'hunger', 'reproduce', 'fins', 'smell', 'swimming']
-dna_chain3 = ['health', 'hunger', 'reproduce', 'arms', 'smell', 'pick', 'attack', 'defend']
-dna_chain4 = ['health', 'hunger', 'reproduce', 'arms', 'eye', 'smell', 'vision', 'defend']
+dna_chain3 = ['health', 'hunger', 'reproduce',
+              'arms', 'smell', 'pick', 'attack', 'defend']
+dna_chain4 = ['health', 'hunger', 'reproduce',
+              'arms', 'eye', 'smell', 'vision', 'defend']
 
 species1 = Species('walker', RandomOrg, dna_chain1, POOL, 8, "Z")
 species2 = Species('swimmer', RandomOrg, dna_chain2, POOL, 8, "X")
 species3 = Species('fighter', RandomOrg, dna_chain3, POOL, 8, "C")
 species4 = Species('hunter', RandomOrg, dna_chain4, POOL, 8, "V")
+
 
 def main():
     initial_dist = {}

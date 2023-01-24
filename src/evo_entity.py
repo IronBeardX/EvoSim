@@ -4,16 +4,18 @@ from .behaviors import *
 
 # TODO: implement knowledge as a class
 
+
 class Entity:
     '''
     Basic class of world inhabitants, it encompasses everything that exists in the world excluding the terrain. Entities that don't interact with the world should inherit from this class.
     '''
 
-    def __init__(self, intelligence=False, coexistence=True, representation="E"):
+    def __init__(self, intelligence=False, coexistence=True, representation="E", ent_type="entity"):
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
         self._id = uuid4()
+        self._ent_type = ent_type
         self.physical_properties = {}
         self.is_intelligent = intelligence
         self.coexistence = coexistence
@@ -43,7 +45,8 @@ class Organism(
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
         genetic potential is an integer that represents the maximum length of the dna chain.
         '''
-        super().__init__(intelligence=True, coexistence=False, representation=representation)
+        super().__init__(intelligence=True, coexistence=False,
+                         representation=representation, type="organism")
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
@@ -91,26 +94,21 @@ class Organism(
 
 
 class Food(Entity):
-    def __init__(self, Nutrition=10, intelligence=False, coexistence=True, rep="F"):
+    def __init__(self, Nutrition=10, coexistence=True, rep="F", food_type="vegetal", storable=False):
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
-        super().__init__(representation=rep)
-        self.physical_properties = {"edible": Nutrition}
-
-
-class PackableFood(Entity):
-    def __init__(self, Nutrition=5, intelligence=False, coexistence=True, rep="P"):
-        '''
-        Here basic information about the entity is stored, such as its id, type, color, etc.
-        '''
-        super().__init__(representation=rep)
-        self.physical_properties = {"edible": Nutrition, "storable": True}
+        super().__init__(representation=rep, coexistence=coexistence, ent_type="food")
+        self.physical_properties = {
+            "edible": Nutrition,
+            "storable": storable,
+            "food_type": food_type
+        }
 
 
 class RandomOrg(Organism, RandomBehavior):
-    def __init__(self, dna_chain, representation="R", species = "default"):
-        super().__init__(dna_chain, representation=representation, species = species)
+    def __init__(self, dna_chain, representation="R", species="default"):
+        super().__init__(dna_chain, representation=representation, species=species)
 
 
 class OpportunisticOrg(Organism, OpportunisticBehavior):
@@ -165,16 +163,16 @@ class Species:
                 new_dna_chain.append(most_valuable.mutate())
             else:
                 new_dna_chain.append(most_valuable)
-        
-    
+
         return self.organism_class(new_dna_chain, self.representation, self.id)
 
-def mix(species, other_species, value, other_value):
-    #TODO: AQUI FALTA COMPROBAR SI LAS DEPENDENCIAS DE UN GEN NO ESTAN EN EL ADN CUANDO SE AGREGAN
-    #TODO: SI ADEMAS SE LE AGREGA EL VALOR AL GEN SERIA AUN MEJOR
+
+def species_mixer(species, other_species, value, other_value):
+    # TODO: AQUI FALTA COMPROBAR SI LAS DEPENDENCIAS DE UN GEN NO ESTAN EN EL ADN CUANDO SE AGREGAN
+    # TODO: SI ADEMAS SE LE AGREGA EL VALOR AL GEN SERIA AUN MEJOR
     if other_species.genetic_pool != species.genetic_pool:
         raise ValueError("The species must have the same genetic pool")
-    
+
     genetic_pool = species.genetic_pool
     new_identifier = '[' + species.id + other_species.id + ']'
     new_dna_chain = []
@@ -198,7 +196,7 @@ def mix(species, other_species, value, other_value):
             if current_genetic_cost + cost <= species.genetic_potential:
                 new_dna_chain.append(new_gene)
                 current_genetic_cost += cost
-        
+
         else:
             if random.randint(0, value + other_value) < value:
                 new_gene = self_dna_copy.pop(0)
@@ -220,6 +218,7 @@ def mix(species, other_species, value, other_value):
                         self_dna_copy.remove(new_gene)
     return Species(new_identifier, species.organism_class, new_dna_chain, species.genetic_pool, species.genetic_potential, species.representation)
 
+
 def __check_gene_validity(species, dna_chain, gene_name):
     dependencies = species.genetic_pool.get_dependencies(gene_name)
     for gene in dna_chain:
@@ -227,9 +226,9 @@ def __check_gene_validity(species, dna_chain, gene_name):
             return True
     return False
 
+
 def __gene_in_chain(species, dna_chain, gene):
     for g in dna_chain:
         if g.name == gene.name:
             return True
     return False
-        

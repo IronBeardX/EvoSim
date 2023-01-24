@@ -1,7 +1,7 @@
 import random
 import math
 
-
+#TODO: Add init and knowledge to behaiours ?
 class Behavior:
     def decide_action(self, day, time):
         raise NotImplementedError()
@@ -796,3 +796,7 @@ class OpportunisticBehavior(RandomBehavior):
         else:
             return pos
 
+#TODO: Rename this class to something more appropriate
+class NewB(RandomBehavior):
+    def decide_action(self, time=10):
+        
