@@ -42,8 +42,8 @@ def pick_ext(dna):
 
 def main():
     initial_dist = {}
-    sim = EvoSim(50,
-                 50,
+    sim = EvoSim(10,
+                 10,
                  {"G": "grass", "D": "dirt", "W": "water"},
                  initial_dist,
                  False,
@@ -56,9 +56,9 @@ def main():
     sim.add_entity_gen(food_gen)
     sim.add_entity_gen(random_gen)
     #generate entities generation list in random positions
-    positions_ent = gen_random_position_tuple_list(49, 49, 70)
-    positions_food = gen_random_position_tuple_list(49, 49, 20)
-    positions_pick = gen_random_position_tuple_list(49, 49, 20)
+    positions_ent = gen_random_position_tuple_list(9, 9, 10)
+    positions_food = gen_random_position_tuple_list(9, 9, 5)
+    positions_pick = gen_random_position_tuple_list(9, 9, 5)
     # create the (generator_position, position) list
     gen_pos_ent = [(random.choice([1, 3]), pos) for pos in positions_ent]
     gen_pos_ent.extend([(2, pos) for pos in positions_food])
