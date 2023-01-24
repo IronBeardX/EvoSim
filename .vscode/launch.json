@@ -8,7 +8,7 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "/home/ironbeardx/MyStuff/School/IA-SIM-COMP-Final_Proyect/EvoSim/genepooltester.py",
+            "program": "/home/ironbeardx/MyStuff/School/IA-SIM-COMP-Final_Proyect/EvoSim/main.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }
