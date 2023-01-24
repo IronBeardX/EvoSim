@@ -98,7 +98,8 @@ class EvoSim(SimActions):
                     self.world.remove_entity(entity_id)
                     # print : entity_id, "was banished"
                     if self.visualization:
-                        self.visualization_fun(banished=entity_id)
+                        # self.visualization_fun(banished=entity_id)
+                        pass
                     continue
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
@@ -107,7 +108,12 @@ class EvoSim(SimActions):
                     action["entity"] = entity_id
                     self.execute_action(action)
                     if self.visualization:
-                        self.visualization_fun(action)
+                        self.visualization_fn(action)
+
+    def visualization_fn(self, action):
+        print(action['command'] + ':' + action['entity'])
+        print(self.world)
+        pass
 
     def update_perception(self, new_info, current_info):
         if "entity" in list(new_info.keys()):
