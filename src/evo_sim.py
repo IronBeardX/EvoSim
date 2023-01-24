@@ -25,7 +25,7 @@ class EvoSim(SimActions):
         self.init_world(height, width, terrain_types, terrain_dist, finite)
         self.actions_time = actions_time
         self.visualization = visualization
-        self.entities_gen = []
+        self.species = {}
         self.entities = {}
         self.banished_entities = []
         self.intelligent_entities = {}
@@ -44,11 +44,13 @@ class EvoSim(SimActions):
         self.available_commands = default_commands if not available_commands else default_commands.update(
             available_commands)
 
+    #TODO: Divide run and run episode into more functions
     def run(self, gen_world_pos):
         for episode in range(self.episodes_total):
             self.world = self.world_gen()
-            for entity_gen_position, world_position in gen_world_pos:
-                self.instantiate_entity(entity_gen_position, world_position)
+            for species, world_positions in gen_world_pos:
+                for position in world_positions:
+                    self.instantiate_entity(species, position)
 
             self.run_episode(episode)
             self.entities = {}
@@ -187,6 +189,9 @@ class EvoSim(SimActions):
 
     def execute_action(self, action):
         if action["command"] in list(self.available_commands.keys()):
+            if action['command'] == 'reproduce':
+                #TODO: Fix These actions
+                return
             self.available_commands[action["command"]](
                 action["entity"], *action["parameters"])
         else:
@@ -196,17 +201,18 @@ class EvoSim(SimActions):
         self.world_gen = lambda: EvoWorld(
             height, width, terrain_types, terrain_dist, finite)
 
-    def add_entity_gen(self, entity_instance_gen):
-        self.entities_gen.append(entity_instance_gen)
+    def add_species(self, species):
+        # self.entities_gen.append((species.name, species))
+        self.species[species.id] = species
 
-    def instantiate_entity(self, entity_gen_position, world_position, generator=None):
+    def instantiate_entity(self, species, world_position, generator=None):
         if generator != None:
             entity = generator()
             self.intelligent_entities[entity.get_entity_id()] = entity
             self.world.place_entity(entity, world_position)
             return
 
-        entity = self.entities_gen[entity_gen_position]()
+        entity = self.species[species].get_organism()
         if entity.is_intelligent:
             self.intelligent_entities[entity.get_entity_id()] = entity
         else:
