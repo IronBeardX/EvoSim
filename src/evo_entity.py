@@ -46,7 +46,7 @@ class Organism(
         genetic potential is an integer that represents the maximum length of the dna chain.
         '''
         super().__init__(intelligence=True, coexistence=False,
-                         representation=representation, type="organism")
+                         representation=representation, ent_type="organism")
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
