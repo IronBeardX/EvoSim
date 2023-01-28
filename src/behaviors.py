@@ -1,5 +1,6 @@
 import random
 import math
+from xml.dom.expatbuilder import parseString
 
 #TODO: Add init and knowledge to behaiours ?
 #TODO: Make ant colony for path finding ?
@@ -800,14 +801,71 @@ class OpportunisticBehavior(RandomBehavior):
 #TODO: Rename this class to something more appropriate
 class NewB(RandomBehavior):
     #TODO: Maybe making an evaluator class ?
-    def decide_action(self, time=10):
-        pass
+    def decide_action(self, time=10, evaluator = None):
+        current_time = 0
+        actions_list = []
+        evaluator = evaluator if evaluator else BasicEvaluator()
+        while current_time < time:
+            #generar las posibles acciones que puedo hacer desde mi posicion
+            posible_actions = self.__action_generator()
+            #evaluar cada una de estas acciones y quedarme con la mejor
+            #anyadir a la lista de acciones a realizar
+            pass
+        #devolver esta lista
     
-    def food_eval(self):
+    def __action_generator(self):
+        '''Function that generates all actions the organism can make from its position'''
+        posible_actions  = []
+        for action in self.actions:
+            action_name = action["name"]
+            match action_name:
+                case 'eat':
+                    #coger las comidas
+                    pass
+                case 'attack':
+                    #coger las entidades neutrales o enemigas
+                    pass
+                case 'pick':
+                    #TODO: Fix the entities when i know how are they going to be stored in the knowledge base
+                    objects = []
+                    #recorrer los objetos adyacentes y ver si se puede coger y cogerlos
+                    pass
+                case 'reproduce':
+                    #TODO: Fix the entities when i know how are they going to be stored in the knowledge base check if they are adyacents
+                    entities = []
+                    if self.physical_properties['reproduction type'] == 'sexual':
+                        for entity in entities:
+                            if entity['type'] == 'organism' and entity.species == self.species:
+                                posible_actions.append({'command': 'reproduce', 'cost': action['cost'], 'parameters': [entity.id]})
+                    else:
+                        posible_actions.append({'command': 'reproduce', 'cost': action['cost'], 'parameters': [self.id]})
+                case _:
+                    posible_actions.append({'command': action_name, 'cost': action['cost'], 'parameters' : []})
         pass
 
-    def explore_eval(self):
-        pass
+class BasicEvaluator:
+    def __init__(self, food_weight = 1, explore_weight = 1, reproduction_weight = 1, threat_weight = 1, flee_weight = 1, attack_weight = 1):
+        DIRECTIONS = {'north': (-1, 0), 'south': (1, 0), 'east': (0, 1), 'west': (0, -1)}
+        self.food_weight = food_weight
+        self.explore_weight = explore_weight
+        self.reproduction_weight = reproduction_weight
+        self.threat_weight = threat_weight
+        self.flee_weight = flee_weight
+        self.attack_weight = attack_weight
+
+    def food_eval(self, physical_state, knowledge_base):
+        if physical_state['hunger'] < 0.25 * physical_state['max hunger']:
+            return 1
+        if physical_state['hunger'] < 0.75 * physical_state['max hunger']:
+            return 0.5
+        return 0
+
+    def explore_eval(self, physical_state, knowledge_base):
+        if physical_state['hunger'] < 0.25 * physical_state['max hunger']:
+            return 0
+        if physical_state['hunger'] < 0.75 * physical_state['max hunger']:
+            return 0.5
+        return 1
 
     def reproduction_eval(self):
         pass
@@ -820,6 +878,8 @@ class NewB(RandomBehavior):
 
     def attack_eval(self):
         pass
+
+
 
 
 # TODO: ESTOY COGIENDO ESTO COMO BLOCK DE NOTAS:
