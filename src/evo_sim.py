@@ -310,14 +310,20 @@ class EvoSim(SimActions):
     def add_object_type(self, object_type):
         self.object_types[object_type.id] = object_type
 
-    def instantiate_entity(self, species, world_position, generator=None):
+    def instantiate_entity(self, entity_type, world_position, generator=None):
         if generator != None:
             entity = generator()
             self.intelligent_entities[entity.get_entity_id()] = entity
             self.world.place_entity(entity, world_position)
             return
-
-        entity = self.species[species].get_organism()
+        entity = None
+        if entity_type in self.species:
+            entity = self.species[entity_type].get_entity()
+        elif entity_type in self.object_types:
+            entity = self.object_types[entity_type].get_entity()
+        else:
+            raise Exception("Entity type not found")
+            
         if entity.is_intelligent:
             self.intelligent_entities[entity.get_entity_id()] = entity
         else:

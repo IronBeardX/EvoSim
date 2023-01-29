@@ -42,17 +42,38 @@ POOL.add_dependency("smelling", "nose")
 POOL.add_dependency("vision", "eye")
 POOL.add_dependency("swimming", "fins")
 
-dna_chain1 = ['health', 'hunger', 'reproduce', 'legs', 'smell', 'move']
-dna_chain2 = ['health', 'hunger', 'reproduce', 'fins', 'smell', 'swimming']
+dna_chain1 = ['health', 'hunger', 'reproduce', 'legs', 'move']
+dna_chain2 = ['health', 'hunger', 'reproduce', 'fins', 'swimming']
 dna_chain3 = ['health', 'hunger', 'reproduce',
-              'arms', 'smell', 'pick', 'attack', 'defend']
+              'arms', 'pick', 'attack', 'defend']
 dna_chain4 = ['health', 'hunger', 'reproduce',
-              'arms', 'eye', 'smell', 'vision', 'defend']
+              'arms', 'eye', 'vision', 'defend']
 
 species1 = Species('walker', RandomOrg, dna_chain1, POOL, 8, "Z")
 species2 = Species('swimmer', RandomOrg, dna_chain2, POOL, 8, "X")
 species3 = Species('fighter', RandomOrg, dna_chain3, POOL, 8, "C")
 species4 = Species('hunter', RandomOrg, dna_chain4, POOL, 8, "V")
+food = FoodFactory(
+    identifier="food",
+    food_class=Food,
+    representation = "F"
+)
+apple = FoodFactory(
+    identifier="apple",
+    food_class=Food,
+    storable=True,
+    representation="A",
+    nutrition=10,
+    food_type="fruit"
+)
+meat = FoodFactory(
+    identifier="meat",
+    food_class=Food,
+    storable=True,
+    representation="M",
+    nutrition=20,
+    food_type="meat"
+)
 
 
 def main():
@@ -70,6 +91,8 @@ def main():
     sim.add_species(species2)
     sim.add_species(species3)
     sim.add_species(species4)
+    sim.add_object_type(food)
+    sim.add_object_type(apple)
 
     # generate entities generation list in random positions
     # positions_ent = gen_random_position_tuple_list(9, 9, 10)
@@ -99,8 +122,27 @@ def main():
         (species4.id, [
             (5, 9),
             (6, 9)
-        ])]
+        ]),
+        (food.id, [
+            (0, 0),
+            (9, 0),
+            (0, 9),
+            (9, 9)
+        ]),
+        (apple.id, [
+            (4, 4),
+            (5, 4),
+            (6, 4),
+            (4, 5),
+            (6, 5),
+            (4, 6),
+            (5, 6),
+            (6, 6)
+        ])
+    ]
     print(chr(27) + "[2J")
+    # sim.tick_sim()
+    print()
     sim.run(gen_pos_ent)
     print("Simulation Finished")
 

@@ -2,7 +2,8 @@ from .utils import *
 from .genetics import *
 from .behaviors import *
 
-# TODO: implement knowledge as a class
+
+# Entities
 
 
 class Entity:
@@ -50,7 +51,7 @@ class Organism(
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
-        #TODO: Save world and entity memory
+        # TODO: Save world and entity memory
         self.knowledge = []
         self.species = species
         self.age = 0
@@ -67,7 +68,7 @@ class Organism(
                 self.actions.extend(gene.get_property())
 
     def pass_time(self):
-        # TODO: if the organism dies, it must drop its inventory
+        # TODO: if the organism dies, it must drop its inventory and some meat
         self.age += 1
         floor = "grass"
         for info in self.knowledge:
@@ -95,13 +96,13 @@ class Organism(
 
 
 class Food(Entity):
-    def __init__(self, Nutrition=10, coexistence=True, rep="F", food_type="vegetal", storable=False):
+    def __init__(self, nutrition=10, coexistence=True, representation="F", food_type="vegetal", storable=False):
         '''
         Here basic information about the entity is stored, such as its id, type, color, etc.
         '''
-        super().__init__(representation=rep, coexistence=coexistence, ent_type="food")
+        super().__init__(representation=representation, coexistence=coexistence, ent_type="food")
         self.physical_properties = {
-            "edible": Nutrition,
+            "edible": nutrition,
             "storable": storable,
             "food_type": food_type
         }
@@ -117,19 +118,30 @@ class OpportunisticOrg(Organism, OpportunisticBehavior):
         super().__init__(dna_chain, representation=representation, species=species)
 
 
-class Species:
-    def __init__(self, identifier, organism_class, dna_chain, genetic_pool, genetic_potential, representation="O"):
+# Factories
+
+class EntityFactory:
+    def __init__(self, identifier, coexistence, entity_class, representation='E'):
         self.id = identifier
-        self.organism_class = organism_class
-        self.genetic_potential = genetic_potential
+        self.entity_class = entity_class
         self.representation = representation
+        self.coexistence = coexistence
+
+    def get_entity(self):
+        return self.entity_class(ent_type=self.identifier, coexistence=self.coexistence, representation=self.representation)
+
+
+class Species(EntityFactory):
+    def __init__(self, identifier, organism_class, dna_chain, genetic_pool, genetic_potential, representation="O"):
+        super().__init__(identifier, False, organism_class, representation)
+        self.genetic_potential = genetic_potential
         self.genetic_pool = genetic_pool
         if not genetic_pool.validate_chain(dna_chain, genetic_potential):
             raise ValueError(
                 "The given dna chain is not valid for the given genetic pool")
         self.dna_chain = dna_chain
 
-    def get_organism(self):
+    def get_entity(self):
         dna_chain = []
         for gene in self.dna_chain:
             aux = self.genetic_pool.get_gene(gene)['gene']
@@ -138,7 +150,7 @@ class Species:
                 dna_chain.append(aux.mutate())
             else:
                 dna_chain.append(aux)
-        org = self.organism_class
+        org = self.entity_class
         return org(dna_chain, self.representation, self.id)
 
     def reproduction(self, organism, other_organism):
@@ -167,6 +179,25 @@ class Species:
 
         return self.organism_class(new_dna_chain, self.representation, self.id)
 
+
+class FoodFactory(EntityFactory):
+    def __init__(self, identifier, food_class, coexistence=True,  nutrition=10, food_type='vegetal',  representation='E', storable=False):
+        super().__init__(identifier, coexistence, food_class, representation)
+        self.nutrition = nutrition
+        self.food_type = food_type
+        self.storable = storable
+
+    def get_entity(self):
+        return self.entity_class(
+            nutrition=self.nutrition,
+            food_type=self.food_type,
+            representation=self.representation,
+            coexistence=self.coexistence,
+            storable=self.storable
+        )
+
+
+# Utility Functions
 
 def species_mixer(species, other_species, value, other_value):
     # TODO: AQUI FALTA COMPROBAR SI LAS DEPENDENCIAS DE UN GEN NO ESTAN EN EL ADN CUANDO SE AGREGAN
