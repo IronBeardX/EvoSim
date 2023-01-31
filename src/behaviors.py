@@ -1,11 +1,10 @@
 import random
 import math
-from xml.dom.expatbuilder import parseString
 
 #TODO: Add init and knowledge to behaiours ?
 #TODO: Make ant colony for path finding ?
 class Behavior:
-    def decide_action(self, day, time):
+    def decide_action(organism, age, time):
         raise NotImplementedError()
 
 
@@ -59,7 +58,6 @@ class RandomBehavior(Behavior):
         while action_time < time:
             action = random.choice(self.actions)
             match action["name"]:
-                # TODO: the actions in each case should be in methods for easier usage
                 case "move north":
                     if 'hunger' in self.physical_properties:
                         self.physical_properties["hunger"] -= action["cost"]
@@ -882,7 +880,6 @@ class BasicEvaluator:
 
 
 
-# TODO: ESTOY COGIENDO ESTO COMO BLOCK DE NOTAS:
 '''
 PA CUANDO EL BRO LEISMAEL SE DESPIERTE:
 
