@@ -49,10 +49,11 @@ dna_chain3 = ['health', 'hunger', 'reproduce',
 dna_chain4 = ['health', 'hunger', 'reproduce',
               'arms', 'eye', 'vision', 'defend']
 
-species1 = Species('walker', RandomOrg, dna_chain1, POOL, 8, "Z")
-species2 = Species('swimmer', RandomOrg, dna_chain2, POOL, 8, "X")
-species3 = Species('fighter', RandomOrg, dna_chain3, POOL, 8, "C")
-species4 = Species('hunter', RandomOrg, dna_chain4, POOL, 8, "V")
+species1 = Species('walker', Organism, dna_chain1, POOL, 8, "Z")
+species2 = Species('swimmer', Organism, dna_chain2, POOL, 8, "X")
+species3 = Species('fighter', Organism, dna_chain3, POOL, 8, "C")
+species4 = Species('hunter', Organism, dna_chain4, POOL, 8, "V")
+
 food = FoodFactory(
     identifier="food",
     food_class=Food,
@@ -146,6 +147,26 @@ def main():
     sim.run(gen_pos_ent)
     print("Simulation Finished")
 
+def testing_NN():
+    x_train = np.array([[[0,0]], [[0,1]], [[1,0]], [[1,1]]])
+    y_train = np.array([[[0]], [[1]], [[1]], [[0]]])
+
+    # network
+    net = Network()
+    net.add(FCLayer(2, 3))
+    net.add(ActivationLayer(tanh, tanh_prime))
+    net.add(FCLayer(3, 1))
+    net.add(ActivationLayer(tanh, tanh_prime))
+
+    # train
+    net.use(mse, mse_prime)
+    net.fit(x_train, y_train, epochs=1000, learning_rate=0.1)
+
+    # test
+    out = net.predict(x_train)
+    print(out)
+
 
 if __name__ == "__main__":
-    main()
+    # main()
+    testing_NN()

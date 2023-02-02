@@ -30,8 +30,8 @@ class EvoSim(SimActions):
         self.object_types = {}
         #TODO: Change entities for objects
         self.entities = {}
-        self.banished_entities = []
         self.intelligent_entities = {}
+        self.banished_entities = []
         self.episodes_total = episodes_total
         self.max_rounds = max_rounds_per_episode
         self.stop_condition = stop_condition
@@ -42,7 +42,8 @@ class EvoSim(SimActions):
                             "pick": self.pick,
                             "attack": self.attack,
                             "eat": self.eat,
-                            "reproduce": self.reproduce
+                            "reproduce": self.reproduce,
+                            "none": lambda x:None
                             }
         self.available_commands = default_commands if not available_commands else default_commands.update(
             available_commands)
@@ -75,7 +76,6 @@ class EvoSim(SimActions):
             # Executing entities actions
             for entity_id in list(self.intelligent_entities.keys()):
                 entity = self.intelligent_entities[entity_id]
-                # TODO: perceptions should be before pass time in intelligent entities
                 # Executing perception actions:
                 perception_list = []
                 if "floor" in self.available_commands:
@@ -109,7 +109,7 @@ class EvoSim(SimActions):
                     continue
                 # The entity executes its action based on its world perception,
                 # which returns world and simulation actions to be executed
-                actions = entity.decide_action(time=self.actions_time)
+                actions = entity.decide_action()
                 for action in actions:
                     action["entity"] = entity_id
                     self.execute_action(action)
@@ -138,7 +138,6 @@ class EvoSim(SimActions):
         # Time comes for us all ...
         for entity_id in self.entities:
             entity = self.entities[entity_id]
-            #TODO: Change this for trees and other entities
             entity.pass_time()
 
         # Executing entities actions
@@ -310,6 +309,7 @@ class EvoSim(SimActions):
     def add_object_type(self, object_type):
         self.object_types[object_type.id] = object_type
 
+    #TODO: Improve this
     def instantiate_entity(self, entity_type, world_position, generator=None):
         if generator != None:
             entity = generator()

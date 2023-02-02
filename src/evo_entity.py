@@ -2,7 +2,7 @@ from .utils import *
 from .genetics import *
 from .behaviors import *
 
-
+default_brain = Brain()
 # Entities
 
 
@@ -40,7 +40,7 @@ class Entity:
 class Organism(
     Entity
 ):
-    def __init__(self, dna_chain, representation="O", species="default"):
+    def __init__(self, dna_chain, representation="O", species="default", brain = default_brain):
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
@@ -48,14 +48,23 @@ class Organism(
         '''
         super().__init__(intelligence=True, coexistence=False,
                          representation=representation, ent_type="organism")
+        self.brain = brain
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
-        # TODO: Save world and entity memory
-        self.knowledge = []
+        self.knowledge = brain.knowledge
         self.species = species
         self.age = 0
         self._parse_dna()
+
+    def get_perceptions(self):
+        return self.brain.get_perceptions(self)
+
+    def decide_action(self):
+        return self.brain.decide_action(self)
+
+    def update_knowledge(self, perceptions):
+        return self.brain.update_knowledge(self, perceptions)
 
     def _parse_dna(self):
         for gene in self.dna_chain:
@@ -106,16 +115,6 @@ class Food(Entity):
             "storable": storable,
             "food_type": food_type
         }
-
-
-class RandomOrg(Organism, RandomBehavior):
-    def __init__(self, dna_chain, representation="R", species="default"):
-        super().__init__(dna_chain, representation=representation, species=species)
-
-
-class OpportunisticOrg(Organism, OpportunisticBehavior):
-    def __init__(self, dna_chain, representation="O", species="robber"):
-        super().__init__(dna_chain, representation=representation, species=species)
 
 
 # Factories
