@@ -24,3 +24,12 @@ class Specie:
     def get_sensors(self):
         """This will return all the sensors that this specie has. Looking to his DNA structure"""
         pass
+
+    def get_state_cardinality(self) -> int:
+        """This function returns an integer expressing the amount of variables of a state"""
+        # TODO: Implement because this is common in all the species
+        raise NotImplementedError()
+
+    def create_state(self, world):
+        """This function will create a state with the same amount that return `get_state_cardinality`"""
+        pass

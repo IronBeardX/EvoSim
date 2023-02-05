@@ -23,6 +23,13 @@ class PhysicalTrait(Gene):
         could be added, like 'is_pregnant', 'pregnancy time' and 'time_to_give_birth'"""
         pass
 
+    def update(self):
+        """Todos los physical traits deben tener un update. En este update
+        modifican las variables del organismo. Por ejemplo:
+        - El hambre en el update debe modificar la variable hambre (aumentándola) y hacer que mientras esta avance la
+        energía del organismo disminuya y que luego de alcanzado el máximo esta le quite toda la salud al organismo para que muera"""
+        pass
+
 class Sense(Gene):
     """All the genes that inherit from Sense should be genes that receive a World
     and ask the world for information surrounding the organism and from this information
