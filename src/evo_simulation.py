@@ -67,6 +67,7 @@ class EvoWorldSimulation(Simulation, SimActions):
         super().reset()
         self.world = self.world_generator.generate_world()
         self.history = [[]]
+        self.banished_entities = []
 
     def update_history(self):
         """This update the history with the actual amount of organisms of each specie

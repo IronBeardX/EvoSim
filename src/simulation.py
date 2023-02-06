@@ -23,3 +23,8 @@ class Simulation:
         """This function compute the simulation until the given episode
         and step"""
         pass
+
+    def run(self):
+        """This function compute the simulation until the end"""
+        while self.next_step(True):
+            pass

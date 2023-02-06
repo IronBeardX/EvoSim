@@ -4,6 +4,7 @@ from src.evo_world import *
 from src.genetics import *
 from src.utils import *
 from src.evo_simulation import *
+from src.statistics import *
 from random import randint
 
 
@@ -173,6 +174,8 @@ def main():
     print('\n\n--------------- Printing History -----------------\n')
     print(new_simulation.history)
     print("Simulation Finished")
+    plot_life_expectancy(new_simulation)
+    plot_species_count_over_time(new_simulation)
 
 def testing_NN():
     x_train = np.array([[[0,0]], [[0,1]], [[1,0]], [[1,1]]])
