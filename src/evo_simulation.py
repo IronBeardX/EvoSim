@@ -1,9 +1,9 @@
-from simulation import Simulation
-from world_generator import *
-from evo_world import *
-from evo_entity import *
-from actions_sim import *
-from utils import *
+from .simulation import Simulation
+from .world_generator import *
+from .evo_world import *
+from .evo_entity import *
+from .actions_sim import *
+from .utils import *
 
 class EvoWorldSimulation(Simulation, SimActions):
     def __init__(self,
@@ -14,8 +14,7 @@ class EvoWorldSimulation(Simulation, SimActions):
                 actions_time: int = 10,
                 visualization: bool = False,
                 ):
-        super().__init__(episodes_number, steps_per_episode)
-        self.world_generator = world_generator
+        super().__init__(episodes_number, steps_per_episode, world_generator)
         self.actions_time = actions_time
         self.visualization = visualization
         # Here will be also the food generators
@@ -37,21 +36,65 @@ class EvoWorldSimulation(Simulation, SimActions):
                             }
         self.available_commands = default_commands if not available_commands else default_commands.update(
             available_commands)
-    
+        self.gen_world_pos: list[tuple[str, list]] = []
+        self.history:list[list[dict[str,int]]] = [[]]
+        """This history is a list of list of dictionaries where the index is the episode number
+        and the value is a list of dictionaries where the index is the step of the current episode
+        and the value is a dictionary where the keys are the species names and the values are
+        the number of organism of that specie in that step of that episode\n
+        This history is used to plot the statistics of the simulation"""
+        self.init_world()
+
+    def add_entities(self, entities_list: list[tuple[str, list]]):
+        """This function add entities to the simulation"""
+        self.gen_world_pos += entities_list
+
+    def get_history(self) -> list[list[dict[str,int]]]:
+        # FIXME: Return a deep copy of the history
+        return self.history
+
+    def change_entities(self, gen_world_pos):
+        self.gen_world_pos = gen_world_pos
+
+    def init_world(self):
+        """This function should be called in the beginning of an episode"""
+        self.world = self.world_generator.generate_world()
+        for species, world_positions in self.gen_world_pos:
+            for position in world_positions:
+                self.instantiate_entity(species, position)
+
     def reset(self):
         super().reset()
         self.world = self.world_generator.generate_world()
+        self.history = [[]]
+
+    def update_history(self):
+        """This update the history with the actual amount of organisms of each specie
+        in each step of each episode in the simulation"""
+        actual_species = self.history[self.actual_episode][self.actual_step]
+        for organism in list(self.intelligent_entities.values()):
+            actual_species.setdefault(organism.species, 0)
+            actual_species[organism.species] += 1
 
     def next_step(self, allow_next_episode: bool = False) -> bool:
         if self.actual_step >= self.steps_per_episode:
-            if allow_next_episode and self.actual_episode < self.episodes_number:
+            if allow_next_episode and self.actual_episode < self.episodes_number - 1:
                 self.actual_episode += 1
+                self.history.append([])
                 self.actual_step = 0
+                self.init_world()
             else:
                 return False
+        if self.actual_step == 0:
+            if self.actual_episode == 0:
+                self.init_world()
+            self.history[self.actual_episode].append({})
+            self.update_history()
+
         self.actual_step += 1
         day = self.actual_step // self.actions_time
         episode = self.actual_episode
+        self.history[episode].append({})
 
         for entity_id in self.entities:
             entity = self.entities[entity_id]
@@ -99,6 +142,8 @@ class EvoWorldSimulation(Simulation, SimActions):
                 self.execute_action(action)
                 if self.visualization:
                     self.visualization_fn(action)
+        self.update_history()
+        return True
 
     def advance_to(self, episode, step):
         while self.actual_episode < episode or self.actual_step < step:
@@ -175,3 +220,8 @@ class EvoWorldSimulation(Simulation, SimActions):
         else:
             self.entities[entity.get_entity_id()] = entity
         self.world.place_entity(entity, world_position)
+
+    def visualization_fn(self, action):
+        print(action['command'] + ':' + action['entity'])
+        print(self.world)
+        pass

@@ -1,4 +1,4 @@
-from evo_world import *
+from .evo_world import *
 
 
 class WorldGenerator:
