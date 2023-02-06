@@ -3,6 +3,8 @@ from .genetics import *
 from .behaviors import *
 
 default_brain = Brain()
+default_hunter = PredatorBrain()
+default_prey = PreyBrain()
 # Entities
 
 
@@ -40,7 +42,7 @@ class Entity:
 class Organism(
     Entity
 ):
-    def __init__(self, dna_chain, representation="O", species="default", brain = default_brain, food_on_death = 'meat'):
+    def __init__(self, dna_chain, representation="O", species="default", brain = default_prey, food_on_death = 'meat'):
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
@@ -48,11 +50,13 @@ class Organism(
         '''
         super().__init__(intelligence=True, coexistence=False,
                          representation=representation, ent_type="organism")
+        # TODO: this is just for testing, delete after
+        self.physical_properties['max health'] = 100
+        self.physical_properties['diet'] = ['meat', 'fruit']
         self.brain = brain
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
-        self.knowledge = brain.knowledge
         self.species = species
         self.age = 0
         self.food_on_death = food_on_death
@@ -78,13 +82,13 @@ class Organism(
                 self.actions.extend(gene.get_property())
 
     def pass_time(self):
-        # TODO: if the organism dies, it must drop its inventory and some meat
         self.age += 1
+        #TODO: change this
         floor = "grass"
-        for info in self.knowledge:
-            if "floor" in info.keys():
-                floor = info["floor"]
-                break
+        # for info in self.knowledge:
+        #     if "floor" in info.keys():
+        #         floor = info["floor"]
+        #         break
         dies = False
         # Check if the entity can stand in that floor
         match floor:
