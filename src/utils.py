@@ -307,3 +307,58 @@ def mse(y_true, y_pred):
 def mse_prime(y_true, y_pred):
     return 2*(y_pred-y_true)/y_true.size
 
+
+def bfs(starting_position, map_shape):
+    '''
+    Yields the next position to check in a bfs search
+    '''
+    # The queue of positions to check
+    queue = [starting_position]
+    # The positions that have already been checked
+    checked = set()
+
+    while queue:
+        # Getting the next position to check
+        position = queue.pop(0)
+        # Checking if the position has already been checked
+        if position in checked:
+            continue
+        # Adding the position to the checked positions
+        checked.add(position)
+        # Yielding the position
+        yield position
+        # Adding the neighbors of the position to the queue
+        for neighbor in get_neighbors(position, map_shape):
+            queue.append(neighbor)
+
+
+def get_neighbors(position, map_shape):
+    '''
+    Returns the neighbors of a position
+    '''
+    # The neighbors of the position
+    neighbors = []
+    # The x and y coordinates of the position
+    x, y = position
+    # The width and height of the map
+    width, height = map_shape
+    # Checking if the position is on the left edge of the map
+    if x > 0:
+        # Adding the position to the left of the position to the neighbors
+        neighbors.append((x - 1, y))
+    # Checking if the position is on the right edge of the map
+    if x < width - 1:
+        # Adding the position to the right of the position to the neighbors
+        neighbors.append((x + 1, y))
+    # Checking if the position is on the top edge of the map
+    if y > 0:
+        # Adding the position above the position to the neighbors
+        neighbors.append((x, y - 1))
+    # Checking if the position is on the bottom edge of the map
+    if y < height - 1:
+        # Adding the position below the position to the neighbors
+        neighbors.append((x, y + 1))
+    # Returning the neighbors
+    return neighbors
+
+        

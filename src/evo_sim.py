@@ -154,7 +154,6 @@ class EvoSim(SimActions):
             for action in entity.get_perceptions():
                 command = action["command"]
                 parameters = action["parameters"]
-                new_per = []
                 if command in self.available_commands:
                     new_information = self.available_commands[command](
                         entity_id, self.day, *parameters)
@@ -221,25 +220,7 @@ class EvoSim(SimActions):
         pass
 
     def update_perception(self, new_info, current_info):
-        if "entity" in list(new_info.keys()):
-            entity_id = new_info["entity"]
-            for old_info in current_info:
-                if ("entity" in old_info) and entity_id == old_info["entity"]:
-                    old_info.update(new_info)
-                    return
-            current_info.append(new_info)
-        if "floor" in list(new_info.keys()):
-            for old_info in current_info:
-                if ("floor" in old_info):
-                    old_info.update(new_info)
-                    return
-            current_info.append(new_info)
-        if "surroundings" in list(new_info.keys()):
-            for old_info in current_info:
-                if ("surroundings" in old_info):
-                    old_info.update(new_info)
-                    return
-            current_info.append(new_info)
+        current_info.append(new_info)
 
     def entities_in_radius(self, ent_id, r):
         entities_id_list = [(other_id, pos, distance)

@@ -3,6 +3,8 @@ from .genetics import *
 from .behaviors import *
 
 default_brain = Brain()
+default_hunter = PredatorBrain()
+default_prey = PreyBrain()
 # Entities
 
 
@@ -40,7 +42,7 @@ class Entity:
 class Organism(
     Entity
 ):
-    def __init__(self, dna_chain, representation="O", species="default", brain = default_brain, food_on_death = 'meat'):
+    def __init__(self, dna_chain, representation="O", species="default", brain = default_prey, food_on_death = 'meat'):
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The

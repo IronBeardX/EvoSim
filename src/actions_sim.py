@@ -150,6 +150,7 @@ class SimActions:
         for entity, pos, distance in entities_list:
             entity_info = {
                 'position':pos,
+                'id':entity.get_entity_id()
             }
             if entity.get_entity_id() in self.intelligent_entities:
                 entity_info['species'] = entity.species
