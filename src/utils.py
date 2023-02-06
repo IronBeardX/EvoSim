@@ -332,7 +332,7 @@ def bfs(starting_position, map_shape, adding_condition, map):
         yield position
         # Adding the neighbors of the position to the queue
         for neighbor in get_neighbors(position, map_shape):
-            if adding_condition(map[position]):
+            if adding_condition(map[neighbor]):
                 queue.append(neighbor)
 
 
@@ -480,14 +480,14 @@ def astar_search(problem, h=None):
     return best_first_search(problem, f=lambda n: g(n) + h(n))
 
 
-def astar_tree_search(problem, h=None):
-    """Search nodes with minimum f(n) = g(n) + h(n), with no `reached` table."""
-    h = h or problem.h
-    return best_first_tree_search(problem, f=lambda n: g(n) + h(n))
-
 
 def weighted_astar_search(problem, h=None, weight=1.4):
     """Search nodes with minimum f(n) = g(n) + weight * h(n)."""
     h = h or problem.h
     return best_first_search(problem, f=lambda n: g(n) + weight * h(n))
 
+def path_states(node):
+    "The sequence of states to get to this node."
+    if node in (cutoff, failure, None): 
+        return []
+    return path_states(node.parent) + [node.state]

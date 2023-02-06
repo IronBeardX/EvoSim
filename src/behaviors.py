@@ -3,36 +3,36 @@ import math
 import numpy as np
 from .utils import *
 
-def search(target_type, current_position, map, organism):
+def search(target_type, current_position, mind_map, organism):
     print("searching " + target_type)
     return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def search_allies(current_position, map, organism):
-    return search("allies", current_position, map, organism)
+def search_allies(current_position, mind_map, organism):
+    return search("allies", current_position, mind_map, organism)
 
-def search_enemies(current_position, map, organism):
-    return search("enemies", current_position, map, organism)
+def search_enemies(current_position, mind_map, organism):
+    return search("enemies", current_position, mind_map, organism)
 
-def search_food(current_position, map, organism):
-    return search("food", current_position, map, organism)
+def search_food(current_position, mind_map, organism):
+    return search("food", current_position, mind_map, organism)
 
-def take_food(current_position, map, organism):
+def take_food(current_position, mind_map, organism):
     print("taking food")
     return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def attack_enemies(current_position, map, organism):
+def attack_enemies(current_position, mind_map, organism):
     print("attacking")
     return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def reproduce(current_position, map, organism):
+def reproduce(current_position, mind_map, organism):
     print("reproducing")
     return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def exploring(current_position, map, organism):
+def exploring(current_position, mind_map, organism):
     print("exploring")
     return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def fleeing(current_position, map, organism):
+def fleeing(current_position, mind_map, organism):
     print("fleeing")
     brain = organism.brain
     enemies = brain.last_enemies.values()
@@ -42,22 +42,73 @@ def fleeing(current_position, map, organism):
     goal_position = current_position
     if current_distance == 0:
         return [{'command': 'none', 'parameters': [], 'time': 1}]
+
     def condition(x):
         time_since_percieved = organism.age - x.age_when_updated - 1
         terrain_validity = x.terrain in valid_terrains
         return (time_since_percieved == 0) and terrain_validity
-    for position in bfs(current_position, map.shape, condition, map):
+
+    for position in bfs(current_position, mind_map.shape, condition, mind_map):
         distance = enemies_dist_med(position, enemies_position)
         if distance > current_distance:
             goal_position = position
-    return get_commands_to_position(current_position, goal_position, map, valid_terrains)
+    return get_commands_to_position(current_position, goal_position, mind_map, valid_terrains, organism.physical_properties)
 
 
-def get_commands_to_position(current_position, goal_position, map, valid_positions):
+def get_commands_to_position(current_position, goal_position, mind_map, valid_terrains, ph_props):
     command_list = []
     if current_position == goal_position:
         return [{'command': 'none', 'parameters': [], 'time': 1}]
     
+    class AstarModeling(Problem):
+        def __init__(self, initial=current_position, goal=goal_position, mind_map = mind_map, valid_terrains = valid_terrains):
+            self.initial, self.goal, self.mind_map, self.valid_terrains = initial, goal, mind_map, valid_terrains
+            self.height, self.width = mind_map.shape
+
+        def actions(self, state):
+            valid_positions = []
+            if state[0] > 0:
+                next_pos = (state[0] - 1, state[1])
+                if self.mind_map[next_pos].terrain in valid_terrains:
+                    valid_positions.append(next_pos)
+            if state[0] < self.height - 1:
+                next_pos = (state[0] + 1, state[1])
+                if self.mind_map[next_pos].terrain in valid_terrains:
+                    valid_positions.append(next_pos)
+            if state[1] > 0:
+                next_pos = (state[0], state[1] - 1)
+                if self.mind_map[next_pos].terrain in valid_terrains:
+                    valid_positions.append(next_pos)
+            if state[1] < self.width - 1:
+                next_pos = (state[0], state[1] + 1)
+                if self.mind_map[next_pos].terrain in valid_terrains:
+                    valid_positions.append(next_pos)
+            return tuple(valid_positions)
+        
+        def result(self, state, action):
+            return action
+
+        def h(self, node):
+            return distance(node.state, self.goal)
+
+    modeling = AstarModeling()  
+    path = path_states(astar_search(modeling))
+    aux_pos = path.pop(0) 
+    command_list = []
+    while len(path) > 0:
+        directions = {
+            (-1, 0): 'north',
+            (1, 0): 'south',
+            (0, -1): 'west',
+            (0, 1): 'east'
+        }
+        next_pos = path.pop(0)
+        command = 'move ' if mind_map[next_pos].terrain != 'water' else 'swim '
+        time = ph_props['legs'] if mind_map[next_pos].terrain != 'water' else ph_props['fins']
+        command += directions[(next_pos[0] - aux_pos[0], next_pos[1] - aux_pos[1])]
+        command_list.append({'command': command, 'parameters': [], 'time': time})
+        aux_pos = next_pos
+    return command_list
 
 def enemies_dist_med(pos, enemies):
     if len(enemies) == 0:
@@ -210,7 +261,7 @@ class PreyBrain(Brain):
     def __init__(self, behaviors=None, map_size=(10, 10), learning_rate = 0.1):
         super().__init__(behaviors, map_size)
 
-    def decide_action(self, organism, time=0):
+    def decide_action(self, organism, time=10):
         vec = self.vectorized_perceptions(organism)
         bh = self.decide_behavior(vec)
         plan = self.behaviors[bh](self.last_position, self.memory_map, organism)

@@ -39,7 +39,7 @@ class World():
 
         if "parameters" in action:
             parameters = action["parameters"]
-            self.world_actions[command](entity_id)(*parameters)
+            self.world_actions[command](entity_id, *parameters)
         else:
             self.world_actions[command](entity_id)
 
