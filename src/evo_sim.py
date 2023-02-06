@@ -2,9 +2,6 @@ from .evo_world import *
 from .evo_entity import *
 from .actions_sim import *
 from .utils import *
-from colorama import init as colorama_init
-from colorama import Fore
-from colorama import Style
 import time
 
 
@@ -18,7 +15,7 @@ class EvoSim(SimActions):
                  episodes_total=1,
                  max_rounds_per_episode=10,
                  stop_condition=None,
-                 available_commands={},
+                 available_commands=None,
                  visualization=False,
                  actions_time=10
                  ):
@@ -86,7 +83,6 @@ class EvoSim(SimActions):
                 for action in entity.get_perceptions():
                     command = action["command"]
                     parameters = action["parameters"]
-                    new_per = []
                     if command in self.available_commands:
                         new_information = self.available_commands[command](
                             entity_id, day, *parameters)
@@ -94,14 +90,19 @@ class EvoSim(SimActions):
                             self.update_perception(info, perception_list)
                 self.intelligent_entities[entity_id].update_knowledge(
                     perception_list)
-
-                if not entity.pass_time():
+                
+                #TODO Entities create food when dead
+                time_actions = entity.pass_time()
+                if time_actions['dies']:
                     self.banished_entities.append((
                         day,
                         episode,
                         self.intelligent_entities.pop(entity_id)
                     ))
+                    position = self.world.get_entity_info(entity_id).position
                     self.world.remove_entity(entity_id)
+                    if 'generates' in time_actions:
+                        self.instantiate_entity(time_actions['generates'], position)
                     # print : entity_id, "was banished"
                     if self.visualization:
                         # self.visualization_fun(banished=entity_id)

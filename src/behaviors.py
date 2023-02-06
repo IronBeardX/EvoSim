@@ -38,6 +38,7 @@ class Brain:
         self.actions = actions
 
     def decide_action(self, organism, age = 0, time = 0, perception = 0):
+        return [{'command':'none', 'parameters':[]}]
         perceptions_vector = self.vectorized_perceptions()
 
     def get_perceptions(self, organism):

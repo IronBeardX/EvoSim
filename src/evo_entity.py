@@ -40,7 +40,7 @@ class Entity:
 class Organism(
     Entity
 ):
-    def __init__(self, dna_chain, representation="O", species="default", brain = default_brain):
+    def __init__(self, dna_chain, representation="O", species="default", brain = default_brain, food_on_death = 'meat'):
         '''
         This method initializes the organism with the given initial state. The initial state is a dictionary that contains
         the initial values of the properties of the organism. The id is a string that represents the id of the organism. The
@@ -55,6 +55,7 @@ class Organism(
         self.knowledge = brain.knowledge
         self.species = species
         self.age = 0
+        self.food_on_death = food_on_death
         self._parse_dna()
 
     def get_perceptions(self):
@@ -84,6 +85,7 @@ class Organism(
             if "floor" in info.keys():
                 floor = info["floor"]
                 break
+        dies = False
         # Check if the entity can stand in that floor
         match floor:
             case "water":
@@ -94,14 +96,15 @@ class Organism(
         if 'health' in list(self.physical_properties.keys()):
             self.physical_properties["health"] -= 1
             if self.physical_properties["health"] <= 0:
-                return False
+                dies = True
         if 'hunger' in list(self.physical_properties.keys()):
             self.physical_properties["hunger"] -= 1
             if self.physical_properties["hunger"] <= 0:
-                return False
+                dies = True
         if "defending" in list(self.physical_properties.keys()):
             self.physical_properties["defending"] = False
-        return True
+        
+        return {'dies': dies, 'generates': self.food_on_death}
 
 
 class Food(Entity):

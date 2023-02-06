@@ -92,7 +92,7 @@ def main():
     sim.add_species(species2)
     sim.add_species(species3)
     sim.add_species(species4)
-    sim.add_object_type(food)
+    sim.add_object_type(meat)
     sim.add_object_type(apple)
 
     # generate entities generation list in random positions
@@ -124,12 +124,12 @@ def main():
             (5, 9),
             (6, 9)
         ]),
-        (food.id, [
-            (0, 0),
-            (9, 0),
-            (0, 9),
-            (9, 9)
-        ]),
+        # (meat.id, [
+        #     (0, 0),
+        #     (9, 0),
+        #     (0, 9),
+        #     (9, 9)
+        # ]),
         (apple.id, [
             (4, 4),
             (5, 4),
@@ -168,5 +168,5 @@ def testing_NN():
 
 
 if __name__ == "__main__":
-    # main()
-    testing_NN()
+    main()
+    # testing_NN()
