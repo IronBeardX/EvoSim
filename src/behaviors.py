@@ -3,39 +3,64 @@ import math
 import numpy as np
 from .utils import *
 
-def search(target_type, current_position, map):
+def search(target_type, current_position, map, organism):
     print("searching " + target_type)
-    return []
+    return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def search_allies(current_position, map):
-    return search("allies", current_position, map)
+def search_allies(current_position, map, organism):
+    return search("allies", current_position, map, organism)
 
-def search_enemies(current_position, map):
-    return search("enemies", current_position, map)
+def search_enemies(current_position, map, organism):
+    return search("enemies", current_position, map, organism)
 
-def search_food(current_position, map):
-    return search("food", current_position, map)
+def search_food(current_position, map, organism):
+    return search("food", current_position, map, organism)
 
-def take_food(current_position, map):
+def take_food(current_position, map, organism):
     print("taking food")
-    return []
+    return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def attack_enemies(current_position, map):
+def attack_enemies(current_position, map, organism):
     print("attacking")
-    return []
+    return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def reproduce(current_position, map):
+def reproduce(current_position, map, organism):
     print("reproducing")
-    return []
+    return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def exploring(current_position, map):
+def exploring(current_position, map, organism):
     print("exploring")
-    return []
+    return [{'command': 'none', 'parameters': [], 'time': 1}]
 
-def fleeing(current_position, map):
+def fleeing(current_position, map, organism):
     print("fleeing")
-    return []
+    brain = organism.brain
+    enemies = brain.last_enemies.values()
+    valid_terrains = brain.valid_terrains
+    enemies_position = [entity['position'] for entity in enemies]
+    current_distance = enemies_dist_med(current_position, enemies_position)
+    goal_position = current_position
+    if current_distance == 0:
+        return [{'command': 'none', 'parameters': [], 'time': 1}]
+    def condition(x):
+        time_since_percieved = organism.age - x.age_when_updated - 1
+        terrain_validity = x.terrain in valid_terrains
+        return (time_since_percieved == 0) and terrain_validity
+    for position in bfs(current_position, map.shape, condition, map):
+        distance = enemies_dist_med(position, enemies_position)
+        if distance > current_distance:
+            goal_position = position
+    return get_commands_to_position(current_position, goal_position, map, valid_terrains)
 
+
+def get_commands_to_position(current_position, goal_position, map, valid_positions):
+    return [{'command': 'none', 'parameters': [], 'time': 1}]
+
+def enemies_dist_med(pos, enemies):
+    if len(enemies) == 0:
+        return 0
+    else:
+        return np.median([distance(pos, enemy) for enemy in enemies])
 
 class Brain:
     '''
@@ -79,19 +104,18 @@ class Brain:
     def __init__(self, behaviors=None, map_size=(10, 10)):
         default_bh = {
             'search allies': search_allies,
-            'search enemies': search_enemies,
             'search food': search_food,
             'take food': take_food,
-            'attack enemies': attack_enemies,
             'reproduce': reproduce,
             'exploring': exploring,
             'fleeing': fleeing,
-            'none': lambda: [{'command': 'none', 'time': 1, 'parameters': []}]
+            'none': lambda x, y, z: [{'command': 'none', 'time': 1, 'parameters': []}]
         }
-        self.knowledge = []
+        self.knowledge = {}
         self.memory_map = np.array(
             [[self.KnTile() for _ in range(map_size[0])] for _ in range(map_size[1])])
         self.behaviors = behaviors if behaviors is not None else default_bh
+        self.behavior_list = list(self.behaviors.keys())
         self.last_entities = {}
         self.last_allies = {}
         self.last_enemies = {}
@@ -130,7 +154,7 @@ class Brain:
             tile = self.KnTile()
             tile.age_when_updated = organism.age
             if 'floor' in information.keys():
-                self.position = information['position']
+                self.last_position = information['position']
                 tile.terrain = information['floor']
             elif 'species' in information.keys():
                 if organism.species == information['species']:
@@ -180,13 +204,13 @@ class Brain:
 
 
 class PreyBrain(Brain):
-    def __init__(self, behaviors=None, map_size=(10, 10)):
+    def __init__(self, behaviors=None, map_size=(10, 10), learning_rate = 0.1):
         super().__init__(behaviors, map_size)
 
     def decide_action(self, organism, time=0):
         vec = self.vectorized_perceptions(organism)
         bh = self.decide_behavior(vec)
-        plan = self.behaviors[bh]()
+        plan = self.behaviors[bh](self.last_position, self.memory_map, organism)
         current_time = 0
         actions = []
         while current_time <= time and len(plan) > 0:
@@ -204,18 +228,20 @@ class PreyBrain(Brain):
             valid_terrains.append('water')
         if 'legs' in organism.physical_properties.keys():
             valid_terrains.extend(['grass', 'dirt'])
-        valid_terrains = set(valid_terrains)
+        self.valid_terrains = set(valid_terrains)
 
         food_in_range = 0
         for entity in self.last_entities.values():
             if entity['food_type'] in organism.physical_properties['diet']:
                 food_in_range += 1
-        #creatin a size 5 vector:
+
+        # vector:
         # 0: reachable food
         # 1: reachable allies
         # 2: reachable enemies
         # 3: hunger
         # 4: health
+
         hunger = (organism.physical_properties['hunger'] * 100 )/ organism.physical_properties['max hunger']
         if hunger < 25:
             hunger = 0
@@ -239,26 +265,22 @@ class PreyBrain(Brain):
         return [ food_in_range, len(self.last_allies), len(self.last_enemies), hunger, health]
 
     def decide_behavior(self, vector):
-        '''
-            'search allies': lambda: print('searching allies'),
-            'search enemies': lambda: print('searching enemies'),
-            'search food': lambda: print('searching food'),
-            'take food': lambda: print('taking food'),
-            'attack enemies': lambda: print('attacking'),
-            'reproduce': lambda: print('reproducing'),
-            'exploring': lambda: print('exploring'),
-            'fleeing': lambda: print('fleeing'),
-            'none': lambda: print('doing nothing')
-        '''
-        if vector[0] == 1:
-            return 'take food'
-        if vector[0] == 1:
-            return 'search allies'
-        if vector[0] == 1:
-            return 'search enemies'
-        if vector[0] == 1:
-            return 'search food'
-        return 'none'
+        bh_vector = [0] * (len(self.behavior_list))
+        if not vector in list(self.knowledge.keys()):
+            self.knowledge[str(vector)] = bh_vector
+            #TODO: this should assign a value to all behaviors
+        else:
+            bh_vector = self.knowledge[vector]
+        
+        max_expected_val = 0
+        bh_name = 0
+        #TODO: Select_fuzzy for this
+        for i in range(len(bh_vector)):
+            if bh_vector[i] > max_expected_val:
+                max_expected_val = bh_vector[i]
+                bh_name = self.behavior_list[i]
+        return bh_name if max_expected_val > 0 else random.choice(self.behavior_list)
+        
 
 class PredatorBrain(Brain):
     def vectorized_perceptions(self, organism):

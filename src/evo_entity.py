@@ -51,7 +51,7 @@ class Organism(
         super().__init__(intelligence=True, coexistence=False,
                          representation=representation, ent_type="organism")
         # TODO: this is just for testing, delete after
-        self.physical_properties['max_health'] = 100
+        self.physical_properties['max health'] = 100
         self.physical_properties['diet'] = ['meat', 'fruit']
         self.brain = brain
         self.dna_chain = dna_chain

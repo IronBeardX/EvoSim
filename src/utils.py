@@ -2,6 +2,7 @@ from uuid import uuid4
 from typing import Callable
 import random
 import numpy as np
+import math
 
 
 class DirectedGraph:
@@ -308,7 +309,7 @@ def mse_prime(y_true, y_pred):
     return 2*(y_pred-y_true)/y_true.size
 
 
-def bfs(starting_position, map_shape):
+def bfs(starting_position, map_shape, adding_condition, map):
     '''
     Yields the next position to check in a bfs search
     '''
@@ -329,7 +330,8 @@ def bfs(starting_position, map_shape):
         yield position
         # Adding the neighbors of the position to the queue
         for neighbor in get_neighbors(position, map_shape):
-            queue.append(neighbor)
+            if adding_condition(map[position]):
+                queue.append(neighbor)
 
 
 def get_neighbors(position, map_shape):
@@ -362,3 +364,13 @@ def get_neighbors(position, map_shape):
     return neighbors
 
         
+def distance(pos1, pos2):
+    '''
+    Returns the distance between two positions
+    '''
+    # The x and y coordinates of the first position
+    x1, y1 = pos1
+    # The x and y coordinates of the second position
+    x2, y2 = pos2
+    # Returning the distance between the two positions
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)

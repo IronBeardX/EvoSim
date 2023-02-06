@@ -6,8 +6,8 @@ from src.utils import *
 from random import randint
 
 
-HEALTH = Health(min_val=0, max_val=4)
-HUNGER = Hunger(min_val=0, max_val=4)
+HEALTH = Health(min_val=100, max_val=100)
+HUNGER = Hunger(min_val=100, max_val=100)
 LEGS = Legs(min_val=0, max_val=4)
 EYE = Eye(min_val=0, max_val=4)
 ARMS = Arms(min_val=0, max_val=4)
@@ -46,13 +46,13 @@ dna_chain1 = ['health', 'hunger', 'reproduce', 'legs', 'move']
 dna_chain2 = ['health', 'hunger', 'reproduce', 'fins', 'swimming']
 dna_chain3 = ['health', 'hunger', 'reproduce',
               'arms', 'pick', 'attack', 'defend']
-dna_chain4 = ['health', 'hunger', 'reproduce',
-              'arms', 'eye', 'vision', 'defend']
+dna_chain4 = ['health', 'legs', 'hunger', 'reproduce',
+              'arms', 'eye', 'vision', 'defend', 'move']
 
 species1 = Species('walker', Organism, dna_chain1, POOL, 8, "Z")
 species2 = Species('swimmer', Organism, dna_chain2, POOL, 8, "X")
 species3 = Species('fighter', Organism, dna_chain3, POOL, 8, "C")
-species4 = Species('hunter', Organism, dna_chain4, POOL, 8, "V")
+species4 = Species('hunter', Organism, dna_chain4, POOL, 1000, "V")
 
 food = FoodFactory(
     identifier="food",
