@@ -3,6 +3,7 @@ from src.evo_sim import *
 from src.evo_world import *
 from src.genetics import *
 from src.utils import *
+from src.evo_simulation import *
 from random import randint
 
 
@@ -88,6 +89,12 @@ def main():
                  100,
                  visualization=True
                  )
+    evo_generator = EvoWorldGenerator(10,
+                    10,
+                    {"G": "grass", "D": "dirt", "W": "water"},
+                    initial_dist,
+                    False,)
+
     sim.add_species(species1)
     sim.add_species(species2)
     sim.add_species(species3)
@@ -141,10 +148,30 @@ def main():
             (6, 6)
         ])
     ]
+
+    new_simulation = EvoWorldSimulation(10,
+                    100,
+                    evo_generator,
+                    visualization=True,
+                    )
+
+    new_simulation.add_species(species1)
+    new_simulation.add_species(species2)
+    new_simulation.add_species(species3)
+    new_simulation.add_species(species4)
+    new_simulation.add_object_type(meat)
+    new_simulation.add_object_type(apple)
+
+    new_simulation.add_entities(gen_pos_ent)
+
     print(chr(27) + "[2J")
     # sim.tick_sim()
-    print()
-    sim.run(gen_pos_ent)
+    # print()
+    # sim.run(gen_pos_ent)
+    while new_simulation.next_step(True):
+        pass
+    print('\n\n--------------- Printing History -----------------\n')
+    print(new_simulation.history)
     print("Simulation Finished")
 
 def testing_NN():
