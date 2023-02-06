@@ -54,7 +54,10 @@ def fleeing(current_position, map, organism):
 
 
 def get_commands_to_position(current_position, goal_position, map, valid_positions):
-    return [{'command': 'none', 'parameters': [], 'time': 1}]
+    command_list = []
+    if current_position == goal_position:
+        return [{'command': 'none', 'parameters': [], 'time': 1}]
+    
 
 def enemies_dist_med(pos, enemies):
     if len(enemies) == 0:
