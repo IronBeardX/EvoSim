@@ -38,8 +38,42 @@ def reproduce(current_position, mind_map, organism):
 
 def exploring(current_position, mind_map, organism):
     print("exploring")
-    return [{'command': 'none', 'parameters': [], 'time': 1, 'cost': 0}]
+    brain = organism.brain
+    valid_terrains = brain.valid_terrains
+    unknown_tiles = 0
+    position = current_position
+    goal_position = position
 
+    def condition(x):
+        time_since_percieved = organism.age - x.age_when_updated - 1
+        terrain_validity = x.terrain in valid_terrains
+        return (time_since_percieved == 0) and terrain_validity
+
+    for position in bfs(current_position, mind_map.shape, condition, mind_map):
+        new_unk_tiles = count_unknown_tiles(current_position, mind_map.shape, mind_map)
+        if new_unk_tiles > unknown_tiles:
+            unknown_tiles = new_unk_tiles
+            goal_position = position
+    if goal_position == current_position:
+        return [{'command': 'none', 'parameters': [], 'time': 1, 'cost': 0}]
+    return get_commands_to_position(current_position, goal_position, mind_map, valid_terrains, organism.physical_properties, organism.actions)
+
+def count_unknown_tiles(current_position, mind_map_shape, mind_map):
+    unknown_tiles = 0
+    directions = [
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1)
+    ]
+    position = current_position
+    for direction in directions:
+        next_pos = (position[0] + direction[0], position[1] + direction[1])
+        if next_pos[0] < 0 or next_pos[0] >= mind_map_shape[0] or next_pos[1] < 0 or next_pos[1] >= mind_map_shape[1]:
+            continue
+        if mind_map[next_pos].terrain == 'unknown':
+            unknown_tiles += 1
+    return unknown_tiles
 
 def fleeing(current_position, mind_map, organism):
     print("fleeing")
