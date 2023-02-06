@@ -2,7 +2,7 @@ from uuid import uuid4
 from .utils import DirectedGraph as DG
 import random
 
-
+# TODO: add diet to mouth
 class Gene:
     def __init__(self, name, gen_type, genetic_cost=1):
         self.genetic_cost = genetic_cost
