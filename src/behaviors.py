@@ -86,12 +86,15 @@ class Brain:
             'reproduce': reproduce,
             'exploring': exploring,
             'fleeing': fleeing,
-            'none': lambda: [{'command': 'none'}]
+            'none': lambda: [{'command': 'none', 'time': 1, 'parameters': []}]
         }
         self.knowledge = []
         self.memory_map = np.array(
             [[self.KnTile() for _ in range(map_size[0])] for _ in range(map_size[1])])
         self.behaviors = behaviors if behaviors is not None else default_bh
+        self.last_entities = {}
+        self.last_allies = {}
+        self.last_enemies = {}
 
     def decide_action(self, organism, time=0):
         raise NotImplementedError
@@ -111,6 +114,9 @@ class Brain:
         return perceptions
 
     def update_knowledge(self, organism,  new_knowledge):
+        self.last_allies = {}
+        self.last_enemies = {}
+        self.last_entities = {}
         for information in new_knowledge:
             if 'surroundings' in information.keys():
                 terrain_dist = information['surroundings']
@@ -129,10 +135,14 @@ class Brain:
             elif 'species' in information.keys():
                 if organism.species == information['species']:
                     tile.allies.append(information)
+                    self.last_allies[information['id']] = information
+
                 else:
                     tile.enemies.append(information)
+                    self.last_enemies[information['id']] = information
             elif 'edible' in information.keys():
                 tile.entities.append(information)
+                self.last_entities[information['id']] = information
         return
 
     def vectorized_perceptions(self, organism):
@@ -189,15 +199,44 @@ class PreyBrain(Brain):
         return actions if len(actions) > 0 else [{'command': 'none', 'parameters': []}]
 
     def vectorized_perceptions(self, organism):
-        perceptions = self.get_perceptions(organism)
-        vec = np.zeros((10, 10, 9))
-        for perception in perceptions:
-            match perception["command"]:
-                case "smell":
-                    pass
-                case "see":
-                    pass
-        return vec
+        valid_terrains = []
+        if 'fins' in organism.physical_properties.keys():
+            valid_terrains.append('water')
+        if 'legs' in organism.physical_properties.keys():
+            valid_terrains.extend(['grass', 'dirt'])
+        valid_terrains = set(valid_terrains)
+
+        food_in_range = 0
+        for entity in self.last_entities.values():
+            if entity['food_type'] in organism.physical_properties['diet']:
+                food_in_range += 1
+        #creatin a size 5 vector:
+        # 0: reachable food
+        # 1: reachable allies
+        # 2: reachable enemies
+        # 3: hunger
+        # 4: health
+        hunger = (organism.physical_properties['hunger'] * 100 )/ organism.physical_properties['max hunger']
+        if hunger < 25:
+            hunger = 0
+        elif hunger < 50:
+            hunger = 1
+        elif hunger < 75:
+            hunger = 2
+        else:
+            hunger = 3
+
+        health = (organism.physical_properties['health'] * 100) / organism.physical_properties['max health']
+        if health < 25:
+            health = 0
+        elif health < 50:
+            health = 1
+        elif health < 75:
+            health = 2
+        else:
+            health = 3
+        
+        return [ food_in_range, len(self.last_allies), len(self.last_enemies), hunger, health]
 
     def decide_behavior(self, vector):
         '''
@@ -211,13 +250,13 @@ class PreyBrain(Brain):
             'fleeing': lambda: print('fleeing'),
             'none': lambda: print('doing nothing')
         '''
-        if vector[0][0][0] == 1:
+        if vector[0] == 1:
             return 'take food'
-        if vector[0][0][1] == 1:
+        if vector[0] == 1:
             return 'search allies'
-        if vector[0][0][2] == 1:
+        if vector[0] == 1:
             return 'search enemies'
-        if vector[0][0][3] == 1:
+        if vector[0] == 1:
             return 'search food'
         return 'none'
 
