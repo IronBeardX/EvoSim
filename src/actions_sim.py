@@ -2,9 +2,6 @@ from .evo_world import *
 from .evo_entity import *
 from .actions_sim import *
 from .utils import *
-from colorama import init as colorama_init
-from colorama import Fore
-from colorama import Style
 import time
 
 

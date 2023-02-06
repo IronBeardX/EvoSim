@@ -13,7 +13,7 @@
             "justMyCode": true
         },
         {
-            "name": "Python: EvoSim (main)",
+            "name": "Python: Yero program",
             "type": "python",
             "request": "launch",
             "program": "/home/ironbeardx/MyStuff/School/IA-SIM-COMP-Final_Proyect/EvoSim/main.py",

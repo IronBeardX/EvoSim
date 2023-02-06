@@ -3,6 +3,7 @@ from src.evo_sim import *
 from src.evo_world import *
 from src.genetics import *
 from src.utils import *
+from src.evo_simulation import *
 from random import randint
 
 
@@ -42,17 +43,39 @@ POOL.add_dependency("smelling", "nose")
 POOL.add_dependency("vision", "eye")
 POOL.add_dependency("swimming", "fins")
 
-dna_chain1 = ['health', 'hunger', 'reproduce', 'legs', 'smell', 'move']
-dna_chain2 = ['health', 'hunger', 'reproduce', 'fins', 'smell', 'swimming']
+dna_chain1 = ['health', 'hunger', 'reproduce', 'legs', 'move']
+dna_chain2 = ['health', 'hunger', 'reproduce', 'fins', 'swimming']
 dna_chain3 = ['health', 'hunger', 'reproduce',
-              'arms', 'smell', 'pick', 'attack', 'defend']
+              'arms', 'pick', 'attack', 'defend']
 dna_chain4 = ['health', 'hunger', 'reproduce',
-              'arms', 'eye', 'smell', 'vision', 'defend']
+              'arms', 'eye', 'vision', 'defend']
 
-species1 = Species('walker', RandomOrg, dna_chain1, POOL, 8, "Z")
-species2 = Species('swimmer', RandomOrg, dna_chain2, POOL, 8, "X")
-species3 = Species('fighter', RandomOrg, dna_chain3, POOL, 8, "C")
-species4 = Species('hunter', RandomOrg, dna_chain4, POOL, 8, "V")
+species1 = Species('walker', Organism, dna_chain1, POOL, 8, "Z")
+species2 = Species('swimmer', Organism, dna_chain2, POOL, 8, "X")
+species3 = Species('fighter', Organism, dna_chain3, POOL, 8, "C")
+species4 = Species('hunter', Organism, dna_chain4, POOL, 8, "V")
+
+food = FoodFactory(
+    identifier="food",
+    food_class=Food,
+    representation = "F"
+)
+apple = FoodFactory(
+    identifier="apple",
+    food_class=Food,
+    storable=True,
+    representation="A",
+    nutrition=10,
+    food_type="fruit"
+)
+meat = FoodFactory(
+    identifier="meat",
+    food_class=Food,
+    storable=True,
+    representation="M",
+    nutrition=20,
+    food_type="meat"
+)
 
 
 def main():
@@ -66,10 +89,18 @@ def main():
                  100,
                  visualization=True
                  )
+    evo_generator = EvoWorldGenerator(10,
+                    10,
+                    {"G": "grass", "D": "dirt", "W": "water"},
+                    initial_dist,
+                    False,)
+
     sim.add_species(species1)
     sim.add_species(species2)
     sim.add_species(species3)
     sim.add_species(species4)
+    sim.add_object_type(meat)
+    sim.add_object_type(apple)
 
     # generate entities generation list in random positions
     # positions_ent = gen_random_position_tuple_list(9, 9, 10)
@@ -99,11 +130,70 @@ def main():
         (species4.id, [
             (5, 9),
             (6, 9)
-        ])]
+        ]),
+        # (meat.id, [
+        #     (0, 0),
+        #     (9, 0),
+        #     (0, 9),
+        #     (9, 9)
+        # ]),
+        (apple.id, [
+            (4, 4),
+            (5, 4),
+            (6, 4),
+            (4, 5),
+            (6, 5),
+            (4, 6),
+            (5, 6),
+            (6, 6)
+        ])
+    ]
+
+    new_simulation = EvoWorldSimulation(10,
+                    100,
+                    evo_generator,
+                    visualization=True,
+                    )
+
+    new_simulation.add_species(species1)
+    new_simulation.add_species(species2)
+    new_simulation.add_species(species3)
+    new_simulation.add_species(species4)
+    new_simulation.add_object_type(meat)
+    new_simulation.add_object_type(apple)
+
+    new_simulation.add_entities(gen_pos_ent)
+
     print(chr(27) + "[2J")
-    sim.run(gen_pos_ent)
+    # sim.tick_sim()
+    # print()
+    # sim.run(gen_pos_ent)
+    while new_simulation.next_step(True):
+        pass
+    print('\n\n--------------- Printing History -----------------\n')
+    print(new_simulation.history)
     print("Simulation Finished")
+
+def testing_NN():
+    x_train = np.array([[[0,0]], [[0,1]], [[1,0]], [[1,1]]])
+    y_train = np.array([[[0]], [[1]], [[1]], [[0]]])
+
+    # network
+    net = Network()
+    net.add(FCLayer(2, 3))
+    net.add(ActivationLayer(tanh, tanh_prime))
+    net.add(FCLayer(3, 1))
+    net.add(ActivationLayer(tanh, tanh_prime))
+
+    # train
+    net.use(mse, mse_prime)
+    net.fit(x_train, y_train, epochs=1000, learning_rate=0.1)
+
+    # test
+    out = net.predict(x_train)
+    print(out)
 
 
 if __name__ == "__main__":
     main()
+    # testing_NN()

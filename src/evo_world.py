@@ -1,6 +1,5 @@
 from .actions_world import *
 from typing import Callable
-from curses.ascii import isdigit
 import numpy as np
 import random
 from .evo_entity import Entity
