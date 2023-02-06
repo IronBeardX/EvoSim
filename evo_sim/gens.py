@@ -1,7 +1,7 @@
 class Gene:
     """This is the basic Gene from which all Genes inherit from"""
     
-    def __init__(self, name, description):
+    def __init__(self, name, description = "Empty description"):
         self.name = name
         self.description = description
 
