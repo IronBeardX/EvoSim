@@ -142,7 +142,6 @@ def main():
         ])
     ]
     print(chr(27) + "[2J")
-    # sim.tick_sim()
     print()
     sim.run(gen_pos_ent)
     print("Simulation Finished")

@@ -1,5 +1,7 @@
 import random
 import math
+import numpy as np
+
 
 class Brain:
     '''
@@ -31,18 +33,26 @@ class Brain:
     Actions will be a list of all the available actions for the entity and deductions a dictionary with the name and the function that
     generates the deductions from the perception.
     '''
-    def __init__(self, actions = None, deductions = None, knowledge = {}, goals = None):
-        self.knowledge = knowledge
-        self.goals = goals
-        self.deductions = deductions
-        self.actions = actions
+    # default map size (10, 10)
+    class KnTile:
+        def __init__(self):
+            self.terrain = 'unknown'
+            self.entities = {}
+            self.allies = {}
+            self.enemies = {}
+            self.age_when_updated = 0
 
-    def decide_action(self, organism, age = 0, time = 0, perception = 0):
-        return [{'command':'none', 'parameters':[]}]
+    def __init__(self, deductions=None, goals=None, map_size=(10, 10)):
+        self.memory_map = np.array([[self.KnTile() for _ in range(map_size[0])] for _ in range(map_size[1])])
+
+    def get_floor(self, x, y):
+        return self.memory_map[x][y]
+
+    def decide_action(self, organism, age=0, time=0, perception=0):
+        return [{'command': 'none', 'parameters': []}]
         perceptions_vector = self.vectorized_perceptions()
 
     def get_perceptions(self, organism):
-        print('getting perceptions')
         perceptions = []
         for perception in organism.perceptions:
             match perception:
@@ -57,9 +67,13 @@ class Brain:
         return perceptions
 
     def update_knowledge(self, organism,  new_knowledge):
-        return
         for information in new_knowledge:
-            self.update_info(information)
+            if 'floor' in information.keys():
+                tile = self.memory_map[information['position']]
+                tile.terrain = information['floor']
+                tile.age_when_updated = organism.age
+        return
+
 
     def vectorized_perceptions(self, organism):
         pass
@@ -87,7 +101,6 @@ class Brain:
             self.knowledge.append(new_info)
 
     def receive_influences(self, influences_list):
-        print("receiving influences")
         return
         for influence in influences_list:
             match influence["name"]:
@@ -114,11 +127,3 @@ class Brain:
                         self.physical_properties["hunger"] += influence["value"]
                 case _:
                     raise Exception("Influence not found")
-
-
-class Evaluators:
-    def __init__(self, goal):
-        self.goal = goal
-
-    def evaluate(self, knowledge, perception):
-        raise NotImplementedError()

@@ -148,17 +148,11 @@ class SimActions:
         species = ent.species
         perception_list = []
         for entity, pos, distance in entities_list:
-            other_species = "None"
-            if entity.get_entity_id() in self.intelligent_entities:
-                other_ent = entity
-                other_species = other_ent.species
             entity_info = {
-                "entity": entity.get_entity_id(),
-                "day": day,
-                "position": pos,
-                "distance": distance,
-                "reproductive": species == other_species
+                'position':pos,
             }
+            if entity.get_entity_id() in self.intelligent_entities:
+                entity_info['species'] = entity.species
             if "legs" in entity.physical_properties:
                 entity_info["legs"] = entity.physical_properties["legs"]
             if "arms" in entity.physical_properties:
@@ -169,6 +163,8 @@ class SimActions:
                 entity_info["fins"] = entity.physical_properties["fins"]
             if "edible" in entity.physical_properties:
                 entity_info["edible"] = entity.physical_properties["edible"]
+            if "food_type" in entity.physical_properties:
+                entity_info["food_type"] = entity.physical_properties["food_type"]
             if "storage" in entity.physical_properties:
                 entity_info["storage"] = len(
                     entity.physical_properties["storage"])

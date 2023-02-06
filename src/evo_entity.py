@@ -52,7 +52,6 @@ class Organism(
         self.dna_chain = dna_chain
         self.perceptions = []
         self.actions = []
-        self.knowledge = brain.knowledge
         self.species = species
         self.age = 0
         self.food_on_death = food_on_death
@@ -78,13 +77,13 @@ class Organism(
                 self.actions.extend(gene.get_property())
 
     def pass_time(self):
-        # TODO: if the organism dies, it must drop its inventory and some meat
         self.age += 1
+        #TODO: change this
         floor = "grass"
-        for info in self.knowledge:
-            if "floor" in info.keys():
-                floor = info["floor"]
-                break
+        # for info in self.knowledge:
+        #     if "floor" in info.keys():
+        #         floor = info["floor"]
+        #         break
         dies = False
         # Check if the entity can stand in that floor
         match floor:
