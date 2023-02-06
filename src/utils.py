@@ -1,9 +1,10 @@
 from uuid import uuid4
 from typing import Callable
-from collections import heapq
 import random
 import numpy as np
 import math
+from collections import defaultdict, deque, Counter
+import heapq
 
 
 class DirectedGraph:
