@@ -471,19 +471,6 @@ def best_first_search(problem, f):
     return failure
 
 
-def best_first_tree_search(problem, f):
-    "A version of best_first_search without the `reached` table."
-    frontier = PriorityQueue([Node(problem.initial)], key=f)
-    while frontier:
-        node = frontier.pop()
-        if problem.is_goal(node.state):
-            return node
-        for child in expand(problem, node):
-            if not is_cycle(child):
-                frontier.add(child)
-    return failure
-
-
 def g(n): return n.path_cost
 
 
