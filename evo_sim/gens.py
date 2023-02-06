@@ -35,6 +35,14 @@ class Sense(Gene):
     and ask the world for information surrounding the organism and from this information
     it extracts a subset of characteristics and gives them to the organism"""
     
+    def give_dictionary_of_possible_perceptions(self):
+        """
+        This method returns a Dictionary where the key is a string given a
+        name for the info returned and the value is an integer representing
+        the amount of variables stored in that value. Example of key-value pairs:
+        - 'position':2 -> This represents a position in a 2D space (number 2 reflects this)"""
+        pass
+
     def give_percept(self, world):
         """This is the method that gives the organism the information that it needs
         to make a decision"""
